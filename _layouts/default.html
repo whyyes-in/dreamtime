@@ -12,23 +12,16 @@
       </script>
     {% endif %}
 
-    <!-- Fathom - simple website analytics - https://github.com/usefathom/fathom -->
-    <script>
-      (function(f, a, t, h, o, m){
-        a[h]=a[h]||function(){
-          (a[h].q=a[h].q||[]).push(arguments)
-        };
-        o=f.createElement('script'),
-        m=f.getElementsByTagName('script')[0];
-        o.async=1; o.src=t; o.id='fathom-script';
-        m.parentNode.insertBefore(o,m)
-      })(document, window, '//analytics.dreamnet.tech/tracker.js', 'fathom');
-      fathom('set', 'siteId', 'EQRAS');
-      fathom('trackPageview');
-      </script>
-      <!-- / Fathom -->
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-WCRW2K5');</script>
+    <!-- End Google Tag Manager -->
 
     <meta charset="UTF-8">
+    <meta name="robots" content="noindex" />
 
 {% seo %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -40,7 +33,7 @@
     <header class="page-header" role="banner">
       <h1 class="project-name">{{ page.title | default: site.title | default: site.github.repository_name }}</h1>
       <h2 class="project-tagline">{{ page.description | default: site.description | default: site.github.project_tagline }}</h2>
-      <a class="btn" href="https://time.dreamnet.tech/docs/installation">Installation</a>
+      <a class="btn" href="https://time.dreamnet.tech/docs/installation">Download for free</a>
       {% if site.github.is_project_page %}
         <a class="btn" href="{{ site.github.repository_url }}">View on GitHub</a>
       {% endif %}
