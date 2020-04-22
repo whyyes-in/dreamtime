@@ -3,6 +3,10 @@
     <img src="assets/dreamtime.png" alt="DreamTime">
   </a>
   <p align="center">DreamTime</p>
+
+  <p align="center" style="font-size: 0.8em;">
+    🙈 Use artificial intelligence to undress people.
+  </p>
 </h1>
 
 <p align="center">
@@ -19,12 +23,14 @@
 
 ## Introduction
 
-🙈 With DreamTime you can nudify photos of people easily.
+DreamTime is a user interface for [DreamPower](https://github.com/dreamnettech/dreampower), an application that uses artificial intelligence to remove clothing from photos of people.
 
-- **Totally free.** DreamTime is a free and open-source user interface to nudify photos. It is constantly updated and does not need cracks.
-- **Cool UI.** Nudify photos easily with a stable and friendly design.
+With DreamTime you can use the same technology introduced by DeepNude more easily thanks to a friendlier user interface and new features that improve the quality of the nudifications. 💪
+
+- **Totally free.** Free and open-source user interface to nudify photos. It is constantly updated and does not need cracks.
+- **Friendly and Stable.** Easy to use thanks to its modern design similar to a web application, you can nudify photo after photo without the app freezing. 🥶
 - **Multi platform.** Available for Windows, Linux and macOS.
-- **It is simply the best.** Install DreamTime and discover why it is better than DeepNude. [Discover more!](https://time.dreamnet.tech)
+- **Are you still using DeepNude?** [Check out the features that make it better.](https://time.dreamnet.tech/docs/dreamtime)
 
 ## Installation
 
