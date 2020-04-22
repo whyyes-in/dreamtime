@@ -4,7 +4,8 @@
     <LayoutTopbar />
 
     <!-- Content -->
-    <div id="layout-content" class="layout__content">
+    <div id="layout-content"
+         class="layout__content">
       <div class="container">
         <nuxt />
       </div>
@@ -23,9 +24,9 @@ export default {
   @apply h-full;
 
   display: grid;
+  grid-template-areas: 'topbar' 'content';
   grid-template-columns: 100%;
   grid-template-rows: 30px 1fr;
-  grid-template-areas: "topbar" "content";
 
   .layout__topbar {
     grid-area: topbar;

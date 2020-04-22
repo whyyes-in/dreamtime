@@ -1,5 +1,6 @@
 <template>
-  <div id="uploader" class="uploader">
+  <div id="uploader"
+       class="uploader">
     <!-- Uploader Selection -->
     <div class="uploader__selection">
       <div class="selection__content" />
@@ -70,7 +71,9 @@ export default {
      *
      */
     openUrl() {
-      if (isEmpty(this.webAddress) || (!startsWith(this.webAddress, 'http://') && !startsWith(this.webAddress, 'https://'))) {
+      if (isEmpty(this.webAddress)
+        || (!startsWith(this.webAddress, 'http://')
+        && !startsWith(this.webAddress, 'https://'))) {
         throw new Warning('Upload failed.', 'Please enter a valid web address.')
       }
 
@@ -94,7 +97,11 @@ export default {
       try {
         post = await instagram.getPost(this.instagramPhoto)
       } catch (error) {
-        throw new Warning('Upload failed.', 'Unable to download the photo, please verify that the address is correct and that you are connected to the Internet.', error)
+        throw new Warning(
+          'Upload failed.',
+          'Unable to download the photo, please verify that the address is correct and that you are connected to the Internet.',
+          error,
+        )
       }
 
       if (post.isVideo) {

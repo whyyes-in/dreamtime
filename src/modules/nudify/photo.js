@@ -52,7 +52,7 @@ export class Photo {
   /**
    * @type {EventBus}
    */
-  events = new EventBus
+  events = new EventBus()
 
   /**
    * @type {string}
@@ -91,7 +91,7 @@ export class Photo {
   /**
    * @type {Timer}
    */
-  timer = new Timer
+  timer = new Timer()
 
   /**
    * @type {boolean}
@@ -250,7 +250,7 @@ export class Photo {
     })
 
     await this.fileEditor.writeDataURL(dataURL)
-    this.consola.debug(`Saved editor changes.`)
+    this.consola.debug('Saved editor changes.')
   }
 
   /**
@@ -280,7 +280,7 @@ export class Photo {
     const dataURL = canvas.toDataURL(this.fileCrop.mimetype, 1)
     await this.fileCrop.writeDataURL(dataURL)
 
-    this.consola.debug(`Saved crop changes.`)
+    this.consola.debug('Saved crop changes.')
   }
 
   /**
@@ -306,6 +306,7 @@ export class Photo {
    *
    */
   validate() {
+    // eslint-disable-next-line no-shadow
     const { exists, mimetype, path } = this.file
 
     if (!exists) {
@@ -619,7 +620,7 @@ export class Photo {
         return
       }
 
-      const notification = new Notification(`💖 Dream fulfilled!`, {
+      const notification = new Notification('💖 Dream fulfilled!', {
         icon: this.file.path,
         body: 'All runs have finished.',
       })

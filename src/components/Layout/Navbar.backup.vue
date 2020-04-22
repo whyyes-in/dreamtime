@@ -1,30 +1,47 @@
 <template>
   <div class="layout__navbar">
     <div class="navbar__left">
-      <nuxt-link v-if="canNudify" to="/" class="navbar__item navbar__item--home">
+      <nuxt-link v-if="canNudify"
+                 to="/"
+                 class="navbar__item navbar__item--home">
         Upload
       </nuxt-link>
 
-      <nuxt-link id="settings" class="navbar__item" to="/settings">
+      <nuxt-link id="settings"
+                 class="navbar__item"
+                 to="/settings">
         Settings
       </nuxt-link>
 
-      <nuxt-link v-if="unlockedBadTime" v-tooltip="{ content: 'Mini-game. Can you survive until the end? 🎮💀', placement: 'bottom' }" class="navbar__item" to="/games/badtime">
+      <nuxt-link v-if="unlockedBadTime"
+                 v-tooltip="{ content: 'Mini-game. Can you survive until the end? 🎮💀', placement: 'bottom' }"
+                 class="navbar__item"
+                 to="/games/badtime">
         Bad Time Game
       </nuxt-link>
 
-      <a v-if="isDev" class="navbar__item" @click.prevent="createError">
+      <a v-if="isDev"
+         class="navbar__item"
+         @click.prevent="createError">
         Force Error
       </a>
     </div>
 
     <div class="navbar__right">
-      <nuxt-link v-tooltip="{placement: 'bottom', content: 'Alert Center'}" class="navbar__icon" to="/alerts">
-        <font-awesome-icon v-if="hasAlerts" icon="exclamation-triangle" class="alerts--active" />
-        <font-awesome-icon v-else icon="check-circle" class="alerts--ok" />
+      <nuxt-link v-tooltip="{placement: 'bottom', content: 'Alert Center'}"
+                 class="navbar__icon"
+                 to="/alerts">
+        <font-awesome-icon v-if="hasAlerts"
+                           icon="exclamation-triangle"
+                           class="alerts--active" />
+        <font-awesome-icon v-else
+                           icon="check-circle"
+                           class="alerts--ok" />
       </nuxt-link>
 
-      <nuxt-link v-tooltip="{placement: 'bottom', content: 'About'}" class="navbar__icon" to="/about">
+      <nuxt-link v-tooltip="{placement: 'bottom', content: 'About'}"
+                 class="navbar__icon"
+                 to="/about">
         <font-awesome-icon icon="info-circle" />
       </nuxt-link>
 
@@ -109,9 +126,11 @@ export default {
   0% {
     @apply text-danger-500;
   }
+
   50% {
     @apply text-warning-500;
   }
+
   100% {
     @apply text-danger-500;
   }
@@ -169,9 +188,9 @@ export default {
 }
 
 .alerts--active {
-  animation-name: alertAnim;
-  animation-iteration-count: infinite;
   animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-name: alertAnim;
   animation-timing-function: ease-in-out;
 }
 

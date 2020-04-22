@@ -1,6 +1,9 @@
 <template>
-  <div class="photo-run" :class="previewClass" data-private>
-    <div class="run__preview" :style="previewStyle" />
+  <div class="photo-run"
+       :class="previewClass"
+       data-private>
+    <div class="run__preview"
+         :style="previewStyle" />
 
     <div
       v-if="run.preferences.body.randomize || run.preferences.body.progressive.enabled"
@@ -32,7 +35,8 @@
     </div>
 
     <div class="run__content">
-      <div v-if="run.running" class="content__item">
+      <div v-if="run.running"
+           class="content__item">
         <p class="text-white">
           <span>
             <font-awesome-icon icon="running" />
@@ -41,7 +45,8 @@
         </p>
       </div>
 
-      <div v-else-if="run.failed" class="content__item">
+      <div v-else-if="run.failed"
+           class="content__item">
         <p class="text-danger-500">
           <span>
             <font-awesome-icon icon="exclamation-circle" />
@@ -50,7 +55,8 @@
         </p>
       </div>
 
-      <div v-else-if="run.finished" class="content__item">
+      <div v-else-if="run.finished"
+           class="content__item">
         <p class="text-white">
           <span>
             <font-awesome-icon icon="heart" />
@@ -59,7 +65,8 @@
         </p>
       </div>
 
-      <div v-else class="content__item">
+      <div v-else
+           class="content__item">
         <p class="text-white">
           <span>
             <font-awesome-icon icon="clock" />
@@ -67,7 +74,8 @@
         </p>
       </div>
 
-      <div v-show="run.finished && run.outputFile.exists" class="content__item">
+      <div v-show="run.finished && run.outputFile.exists"
+           class="content__item">
         <button
           v-tooltip="'Open photo'"
           class="button button--info button--sm"
@@ -76,7 +84,8 @@
         </button>
       </div>
 
-      <div v-show="run.finished && run.outputFile.exists" class="content__item">
+      <div v-show="run.finished && run.outputFile.exists"
+           class="content__item">
         <button
           v-tooltip="'Save photo'"
           class="button button--info button--sm"
@@ -85,19 +94,26 @@
         </button>
       </div>
 
-      <div v-show="run.finished" class="content__item">
-        <button v-tooltip="'Rerun'" class="button button--success button--sm" @click.prevent="rerun">
+      <div v-show="run.finished"
+           class="content__item">
+        <button v-tooltip="'Rerun'"
+                class="button button--success button--sm"
+                @click.prevent="rerun">
           <font-awesome-icon icon="undo" />
         </button>
       </div>
 
-      <div v-show="run.running" class="content__item">
-        <button v-tooltip="'Stop'" class="button button--danger button--sm" @click.prevent="cancel">
+      <div v-show="run.running"
+           class="content__item">
+        <button v-tooltip="'Stop'"
+                class="button button--danger button--sm"
+                @click.prevent="cancel">
           <font-awesome-icon icon="stop" />
         </button>
       </div>
 
-      <div v-show="hasMaskfin" class="content__item">
+      <div v-show="hasMaskfin"
+           class="content__item">
         <button
           v-tooltip="'View Maskfin'"
           class="button button--sm"
@@ -117,31 +133,46 @@
     </div>
 
     <!-- Maskfin Dialog -->
-    <dialog v-if="hasMaskfin" ref="maskfinDialog">
+    <dialog v-if="hasMaskfin"
+            ref="maskfinDialog">
       <div class="dialog__content dialog__maskfin">
         <div class="maskfin__preview">
           <img :src="run.maskfinFile.path">
         </div>
 
         <div class="maskfin__description">
-          <p>This is the Maskfin, a mask that represents in layers the areas that the algorithm will replace with the fake nude.</p>
-          <p>Click on the "Add to queue" button to add it as an additional photo, edit the layers with the editor and continue with the nudification. You can also save it to your computer, edit it with an external program and continue the nudification manually.</p>
+          <p>
+            This is the Maskfin,
+            a mask that represents in layers the areas that the algorithm will replace with the fake nude.
+          </p>
+
+          <p>
+            Click on the "Add to queue" button to add it as an additional photo,
+            edit the layers with the editor and continue with the nudification.
+            You can also save it to your computer,
+            edit it with an external program and continue the nudification manually.
+          </p>
+
           <p>
             For more information please consult the
-            <a :href="manualURL" target="_blank">guide</a>.
+            <a :href="manualURL"
+               target="_blank">guide</a>.
           </p>
         </div>
 
         <div class="dialog__buttons">
-          <button class="button" @click.prevent="addMaskToQueue">
+          <button class="button"
+                  @click.prevent="addMaskToQueue">
             Add to queue
           </button>
 
-          <button class="button button--success" @click.prevent="saveMask">
+          <button class="button button--success"
+                  @click.prevent="saveMask">
             Save
           </button>
 
-          <button class="button button--danger" @click.prevent="$refs.maskfinDialog.close()">
+          <button class="button button--danger"
+                  @click.prevent="$refs.maskfinDialog.close()">
             Close
           </button>
         </div>
@@ -161,7 +192,8 @@
         </div>
 
         <div class="dialog__buttons">
-          <button class="button button--danger" @click.prevent="$refs.terminalDialog.close()">
+          <button class="button button--danger"
+                  @click.prevent="$refs.terminalDialog.close()">
             Close
           </button>
         </div>
@@ -254,7 +286,7 @@ export default {
 <style lang="scss" scoped>
 .photo-run {
   @apply relative border-2 border-dark-500;
-  background-image: url("~@/assets/images/curls.png"); /* Background pattern from Toptal Subtle Patterns */
+  background-image: url('~@/assets/images/curls.png'); /* Background pattern from Toptal Subtle Patterns */
   min-height: 512px;
   transition: border-color 0.2s linear;
 

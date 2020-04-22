@@ -1,6 +1,8 @@
 <template>
   <div class="c-preferences">
-    <section v-show="currentValue.advanced.transformMode !== 'import-maskfin'" id="preferences-runs" class="box box--items">
+    <section v-show="currentValue.advanced.transformMode !== 'import-maskfin'"
+             id="preferences-runs"
+             class="box box--items">
       <div class="box__header">
         <h2 class="title">
           Per run.
@@ -14,13 +16,17 @@
         <box-item
           label="Runs."
           description="Number of times the photo will be nudified.">
-          <input v-model="currentValue.body.executions" type="number" min="1" class="input">
+          <input v-model="currentValue.body.executions"
+                 type="number"
+                 min="1"
+                 class="input">
         </box-item>
 
         <box-item
           label="Randomize."
           description="Set random body preferences at each run.">
-          <select v-model="currentValue.body.randomize" class="input">
+          <select v-model="currentValue.body.randomize"
+                  class="input">
             <option :value="true">
               Enabled
             </option>
@@ -34,7 +40,8 @@
           v-show="!currentValue.body.randomize"
           label="Progressive."
           :description="`Body preferences will increase ${currentValue.body.progressive.rate} at each run.`">
-          <select v-model="currentValue.body.progressive.enabled" class="input">
+          <select v-model="currentValue.body.progressive.enabled"
+                  class="input">
             <option :value="true">
               Enabled
             </option>
@@ -48,28 +55,42 @@
           v-show="!currentValue.body.randomize && currentValue.body.progressive.enabled"
           label="Progressive rate."
           :description="`Value: ${currentValue.body.progressive.rate}`">
-          <VueSlider v-model="currentValue.body.progressive.rate" :min="0.1" :max="0.9" :interval="0.05" />
+          <VueSlider v-model="currentValue.body.progressive.rate"
+                     :min="0.1"
+                     :max="0.9"
+                     :interval="0.05" />
         </box-item>
       </div>
     </section>
 
     <!-- Boobs -->
-    <Preference id="preferences-body" v-model="currentValue.body.boobs" label="Boobs" />
+    <Preference id="preferences-body"
+                v-model="currentValue.body.boobs"
+                label="Boobs" />
 
     <!-- Areola -->
-    <Preference v-model="currentValue.body.areola" label="Areola" :min="0" />
+    <Preference v-model="currentValue.body.areola"
+                label="Areola"
+                :min="0" />
 
     <!-- Nipple -->
-    <Preference v-model="currentValue.body.nipple" label="Nipple" :min="0" />
+    <Preference v-model="currentValue.body.nipple"
+                label="Nipple"
+                :min="0" />
 
     <!-- Vagina -->
-    <Preference v-model="currentValue.body.vagina" label="Vagina" :max="1.5" />
+    <Preference v-model="currentValue.body.vagina"
+                label="Vagina"
+                :max="1.5" />
 
     <!-- Pubic Hair -->
-    <Preference v-model="currentValue.body.pubicHair" label="Pubic Hair" :min="0" />
+    <Preference v-model="currentValue.body.pubicHair"
+                label="Pubic Hair"
+                :min="0" />
 
     <!-- Advanced -->
-    <section id="preferences-advanced" class="box box--items">
+    <section id="preferences-advanced"
+             class="box box--items">
       <div class="box__header">
         <h2 class="title">
           Advanced.
@@ -84,7 +105,8 @@
           id="preferences-advanced-scale"
           label="Scale method."
           description="Indicates how the photo will be scaled, this changes the quality of the result dramatically.">
-          <select v-model="currentValue.advanced.scaleMode" class="input">
+          <select v-model="currentValue.advanced.scaleMode"
+                  class="input">
             <option value="none">
               None
             </option>
@@ -110,7 +132,8 @@
           id="preferences-advanced-color"
           label="Color transfer."
           description="Use a experimental algorithm to try to recover the original colors of the photo.">
-          <select v-model="currentValue.advanced.useColorTransfer" class="input">
+          <select v-model="currentValue.advanced.useColorTransfer"
+                  class="input">
             <option :value="true">
               Enabled
             </option>
@@ -123,7 +146,8 @@
         <box-item
           label="Transformation method."
           description="Advanced users. Indicates additional options for transformation.">
-          <select v-model="currentValue.advanced.transformMode" class="input">
+          <select v-model="currentValue.advanced.transformMode"
+                  class="input">
             <option value="normal">
               Nudify
             </option>

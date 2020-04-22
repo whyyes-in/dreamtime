@@ -49,7 +49,7 @@ export default {
 
   section {
     &:not(:last-child) {
-      @apply pb-6 border-b-2 border-dark-400;
+      @apply pb-6 border-b border-dark-400;
       @apply mb-3;
     }
   }

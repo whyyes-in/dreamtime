@@ -352,7 +352,7 @@ export default {
       @apply font-bold;
 
       background: linear-gradient(transparent, transparent),
-        linear-gradient(top, rgba(213, 173, 109, 1) 0%, rgba(213,
+        linear-gradient(to bottom, rgba(213, 173, 109, 1) 0%, rgba(213,
         173,
         109,
         1)

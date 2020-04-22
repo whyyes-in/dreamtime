@@ -1,14 +1,18 @@
 <template>
-  <div v-if="photo" class="nudify content__body">
+  <div v-if="photo"
+       class="nudify content__body">
     <div class="nudify__menu">
       <div class="menu__container">
         <!-- Original Preview -->
         <div class="mb-6 flex justify-center">
-          <app-photo :src="photo.file.path" :hover="false" data-private />
+          <app-photo :src="photo.file.path"
+                     :hover="false"
+                     data-private />
         </div>
 
         <!-- Navigation -->
-        <div id="nudify-navigation" class="box box--items">
+        <div id="nudify-navigation"
+             class="box box--items">
           <div class="box__content">
             <box-item
               label="Preferences"
@@ -23,7 +27,9 @@
         </div>
 
         <!-- Tools -->
-        <div v-if="photo.canModify" id="nudify-tools" class="box box--items">
+        <div v-if="photo.canModify"
+             id="nudify-tools"
+             class="box box--items">
           <div class="box__content">
             <box-item
               label="Editor"
@@ -90,7 +96,10 @@
 
         <button
           id="nudify-forget"
-          v-tooltip="{content: 'Free memory by removing the photo from the application. (Nudified photos will not be deleted)', placement: 'right', boundary: 'viewport'}"
+          v-tooltip="{
+            content: 'Free memory by removing the photo from the application. (Nudified photos will not be deleted)',
+            placement: 'right',
+            boundary: 'viewport'}"
           class="button button--danger"
           @click.prevent="forget">
           <span class="icon"><font-awesome-icon icon="trash-alt" /></span>
@@ -171,7 +180,7 @@ export default {
     },
 
     forget() {
-      this.$router.push(`/`)
+      this.$router.push('/')
       this.photo.forget()
     },
   },
@@ -188,7 +197,7 @@ export default {
   @apply mr-4 pr-6 h-full overflow-y-auto;
   width: 250px;
 
-.button {
+  .button {
     @apply block w-full mb-6;
   }
 }

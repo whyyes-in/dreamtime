@@ -8,12 +8,11 @@
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
 import {
-  isNil, isError, isString, toString, isBoolean,
+  isNil, isError, isString, toString, isBoolean, isPlainObject,
 } from 'lodash'
 import he from 'he'
-import Swal from 'sweetalert2/dist/sweetalert2.js'
+import Swal from 'sweetalert2/dist/sweetalert2'
 import Logger from '@dreamnet/logplease'
-import isPlainObject from 'lodash/isPlainObject'
 import { mapStackTrace } from 'sourcemapped-stacktrace'
 import { HandledError } from './errors'
 

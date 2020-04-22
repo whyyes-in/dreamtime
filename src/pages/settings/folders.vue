@@ -1,11 +1,14 @@
 <template>
-  <div class="settings-folders" scoped>
-    <div v-if="$dream.isPortable" class="notification">
+  <div class="settings-folders"
+       scoped>
+    <div v-if="$dream.isPortable"
+         class="notification">
       <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
       <span>To maximize portability these options cannot be changed in the portable version.</span>
     </div>
 
-    <div v-else class="notification">
+    <div v-else
+         class="notification">
       <span class="icon"><font-awesome-icon icon="info-circle" /></span>
       <span>Changing this options needs a restart to take effect.</span>
     </div>
@@ -97,7 +100,7 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import { isNil } from 'lodash'
 import { VModel } from '~/mixins'
 
 const { paths } = $provider
@@ -118,7 +121,7 @@ export default {
         properties: ['openDirectory'],
       })
 
-      if (_.isNil(dir)) {
+      if (isNil(dir)) {
         return path
       }
 

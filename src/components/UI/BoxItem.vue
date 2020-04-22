@@ -1,24 +1,36 @@
 <template>
-  <div v-if="isVisible" class="box__item" :class="cssClass" @click="click">
+  <div v-if="isVisible"
+       class="box__item"
+       :class="cssClass"
+       @click="click">
     <!-- Icon -->
     <slot name="icon">
-      <div v-if="icon" class="item__icon">
-        <img v-if="isImageIcon" :src="icon">
-        <font-awesome-icon v-else :icon="icon" />
+      <div v-if="icon"
+           class="item__icon">
+        <img v-if="isImageIcon"
+             :src="icon">
+        <font-awesome-icon v-else
+                           :icon="icon" />
       </div>
     </slot>
 
     <!-- Label & Description -->
-    <div v-if="label" class="item__content">
-      <span class="item__label" v-html="label" />
+    <div v-if="label"
+         class="item__content">
+      <span class="item__label"
+            v-html="label" />
 
       <slot name="description">
-        <span v-if="description" class="item__description" v-html="description" />
+        <span v-if="description"
+              class="item__description"
+              v-html="description" />
       </slot>
     </div>
 
     <!-- Actions -->
-    <div v-if="$slots.default" class="item__action" :class="{ 'item__action--full': !hasIcon && !label }">
+    <div v-if="$slots.default"
+         class="item__action"
+         :class="{ 'item__action--full': !hasIcon && !label }">
       <slot />
     </div>
   </div>
@@ -140,7 +152,7 @@ export default {
   .box__item {
     @apply flex px-4 py-2;
     min-height: 50px;
-    transition: all .2s ease-in-out;
+    transition: all 0.2s ease-in-out;
 
     &.box__item--sub {
       @apply pl-8;
@@ -164,8 +176,8 @@ export default {
 
     .item__icon {
       @apply mr-4 flex items-center justify-center text-2xl;
-      width: 42px;
       min-width: 42px;
+      width: 42px;
     }
 
     .item__content {

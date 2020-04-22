@@ -11,7 +11,7 @@ import { Consola } from './consola'
 
 export { Consola }
 
-export const consola = (new Consola)
+export const consola = new Consola()
 
 export {
   HandledError, LogEvent, Warning, Exception,

@@ -8,8 +8,8 @@
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2020.
 
 import Vue from 'vue'
-import QueueBar from './QueueBar'
-import QueuePhoto from './QueuePhoto'
+import QueueBar from './QueueBar.vue'
+import QueuePhoto from './QueuePhoto.vue'
 
 Vue.component('Queuebar', QueueBar)
 Vue.component('QueuePhoto', QueuePhoto)

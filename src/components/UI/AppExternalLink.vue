@@ -1,5 +1,7 @@
 <template>
-  <a href="#" class="c-app-external-link" @click.prevent="openExternal">
+  <a href="#"
+     class="c-app-external-link"
+     @click.prevent="openExternal">
     <slot />
   </a>
 </template>

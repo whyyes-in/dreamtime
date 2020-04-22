@@ -9,51 +9,68 @@
     </div>
 
     <!-- Downloading -->
-    <div v-else-if="isDownloading" class="update__status">
+    <div v-else-if="isDownloading"
+         class="update__status">
       Downloading ~ <strong>{{ updater.update.progress | progress }}</strong> ~ {{ updater.update.written | size }}/{{ updater.update.total | size }} MB.
     </div>
 
     <!-- Installing -->
-    <div v-else-if="isInstalling" class="update__status">
+    <div v-else-if="isInstalling"
+         class="update__status">
       Installing...
     </div>
 
     <!-- Download Progress -->
-    <div v-show="isDownloading" class="update__progressbar">
-      <progress min="0" max="100" :value="updater.update.progress" />
+    <div v-show="isDownloading"
+         class="update__progressbar">
+      <progress min="0"
+                max="100"
+                :value="updater.update.progress" />
     </div>
 
     <!-- Actions -->
     <div class="update__actions">
-      <button v-show="!updater.update.active" class="button button--success" @click.prevent="updater.start()">
+      <button v-show="!updater.update.active"
+              class="button button--success"
+              @click.prevent="updater.start()">
         Start
       </button>
 
-      <button v-show="updater.update.active" class="button button--danger" @click.prevent="updater.cancel()">
+      <button v-show="updater.update.active"
+              class="button button--danger"
+              @click.prevent="updater.cancel()">
         Cancel
       </button>
 
-      <button v-tooltip="'Show a list of links to download the update manually.'" class="button button--info" @click.prevent="$refs.mirrorsDialog.show()">
+      <button v-tooltip="'Show a list of links to download the update manually.'"
+              class="button button--info"
+              @click.prevent="$refs.mirrorsDialog.show()">
         Mirrors
       </button>
     </div>
 
     <!-- Hint -->
     <div class="update__hint">
-      <p><a href="https://time.dreamnet.tech/docs/guide/updater" target="_blank">More information and troubleshooting</a>.</p>
+      <p>
+        <a href="https://time.dreamnet.tech/docs/guide/updater"
+           target="_blank">More information and troubleshooting</a>.
+      </p>
     </div>
 
     <!-- Mirrors Dialog -->
     <dialog ref="mirrorsDialog">
       <div class="dialog__content">
         <ul class="mirrors">
-          <li v-for="(item, index) in updater.downloadUrls" :key="index">
-            <a :href="item" target="_blank">{{ item | domain }}</a>
+          <li v-for="(item, index) in updater.downloadUrls"
+              :key="index">
+            <a :href="item"
+               target="_blank">{{ item | domain }}</a>
           </li>
         </ul>
 
         <div class="dialog__buttons">
-          <button class="button button--danger" @click.prevent="$refs.mirrorsDialog.close()">
+          <button class="button button--danger"
+                  @click.prevent="$refs.mirrorsDialog.close()">
             Close
           </button>
         </div>
@@ -134,8 +151,8 @@ export default {
 
   progress {
     @apply w-full border-0 bg-dark-600;
-    height: 18px;
     border-radius: 9px;
+    height: 18px;
 
     &::-webkit-progress-bar {
       @apply bg-dark-500;

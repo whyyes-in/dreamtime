@@ -32,11 +32,12 @@
     </div>
 
     <div class="nav__right">
-      <div v-if="isBadTimeAvailable"
-           v-tooltip="'Bad Time Game'"
-           class="nav__item nav__item--button">
+      <nuxt-link v-if="isBadTimeAvailable"
+                 v-tooltip="'Bad Time Game'"
+                 to="/games/badtime"
+                 class="nav__item nav__item--button">
         <img src="~/assets/images/games/sans.png">
-      </div>
+      </nuxt-link>
 
       <nuxt-link v-tooltip="'Settings'"
                  to="/settings"
@@ -135,9 +136,11 @@ export default {
   0% {
     background-position: 0% 0%;
   }
+
   50% {
     background-position: 100% 0%;
   }
+
   100% {
     background-position: 0% 0%;
   }
@@ -147,9 +150,11 @@ export default {
   0% {
     @apply text-danger-500;
   }
+
   50% {
     @apply text-warning-500;
   }
+
   100% {
     @apply text-danger-500;
   }
@@ -200,34 +205,32 @@ export default {
   &.nav__item--button {
     @apply justify-center;
     @apply rounded-full text-lg mr-3;
-    width: 40px;
     height: 40px;
+    width: 40px;
 
     &:hover {
-      @apply bg-dark-800;
+      @apply bg-dark-400;
     }
 
     img {
-    height: 20px;
-  }
+      height: 20px;
+    }
   }
 
   &.nav__item--logo {
     @apply text-white text-sm font-bold px-6 select-none;
-
-    background: rgb(99, 66, 245);
-    background: linear-gradient(
-      40deg,
-      rgba(99, 66, 245, 1) 0%,
-      rgba(239, 125, 199, 1) 100%
-    );
-    background-size: 200% 100%;
-    background-position: 0% 0%;
+    animation-duration: 10s;
+    animation-iteration-count: infinite;
 
     animation-name: logoAnim;
-    animation-iteration-count: infinite;
-    animation-duration: 10s;
     animation-timing-function: ease-in-out;
+
+    background: rgb(99, 66, 245);
+    background: linear-gradient(40deg,
+    rgba(99, 66, 245, 1) 0%,
+    rgba(239, 125, 199, 1) 100%);
+    background-position: 0% 0%;
+    background-size: 200% 100%;
   }
 
   &.nav__item--greetings {
@@ -288,9 +291,9 @@ export default {
 }
 
 .alerts--active {
-  animation-name: alertAnim;
-  animation-iteration-count: infinite;
   animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-name: alertAnim;
   animation-timing-function: ease-in-out;
 }
 

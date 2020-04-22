@@ -72,7 +72,7 @@
 
           <h3 class="subtitle">
             Upload photos using their direct web address.
-            <span v-tooltip="'Make sure the web address ends in a valid format (jpg, png, gif). Photos from Google and other services may not work because they are not direct and/or valid format.'"
+            <span v-tooltip="'Make sure the web address ends in a valid format (jpg, png, gif).'"
                   class="help">
               <font-awesome-icon icon="info-circle" />
             </span>
@@ -274,7 +274,11 @@ export default {
       try {
         post = await instagram.getPost(this.instagramPhoto)
       } catch (error) {
-        throw new Warning('Upload failed.', 'Unable to download the photo, please verify that the address is correct and that you are connected to the Internet.', error)
+        throw new Warning(
+          'Upload failed.',
+          'Unable to download the photo, please verify that the address is correct and that you are connected to the Internet.',
+          error,
+        )
       }
 
       if (post.isVideo) {
@@ -298,10 +302,6 @@ export default {
 
 .uploader__methods {
   @apply flex-1;
-}
-
-.methods__content {
-
 }
 
 .method__header {

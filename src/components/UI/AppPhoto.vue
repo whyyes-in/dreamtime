@@ -1,8 +1,10 @@
 <template>
-  <figure class="photo" :class="{'photo--hover': hover}">
+  <figure class="photo"
+          :class="{'photo--hover': hover}">
     <img :src="src">
 
-    <p v-if="$slots.default" class="photo__label">
+    <p v-if="$slots.default"
+       class="photo__label">
       <slot />
     </p>
   </figure>

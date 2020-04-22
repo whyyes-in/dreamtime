@@ -1,7 +1,8 @@
 <template>
   <div class="nudify-cropper">
     <div class="cropper__crop">
-      <canvas ref="cropCanvas" data-private />
+      <canvas ref="cropCanvas"
+              data-private />
     </div>
 
     <div class="cropper__help">
@@ -14,7 +15,8 @@
         <span>Reload</span>
       </button>
 
-      <section id="cropper-about" class="box">
+      <section id="cropper-about"
+               class="box">
         <div class="box__header">
           <h2 class="title">
             <font-awesome-icon icon="crop" /> Manual crop.
@@ -28,7 +30,8 @@
         </div>
       </section>
 
-      <section id="cropper-help" class="box">
+      <section id="cropper-help"
+               class="box">
         <div class="box__header">
           <h2 class="title">
             <font-awesome-icon icon="mouse-pointer" /> Commands

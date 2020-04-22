@@ -1,5 +1,6 @@
 <template>
-  <div id="queuebar" class="layout__jobbar">
+  <div id="queuebar"
+       class="layout__jobbar">
     <section id="queuebar-running">
       <div class="section__header">
         <div class="section__title">
@@ -7,7 +8,8 @@
           <span>Queue</span>
         </div>
 
-        <div v-show="$nudify.waiting.length > 0" class="section__actions">
+        <div v-show="$nudify.waiting.length > 0"
+             class="section__actions">
           <button
             v-tooltip="{placement: 'bottom', content: 'Forget waiting'}"
             class="button button--danger button--xs"
@@ -40,7 +42,8 @@
           <span>Pending</span>
         </div>
 
-        <div v-show="$nudify.pending.length > 0" class="section__actions">
+        <div v-show="$nudify.pending.length > 0"
+             class="section__actions">
           <button
             v-tooltip="'Forget all'"
             class="button button--danger button--xs"
@@ -73,7 +76,8 @@
           <span>Finished</span>
         </div>
 
-        <div v-show="$nudify.finished.length > 0" class="section__actions">
+        <div v-show="$nudify.finished.length > 0"
+             class="section__actions">
           <button
             v-tooltip="'Forget all'"
             class="button button--danger button--xs"
@@ -121,10 +125,11 @@ section {
 
   &:not(:first-child) {
     .section__header {
-      &::before, &::after {
+      &::before,
+      &::after {
         @apply block border-b;
         @apply absolute right-0 pointer-events-none z-0;
-        content: " ";
+        content: ' ';
         left: 100px;
       }
 

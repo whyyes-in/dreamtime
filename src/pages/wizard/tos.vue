@@ -40,7 +40,10 @@
         <figure><font-awesome-icon icon="file-signature" /></figure>
         <p>
           <strong>DreamTime is under the GPL-3.0</strong>
-          <span>TL;DR: You can modify the application code and share it, but always under the same license and you must share the source code of your modifications.</span>
+          <span>
+            TL;DR: You can modify the application code and share it,
+            but always under the same license and you must share the source code of your modifications.
+          </span>
         </p>
       </li>
 
@@ -55,7 +58,8 @@
     </ul>
 
     <div class="text-center">
-      <button class="button button--xl" @click.prevent="next">
+      <button class="button button--xl"
+              @click.prevent="next">
         Understood
       </button>
     </div>

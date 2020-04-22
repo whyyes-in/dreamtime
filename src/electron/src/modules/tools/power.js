@@ -154,7 +154,7 @@ export const transform = (run) => {
     args.push('--hsize', preferences.body.pubicHair.size)
   }
 
-  const events = (new EventBus)
+  const events = (new EventBus())
 
   setTimeout(() => {
     // Give time for the renderer to receive the events object.

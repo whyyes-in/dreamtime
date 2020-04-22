@@ -111,7 +111,7 @@ export class AppError extends Error {
         exception = new Error(error)
       }
 
-      appError = new AppError(`The application has encountered an unexpected error.`, {
+      appError = new AppError('The application has encountered an unexpected error.', {
         error: exception,
         title: 'Unexpected error!',
         level: 'error',

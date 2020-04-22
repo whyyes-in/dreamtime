@@ -13,12 +13,12 @@ import {
   trim, kebabCase, truncate, deburr,
 } from 'lodash'
 import deferred from 'deferred'
-import Swal from 'sweetalert2/dist/sweetalert2.js'
+import Swal from 'sweetalert2/dist/sweetalert2'
 import emojiStrip from 'emoji-strip'
 import { File } from '../file'
 import { Timer } from '../timer'
-import cliErrors from '../config/cli-errors'
-import preferencesConfig from '../config/preferences'
+import cliErrors from '../config/cli-errors.json'
+import preferencesConfig from '../config/preferences.json'
 import { settings, achievements } from '../system'
 
 const { getCurrentWindow } = require('electron').remote
@@ -70,7 +70,7 @@ export class PhotoRun {
   /**
    * @type {Timer}
    */
-  timer = new Timer
+  timer = new Timer()
 
   /**
    * @type {Object}
@@ -251,7 +251,13 @@ export class PhotoRun {
 
     this.process.on('fail', (fileError) => {
       if (fileError) {
-        def.reject(new Warning('Nudification failed!', 'The photo has been transformed but could not be saved. Please make sure you have enough disk space and that DreamTime can write to it.', fileError))
+        def.reject(
+          new Warning(
+            'Nudification failed!',
+            'The photo has been transformed but could not be saved. Please make sure you have enough disk space and that DreamTime can write to it.',
+            fileError,
+          ),
+        )
       } else {
         def.reject(this.getPowerError())
       }

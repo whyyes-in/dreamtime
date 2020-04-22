@@ -13,6 +13,9 @@ import { Help } from '~/modules'
 import { Consola } from '~/modules/consola'
 import { achievements } from '~/modules/system'
 import BaseMixin from '~/mixins/BaseMixin'
+import { dream } from '~/modules'
+import { Nudify, NudifyStore } from '~/modules/nudify'
+import { settings } from '~/modules/system'
 
 const consola = Consola.create('setup')
 
@@ -28,20 +31,16 @@ tippy.setDefaultProps({
   arrow: true,
 })
 
-export default ({ app }, inject) => {
-  const { dream } = require('~/modules')
-  const { Nudify, NudifyStore } = require('~/modules/nudify')
-  const { settings } = require('~/modules/system')
-
+export default (ctx, inject) => {
   // User settings.
-  app.$settings = settings
+  ctx.app.$settings = settings
   inject('settings', settings)
 
   // DreamTime.
-  app.$dream = dream
+  ctx.app.$dream = dream
   inject('dream', dream)
 
-  // Help
+  // Help system.
   Help.load()
 
   // Nudification/Queue.
@@ -53,6 +52,20 @@ export default ({ app }, inject) => {
 
   // Achievements.
   achievements.setup()
+
+  ctx.app.router.afterEach((to) => {
+    console.log(to)
+
+    /*
+    if (to.path === '/games/badtime') {
+
+    } else {
+
+    }
+    */
+  })
+
+  console.log(ctx)
 
   consola.info('The front-end is ready!')
 }

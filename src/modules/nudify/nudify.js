@@ -14,7 +14,7 @@ import {
 } from 'lodash'
 import { basename } from 'path'
 import delay from 'delay'
-import Swal from 'sweetalert2/dist/sweetalert2.js'
+import Swal from 'sweetalert2/dist/sweetalert2'
 import { watch } from 'melanke-watchjs'
 import { NudifyQueue } from './queue'
 import { events } from '../events'
@@ -204,7 +204,11 @@ export const Nudify = {
 
       this.add(file)
     } catch (error) {
-      throw new Warning('Upload failed.', 'Unable to download the photo, please verify that the address is correct and that you are connected to the Internet.', error)
+      throw new Warning(
+        'Upload failed.',
+        'Unable to download the photo, please verify that the address is correct and that you are connected to the Internet.',
+        error,
+      )
     }
   },
 

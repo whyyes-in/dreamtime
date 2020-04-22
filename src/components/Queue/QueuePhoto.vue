@@ -1,23 +1,32 @@
 <template>
-  <div class="photo" :class="photoClass">
-    <div class="photo__preview" :style="previewStyle" />
+  <div class="photo"
+       :class="photoClass">
+    <div class="photo__preview"
+         :style="previewStyle" />
 
     <div class="photo__content">
       <span v-show="photo.running || photo.finished">{{ photo.timer.duration }}s</span>
 
-      <button v-tooltip="'Open'" @click="open">
+      <button v-tooltip="'Open'"
+              @click="open">
         <font-awesome-icon icon="external-link-square-alt" />
       </button>
 
-      <button v-show="photo.pending" v-tooltip="'Add to Queue'" @click="add">
+      <button v-show="photo.pending"
+              v-tooltip="'Add to Queue'"
+              @click="add">
         <font-awesome-icon icon="play" />
       </button>
 
-      <button v-show="photo.waiting" v-tooltip="'Remove from Queue'" @click="cancel">
+      <button v-show="photo.waiting"
+              v-tooltip="'Remove from Queue'"
+              @click="cancel">
         <font-awesome-icon icon="sign-out-alt" />
       </button>
 
-      <button v-show="photo.running" v-tooltip="'Stop'" @click="stop">
+      <button v-show="photo.running"
+              v-tooltip="'Stop'"
+              @click="stop">
         <font-awesome-icon icon="stop" />
       </button>
     </div>
@@ -85,7 +94,7 @@ export default {
 <style lang="scss" scoped>
 .photo {
   @apply w-1/2 h-full relative border-2 border-dark-800;
-  background-image: url("~@/assets/images/curls.png");
+  background-image: url('~@/assets/images/curls.png');
   will-change: transform;
 
   &.photo--running {
@@ -111,9 +120,10 @@ export default {
     @apply absolute top-0 bottom-0 left-0 right-0 z-30;
     @apply flex bg-dark-500-60 opacity-0;
     backdrop-filter: blur(4px);
-    transition: opacity .1s linear;
+    transition: opacity 0.1s linear;
 
-    span, button {
+    span,
+    button {
       @apply flex-1;
     }
 

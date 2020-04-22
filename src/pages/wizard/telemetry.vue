@@ -13,7 +13,9 @@
     <div class="user__content">
       <section class="mb-10">
         <p>
-          DreamNet respects the privacy of its users, <strong>the photos you nudify using DreamTime do not abandon your computer in any way</strong>, we only collect anonymous information with the exclusive objective of improving the application.
+          DreamNet respects the privacy of its users,
+          <strong>the photos you nudify using DreamTime do not abandon your computer in any way</strong>,
+          we only collect anonymous information with the exclusive objective of improving the application.
         </p>
 
         <p>
@@ -44,7 +46,9 @@
               <box-item
                 label="User."
                 description="Anonymous username used to identify your session. It can be especially useful for technical support.">
-                <input v-model="$settings.user" disabled class="input">
+                <input v-model="$settings.user"
+                       disabled
+                       class="input">
               </box-item>
             </div>
           </div>
@@ -72,7 +76,9 @@
             <li>Console log.</li>
           </ul>
 
-          <a href="https://i.gyazo.com/30972dbc8c2396b58928b5100a016e2d.png" target="_blank" class="button button--info">Example</a>
+          <a href="https://i.gyazo.com/30972dbc8c2396b58928b5100a016e2d.png"
+             target="_blank"
+             class="button button--info">Example</a>
         </div>
 
         <div class="right">
@@ -81,7 +87,8 @@
               <box-item
                 label="Bug report."
                 description="Allow to report errors automatically.">
-                <select v-model="$settings.telemetry.bugs" class="input">
+                <select v-model="$settings.telemetry.bugs"
+                        class="input">
                   <option :value="true">
                     Enabled
                   </option>
@@ -116,7 +123,9 @@
             <li>Console log.</li>
           </ul>
 
-          <a href="https://link.dreamnet.tech/ipfs/QmQd5LKLVs73et1CvchHkq1J99PssoWfa5zRZD4ayqTrML" target="_blank" class="button button--info">Example</a>
+          <a href="https://link.dreamnet.tech/ipfs/QmQd5LKLVs73et1CvchHkq1J99PssoWfa5zRZD4ayqTrML"
+             target="_blank"
+             class="button button--info">Example</a>
         </div>
 
         <div class="right">
@@ -125,7 +134,8 @@
               <box-item
                 label="Session tracking."
                 description="Allow to send detailed information about how you use the application.">
-                <select v-model="$settings.telemetry.dom" class="input">
+                <select v-model="$settings.telemetry.dom"
+                        class="input">
                   <option :value="true">
                     Enabled
                   </option>
@@ -139,7 +149,8 @@
         </div>
       </section>
 
-      <button class="button button--xl" @click.prevent="next">
+      <button class="button button--xl"
+              @click.prevent="next">
         Continue
       </button>
     </div>

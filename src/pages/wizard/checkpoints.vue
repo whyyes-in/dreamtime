@@ -16,8 +16,15 @@
       </div>
 
       <div class="project__description">
-        <p>Now you need the data models required by the algorithm to carry out the nudification process. It is a mandatory component to use {{ $dream.name }}.</p>
-        <p>Click "Start" to start the automatic download and installation. Approximately <strong>2 GB</strong> will be downloaded.</p>
+        <p>
+          Now you need the data models required by the algorithm to carry out the nudification process.
+          It is a mandatory component to use {{ $dream.name }}.
+        </p>
+
+        <p>
+          Click "Start" to start the automatic download and installation.
+          Approximately <strong>2 GB</strong> will be downloaded.
+        </p>
       </div>
     </div>
 
@@ -35,7 +42,8 @@
       </div>
 
       <div class="project__settings text-center">
-        <button class="button" @click="$dream.openPowerFolder()">
+        <button class="button"
+                @click="$dream.openPowerFolder()">
           <span class="icon"><font-awesome-icon icon="folder-open" /></span>
           <span>DreamPower</span>
         </button>

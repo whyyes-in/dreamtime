@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 const dev = process.env.NODE_ENV === 'development'
 const analyze = false
 const uglify = !dev

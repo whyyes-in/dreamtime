@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
-import Titlebar from './Titlebar'
-import Navbar from './Navbar'
+import Titlebar from './Titlebar.vue'
+import Navbar from './Navbar.vue'
 import Menubar from './Menubar.vue'
 
 Vue.component('Titlebar', Titlebar)

@@ -69,9 +69,9 @@ async function getFilesMetadata(filepath) {
     return files
   }
 
-  const stat = statSync(filepath)
+  const fileStat = statSync(filepath)
 
-  if (stat.isDirectory()) {
+  if (fileStat.isDirectory()) {
     const promises = []
     const paths = map(await readdir(filepath), (fpath) => join(filepath, fpath))
 

@@ -1,16 +1,24 @@
 <template>
   <!-- Results -->
-  <div v-if="photo.started" class="results">
+  <div v-if="photo.started"
+       class="results">
     <!-- Tool alert -->
-    <div v-if="photo.isScaleModeCorrected" class="notification notification--warning">
+    <div v-if="photo.isScaleModeCorrected"
+         class="notification notification--warning">
       <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
-      <span>The scale method is set to <strong>Crop/Overlay</strong> but the tool has not been used. The photos will be nudified with <strong>Fixed</strong> instead.</span>
+      <span>
+        The scale method is set to <strong>Crop/Overlay</strong> but the tool has not been used.
+        The photos will be nudified with <strong>Fixed</strong> instead.
+      </span>
     </div>
 
     <!-- Quick settings -->
     <div class="box box--items box--items--horizontal">
       <div class="box__content">
-        <box-item v-tooltip="{placement: 'bottom', content: 'Scale method. Indicates how the photo will be scaled, this changes the quality of the result dramatically.'}">
+        <box-item v-tooltip="{
+          placement: 'bottom',
+          content: 'Scale method. Indicates how the photo will be scaled, this changes the quality of the result dramatically.'
+        }">
           <select
             v-model="photo.preferences.advanced.scaleMode"
             :disabled="photo.running"
@@ -36,7 +44,10 @@
           </select>
         </box-item>
 
-        <box-item v-tooltip="{placement: 'bottom', content: 'Color transfer. Use a experimental algorithm to try to recover the original colors of the photo.'}">
+        <box-item v-tooltip="{
+          placement: 'bottom',
+          content: 'Color transfer. Use a experimental algorithm to try to recover the original colors of the photo.'
+        }">
           <select
             v-model="photo.preferences.advanced.useColorTransfer"
             :disabled="photo.running"
@@ -54,14 +65,18 @@
 
     <!-- Runs -->
     <div class="runs">
-      <nudify-photo-run v-for="(run, index) in photo.runs" :key="index" :run="run" />
+      <nudify-photo-run v-for="(run, index) in photo.runs"
+                        :key="index"
+                        :run="run" />
     </div>
   </div>
 
   <!-- Waiting -->
-  <div v-else-if="photo.waiting" class="results">
+  <div v-else-if="photo.waiting"
+       class="results">
     <div class="results__status">
-      <font-awesome-icon icon="cloud-sun-rain" class="icon" />
+      <font-awesome-icon icon="cloud-sun-rain"
+                         class="icon" />
 
       <h2>
         Waiting for other dreams to end...
@@ -70,9 +85,11 @@
   </div>
 
   <!-- Pending -->
-  <div v-else class="results">
+  <div v-else
+       class="results">
     <div class="results__status">
-      <font-awesome-icon icon="cloud-moon" class="icon" />
+      <font-awesome-icon icon="cloud-moon"
+                         class="icon" />
 
       <h2>
         Add me to the queue to dream together.

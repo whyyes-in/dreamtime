@@ -1,9 +1,13 @@
 <template>
   <section class="box box--items">
     <div class="box__content">
-      <box-item :description="`Value: ${currentValue.size}`" :label="`${label} size`">
+      <box-item :description="`Value: ${currentValue.size}`"
+                :label="`${label} size`">
         <div :style="{ opacity: body.randomize ? 0.3 : 1.0 }">
-          <VueSlider v-model="currentValue.size" :min="min" :max="max" :interval="0.05" />
+          <VueSlider v-model="currentValue.size"
+                     :min="min"
+                     :max="max"
+                     :interval="0.05" />
         </div>
       </box-item>
 
@@ -11,7 +15,8 @@
         v-show="!body.randomize && body.progressive.enabled"
         label="Progressive?"
         description="Increase this body part progressively in each run.">
-        <select v-model="currentValue.progressive" class="input">
+        <select v-model="currentValue.progressive"
+                class="input">
           <option :value="true">
             Enabled
           </option>
@@ -25,7 +30,8 @@
         <box-item
           label="Randomize?"
           description="Randomize this body part in each run.">
-          <select v-model="currentValue.randomize.enabled" class="input">
+          <select v-model="currentValue.randomize.enabled"
+                  class="input">
             <option :value="true">
               Enabled
             </option>

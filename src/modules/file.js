@@ -200,7 +200,10 @@ export class File {
    */
   save(defaultPath) {
     if (!fs.existsSync(this.path)) {
-      throw new Warning('The photo no longer exists.', 'Could not save the photo because it has been deleted, this could be caused due to cleaning or antivirus programs.')
+      throw new Warning(
+        'The photo no longer exists.',
+        'Could not save the photo because it has been deleted, this could be caused due to cleaning or antivirus programs.',
+      )
     }
 
     const savePath = dialog.showSaveDialogSync({
@@ -223,7 +226,10 @@ export class File {
 
   openItem() {
     if (!fs.existsSync(this.path)) {
-      throw new Warning('The photo no longer exists.', 'Could not open the photo because it has been deleted, this could be caused due to cleaning or antivirus programs.')
+      throw new Warning(
+        'The photo no longer exists.',
+        'Could not open the photo because it has been deleted, this could be caused due to cleaning or antivirus programs.',
+      )
     }
 
     shell.openItem(this.path)

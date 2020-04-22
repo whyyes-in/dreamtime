@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="layout"
     class="layout"
     :class="{
       'layout--dragging': isDragging,
@@ -35,12 +36,17 @@
 </template>
 
 <script>
+import { wrapGrid } from 'animate-css-grid'
 import { UploadMixin } from '~/mixins'
 
 export default {
   middleware: ['wizard'],
 
   mixins: [UploadMixin],
+
+  mounted() {
+    wrapGrid(this.$refs.layout)
+  },
 }
 </script>
 
@@ -49,9 +55,9 @@ export default {
   @apply h-full;
 
   display: grid;
+  grid-template-areas: 'title title title' 'nav nav nav' 'menu content queue';
   grid-template-columns: 250px 1fr 250px;
   grid-template-rows: 30px 50px 1fr;
-  grid-template-areas: "title title title" "nav nav nav" "menu content queue";
 
   &.layout--dragging {
     .layout__dropzone {
@@ -74,8 +80,8 @@ export default {
   .layout__content {
     @apply relative overflow-hidden overflow-y-auto;
     @apply py-6 px-9;
-    height: calc(100vh - 80px);
     grid-area: content;
+    height: calc(100vh - 80px);
   }
 
   .layout__dropzone {

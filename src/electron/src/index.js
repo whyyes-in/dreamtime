@@ -334,7 +334,7 @@ app.on('ready', async () => {
   try {
     await DreamApp.start()
   } catch (error) {
-    throw new AppError(error, { title: `Failed to start correctly.`, level: 'error' })
+    throw new AppError(error, { title: 'Failed to start correctly.', level: 'error' })
   }
 })
 

@@ -3,15 +3,22 @@
     <div class="titlebar__drag" />
 
     <div class="titlebar__buttons">
-      <button id="minimize" type="button" @click="minimize">
+      <button id="minimize"
+              type="button"
+              @click="minimize">
         <font-awesome-icon icon="minus" />
       </button>
 
-      <button id="maximize" type="button" @click="maximize">
+      <button id="maximize"
+              type="button"
+              @click="maximize">
         <font-awesome-icon :icon="['far', 'square']" />
       </button>
 
-      <button id="close" type="button" class="close" @click="close">
+      <button id="close"
+              type="button"
+              class="close"
+              @click="close">
         <font-awesome-icon icon="times" />
       </button>
     </div>
@@ -61,7 +68,7 @@ export default {
   .topbar__badtime {
     @apply flex items-center justify-center;
     @apply lowercase font-bold text-sm;
-    font-family: "Comic Sans MS", serif;
+    font-family: 'Comic Sans MS', serif;
 
     img {
       @apply mr-2;
@@ -80,8 +87,8 @@ export default {
     button {
       @apply flex items-center justify-center outline-none;
       @apply text-xs;
-      width: 50px;
       height: 30px;
+      width: 50px;
 
       &:hover {
         @apply bg-dark-800;
