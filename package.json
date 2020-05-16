@@ -1,0 +1,58 @@
+{
+  "name": "dreamtime",
+  "private": true,
+  "productName": "DreamTime",
+  "description": "Application that uses artificial intelligence to generate fake nudes.",
+  "version": "2.0.0",
+  "homepage": "https://time.dreamnet.tech",
+  "license": "GPL-3.0-only",
+  "author": {
+    "name": "Contributors",
+    "email": "ivan@dreamnet.tech",
+    "url": "https://github.com/dreamnettech/dreamtime/graphs/contributors"
+  },
+  "workspaces": [
+    "src/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dreamnettech/dreamtime.git"
+  },
+  "bugs": {
+    "email": "ivan@dreamnet.tech",
+    "url": "https://github.com/dreamnettech/dreamtime/issues"
+  },
+  "os": [
+    "win32",
+    "darwin",
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "lint-staged": {
+    "*.{js,vue}": "yarn lint",
+    "*.{css,vue}": "stylelint"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "devDependencies": {
+    "@dreamnet/eslint-config-dreamnet": "workspace:workspaces/packages/eslint-config-dreamnet",
+    "@types/eslint": "6.8.1",
+    "@types/stylelint": "9.10.1",
+    "env-cmd": "^10.1.0",
+    "eslint": "^7.0.0",
+    "husky": "^4.2.5",
+    "lerna": "^3.21.0",
+    "lint-staged": "^10.2.2",
+    "shx": "^0.3.2",
+    "stylelint": "^13.3.3",
+    "typescript": "^3.9.2"
+  }
+}

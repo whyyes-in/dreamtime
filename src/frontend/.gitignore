@@ -56,12 +56,6 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# Yarn 2
-.yarn/cache/
-.yarn/build-state.yml
-.yarn/install-state.gz
-yarn.lock
-
 # dotenv environment variables file
 .env
 
@@ -89,17 +83,8 @@ dist
 # Service worker
 sw.*
 
-# Mac OSX
+# macOS
 .DS_Store
 
 # Vim swap files
 *.swp
-
-# DreamTime v1
-legacy/
-
-# CI Builds
-builds/
-
-# Demo photos
-demo/

@@ -1,11 +1,11 @@
 <h1 align="center">
   <a href="https://time.dreamnet.tech">
-    <img src="assets/dreamtime.png" alt="DreamTime">
+    <img src=".github/assets/dreamtime.png" alt="DreamTime">
   </a>
   <p align="center">DreamTime</p>
 
   <p align="center" style="font-size: 0.8em;">
-    🙈 Use artificial intelligence to undress people.
+    🙈 Use artificial intelligence to create fake nudes.
   </p>
 </h1>
 

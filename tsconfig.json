@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "es2020",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "experimentalDecorators": true,
+    "noImplicitAny": false,
+    "isolatedModules": false,
+    "declaration": true,
+    "importHelpers": true
+  },
+  "exclude": [
+    "node_modules",
+    "test",
+    "**/*.spec.ts",
+    ".nuxt",
+    "dist"
+  ]
+ }
