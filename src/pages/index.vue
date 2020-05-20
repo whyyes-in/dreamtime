@@ -71,8 +71,8 @@
           </h2>
 
           <h3 class="subtitle">
-            Upload photos using their direct web address.
-            <span v-tooltip="'Make sure the web address ends in a valid format (jpg, png, gif).'"
+            Upload photos from the web.
+            <span v-tooltip="'Only valid with web addresses that end in: jpg, png or gif.'"
                   class="help">
               <font-awesome-icon icon="info-circle" />
             </span>
@@ -103,11 +103,7 @@
           </h2>
 
           <h3 class="subtitle">
-            Upload Instagram photos using their web address.
-            <span v-tooltip="'Make sure the photo is public.'"
-                  class="help">
-              <font-awesome-icon icon="info-circle" />
-            </span>
+            Upload public photos from any Instagram profile.
           </h3>
         </PageHeader>
 
@@ -165,7 +161,7 @@
           </h2>
 
           <h3 class="subtitle">
-            Select a folder and upload all valid photos inside.
+            Upload all valid photos from a folder on your computer.
           </h3>
         </PageHeader>
 

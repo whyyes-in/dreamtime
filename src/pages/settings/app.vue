@@ -4,24 +4,24 @@
       <div class="box__content">
         <MenuItem
           label="Upload mode."
-          description="What will happen when uploading a photo.">
+          description="The uploaded photos will be added to the selected section.">
           <select v-model="currentValue.app.uploadMode"
                   class="input">
             <option value="none">
-              Add to pending
-            </option>
-            <option value="add-queue">
-              Add to queue
+              Pending
             </option>
             <option value="go-preferences">
-              Open panel
+              Pending -> Preferences
+            </option>
+            <option value="add-queue">
+              Queue
             </option>
           </select>
         </MenuItem>
 
         <MenuItem
           label="Use hardware acceleration."
-          description="It can improve performance on some systems. (Requires restart to take effect)">
+          description="Can improve performance on some devices. (Requires restart to take effect)">
           <select v-model="currentValue.app.disableHardwareAcceleration"
                   class="input">
             <option :value="false">

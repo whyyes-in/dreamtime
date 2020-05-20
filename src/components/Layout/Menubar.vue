@@ -4,16 +4,16 @@
       <!-- Upload Mode -->
       <select
         v-model="$settings.app.uploadMode"
-        v-tooltip="{ content: 'Upload mode. What will happen when uploading a photo.', placement: 'right' }"
+        v-tooltip="{ content: 'Upload mode. The uploaded photos will be added to the selected section.', placement: 'right' }"
         class="input input--menu">
         <option value="none">
-          Add to Pending
-        </option>
-        <option value="add-queue">
-          Add to Queue
+          Pending
         </option>
         <option value="go-preferences">
-          Add to Pending and Open preferences
+          Pending -> Preferences
+        </option>
+        <option value="add-queue">
+          Queue
         </option>
       </select>
     </section>
