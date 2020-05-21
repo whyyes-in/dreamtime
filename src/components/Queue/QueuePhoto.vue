@@ -25,8 +25,6 @@
 </template>
 
 <script>
-import normalize from 'normalize-path'
-
 export default {
   props: {
     photo: {
@@ -46,8 +44,6 @@ export default {
           photoPath = run.outputFile.path
         }
       }
-
-      photoPath = normalize(photoPath)
 
       return {
         backgroundImage: `url("${photoPath}")`,

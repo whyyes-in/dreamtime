@@ -6,17 +6,17 @@
 
       <!-- DreamTime Updater -->
       <div v-if="dreamtime.available" class="notification notification--warning cursor-pointer" @click="$router.push('/wizard/dreamtime')">
-        🎉 <strong>Update:</strong> {{ $dream.name }} {{ dreamtime.latest.tag_name }} is available for download!
+        🎉 <strong>{{ $dream.name }} {{ dreamtime.latest.tag_name }}</strong> is available for download!
       </div>
 
       <!-- DreamPower Updater -->
       <div v-if="dreampower.available" class="notification notification--warning cursor-pointer" @click="$router.push('/wizard/power')">
-        🎉 <strong>Update:</strong> {{ dreampower.displayName }} {{ dreampower.latest.tag_name }} is available for download!
+        🎉 <strong>{{ dreampower.displayName }} {{ dreampower.latest.tag_name }}</strong> is available for download!
       </div>
 
       <!-- Checkpoints Updater -->
       <div v-if="checkpoints.available" class="notification notification--warning cursor-pointer" @click="$router.push('/wizard/checkpoints')">
-        🎉 <strong>Update:</strong> {{ checkpoints.displayName }} {{ checkpoints.latest.tag_name }} is available for download!
+        🎉 <strong>{{ checkpoints.displayName }} {{ checkpoints.latest.tag_name }}</strong> is available for download!
       </div>
 
       <!-- Quick Upload -->

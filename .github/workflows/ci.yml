@@ -40,20 +40,6 @@ jobs:
             extension: dmg
 
     steps:
-      - name: Dump GitHub context
-        if: false
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-        continue-on-error: true
-
-      - name: Dump runner context
-        if: false
-        env:
-          RUNNER_CONTEXT: ${{ toJson(runner) }}
-        run: echo "$RUNNER_CONTEXT"
-        continue-on-error: true
-
       - uses: actions/checkout@v1
         with:
           submodules: true
@@ -67,40 +53,43 @@ jobs:
         run: npm install -g yarn
 
       - name: Setup
-        working-directory: src
+        working-directory: src/
         run: yarn install
 
       - name: Lint
-        working-directory: src
+        working-directory: src/
         run: yarn run lint
 
       - name: Build (Installer)
-        working-directory: src
+        working-directory: src/
         env:
           GITHUB_SHA: ${{ github.sha }}
         run: yarn run build
 
       - name: Build (Portable)
-        working-directory: src
+        working-directory: src/
         env:
           BUILD_PORTABLE: true
         run: yarn run build
 
-      - name: Release
-        working-directory: src/scripts
+      - name: Deploy
+        working-directory: src/
         continue-on-error: true
         env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-          DREAMLINK_TOKEN: ${{ secrets.DREAMLINK_TOKEN }}
-          PINATA_KEY: ${{ secrets.PINATA_KEY }}
-          PINATA_SECRET: ${{ secrets.PINATA_SECRET }}
-          CODEBERG_TOKEN: ${{ secrets.CODEBERG_TOKEN }}
-          ANTOPIE_TOKEN: ${{ secrets.ANTOPIE_TOKEN }}
-          SPIP_TOKEN: ${{ secrets.SPIP_TOKEN }}
-          TEKNIK_TOKEN: ${{ secrets.TEKNIK_TOKEN }}
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_REF: ${{ github.ref }}
           BUILD_PLATFORM: ${{ matrix.platform }}
           BUILD_EXTENSION: ${{ matrix.extension }}
-        run: node release.js
+          DEPLOY_ENCRYPT_KEY: ${{ secrets.SECRET_KEY }}
+          DEPLOY_GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          DEPLOY_GITHUB_OWNER: dreamnettech
+          DEPLOY_TEKNIK_TOKEN: ${{ secrets.TEKNIK_TOKEN }}
+          DEPLOY_TEKNIK_OWNER: dreamnet
+          DEPLOY_DREAMLINKCLUSTER_USERNAME: ${{ secrets.DEPLOY_DREAMLINKCLUSTER_USERNAME }}
+          DEPLOY_DREAMLINKCLUSTER_PASSWORD: ${{ secrets.DEPLOY_DREAMLINKCLUSTER_PASSWORD }}
+          DEPLOY_PINATA_KEY: ${{ secrets.PINATA_KEY }}
+          DEPLOY_PINATA_SECRET: ${{ secrets.PINATA_SECRET }}
+          DEPLOY_MEGA_EMAIL: ${{ secrets.DEPLOY_MEGA_EMAIL }}
+          DEPLOY_MEGA_PASSWORD: ${{ secrets.DEPLOY_MEGA_PASSWORD }}
+          DEPLOY_MEGA_FOLDER: "/Projects/DreamTime/Releases/"
+        run: yarn run deploy

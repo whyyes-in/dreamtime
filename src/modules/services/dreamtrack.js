@@ -18,7 +18,7 @@ const { system } = $provider
 
 const consola = Consola.create('dreamtrack')
 
-const CONNECT_TIMEOUT = 1500
+const CONNECT_TIMEOUT = 3000
 const SNAPSHOT_TIMEOUT = 3000
 
 /**

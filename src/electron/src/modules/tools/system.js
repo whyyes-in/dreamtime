@@ -10,9 +10,12 @@
 import {
   filter, isNil,
 } from 'lodash'
+import fs from 'fs-extra'
 import si from 'systeminformation'
 import isOnline from 'is-online'
 import { settings } from '../settings'
+import { AppError } from '../app-error'
+import { getModelsPath, getMasksPath } from './paths'
 
 
 const logger = require('@dreamnet/logplease').create('system')
@@ -27,6 +30,17 @@ class System {
    * @type {si.Systeminformation.GraphicsData}
    */
   _graphics
+
+  /**
+   * @type {Array}
+   */
+  get graphics() {
+    if (isNil(this._graphics)) {
+      return []
+    }
+
+    return filter(this._graphics.controllers, { vendor: 'NVIDIA' })
+  }
 
   /**
    * @type {si.Systeminformation.CpuData}
@@ -56,10 +70,34 @@ class System {
    */
   online
 
+
+  /**
+   *
+   *
+   * @readonly
+   */
+  get hasToCollect() {
+    return !fs.existsSync(settings.path)
+  }
+
   /**
    *
    */
   async setup() {
+    if (this.hasToCollect) {
+      await this.collect()
+    } else {
+      this.collect()
+    }
+
+    this.createRequiredFolders()
+  }
+
+  /**
+   *
+   *
+   */
+  async collect() {
     logger.debug('Collecting system information...')
 
     const [
@@ -119,14 +157,22 @@ class System {
   }
 
   /**
-   * @type {Array}
+   *
+   *
    */
-  get graphics() {
-    if (isNil(this._graphics)) {
-      return []
-    }
+  async createRequiredFolders() {
+    const dirs = [
+      getModelsPath('Uncategorized'),
+      getMasksPath(),
+    ]
 
-    return filter(this._graphics.controllers, { vendor: 'NVIDIA' })
+    dirs.forEach((dir) => {
+      try {
+        fs.ensureDirSync(dir)
+      } catch (error) {
+        throw new AppError(`Could not create the directory:\n${dir}`, { error })
+      }
+    })
   }
 }
 
