@@ -1,16 +1,29 @@
 <template>
-  <div class="project-update">
-    <!-- Update available -->
-    <div
-      v-if="!updater.update.active"
-      v-tooltip="'New version'"
-      class="update__status">
-      <strong>{{ updater.latest.tag_name }}</strong>
+  <div v-if="isReady" class="update">
+    <div class="update__info">
+      <!-- Logo -->
+      <figure>
+        <img :src="info.logo">
+      </figure>
+
+      <h1 class="title">
+        {{ info.title }} <span v-tooltip="'New version'">{{ updater.latest.tag_name }}</span>
+      </h1>
+
+      <h2 v-if="!updater.update.active" class="subtitle">
+        {{ info.description }}
+      </h2>
+    </div>
+
+
+    <!-- Downloading -->
+    <div v-if="isDownloading && updater.update.progress >= 0" class="update__status">
+      Downloading ~ <strong>{{ updater.update.progress }}%</strong> ~ {{ updater.update.written | size }}/{{ updater.update.total | size }} MB.
     </div>
 
     <!-- Downloading -->
     <div v-else-if="isDownloading" class="update__status">
-      Downloading ~ <strong>{{ updater.update.progress | progress }}</strong> ~ {{ updater.update.written | size }}/{{ updater.update.total | size }} MB.
+      Downloading ~ {{ updater.update.written | size }} MB.
     </div>
 
     <!-- Installing -->
@@ -19,28 +32,38 @@
     </div>
 
     <!-- Download Progress -->
-    <div v-show="isDownloading" class="update__progressbar">
+    <div v-if="isDownloading && updater.update.progress >= 0" class="update__progressbar">
       <progress min="0" max="100" :value="updater.update.progress" />
     </div>
 
     <!-- Actions -->
     <div class="update__actions">
       <button v-show="!updater.update.active" class="button button--success" @click.prevent="updater.start()">
-        Start
+        Update
       </button>
 
       <button v-show="updater.update.active" class="button button--danger" @click.prevent="updater.cancel()">
         Cancel
       </button>
+    </div>
 
-      <button v-tooltip="'Show a list of links to download the update manually.'" class="button button--info" @click.prevent="$refs.mirrorsDialog.show()">
+    <!-- Project buttons -->
+    <div class="update__actions__extra">
+      <a v-for="(item, index) in info.navigation" :key="index" :href="item.href" target="_blank" class="button button--sm">{{ item.label }}</a>
+
+      <button v-tooltip="'Show a list of links to download the update manually.'" class="button button--info button--sm" @click.prevent="$refs.mirrorsDialog.show()">
         Mirrors
       </button>
     </div>
 
     <!-- Hint -->
     <div class="update__hint">
-      <p><a href="https://time.dreamnet.tech/docs/guide/updater" target="_blank">More information and troubleshooting</a>.</p>
+      <p>
+        <a href="https://time.dreamnet.tech/docs/guide/updater" target="_blank">
+          <font-awesome-icon icon="exclamation-circle" />
+          Troubleshooting
+        </a>
+      </p>
     </div>
 
     <!-- Mirrors Dialog -->
@@ -64,6 +87,7 @@
 
 <script>
 import { toNumber } from 'lodash'
+import { dreamtrack } from '~/modules/services'
 import * as providers from '~/modules/updater'
 
 export default {
@@ -92,9 +116,14 @@ export default {
 
   data: () => ({
     updater: null,
+    info: null,
   }),
 
   computed: {
+    isReady() {
+      return this.updater && this.info
+    },
+
     currentVersion() {
       return this.updater?.currentVersion || 'v0.0.0'
     },
@@ -111,6 +140,8 @@ export default {
   created() {
     // eslint-disable-next-line import/namespace
     this.updater = providers[this.project]
+
+    this.info = dreamtrack.get(['projects', this.project, 'about'], {})
   },
 
   beforeDestroy() {
@@ -120,16 +151,42 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.project-update {
+.update {
   @apply flex flex-col items-center justify-center;
 }
 
+.update__info {
+  @apply text-center mb-6;
+
+  figure {
+    @apply mb-4 text-6xl;
+
+    img {
+      @apply inline-block;
+      height: 100px;
+    }
+  }
+
+  .title {
+    @apply text-2xl text-white font-semibold;
+
+    span {
+      @apply text-primary-500 font-bold;
+      cursor: help;
+    }
+  }
+
+  .subtitle {
+    @apply text-lg;
+  }
+}
+
 .update__status {
-  @apply mb-6 text-2xl text-white;
+  @apply mb-4 text-lg;
 }
 
 .update__progressbar {
-  @apply mb-6;
+  @apply mb-4;
   width: 80%;
 
   progress {
@@ -150,11 +207,21 @@ export default {
 }
 
 .update__actions {
-  @apply mb-6 text-sm;
+  @apply mb-4;
 
   .button {
     &:not(:last-child) {
       @apply mr-4;
+    }
+  }
+}
+
+.update__actions__extra {
+  @apply mb-6;
+
+  .button {
+    &:not(:last-child) {
+      @apply mr-2;
     }
   }
 }

@@ -69,6 +69,13 @@ export class Exception extends LogEvent {
   }
 }
 
+/**
+ *
+ *
+ * @export
+ * @param {Error} error
+ * @returns
+ */
 export function handleError(error) {
   if (error instanceof LogEvent) {
     consola.log(error.level, ...error.args).show()
@@ -76,6 +83,12 @@ export function handleError(error) {
   }
 
   if (error instanceof HandledError) {
+    return true
+  }
+
+  if (error.message.includes('Cannot set property') || error.message.includes('Cannot read property')) {
+    // This is wrong, but for now these are innocent library errors.
+    consola.warn(error)
     return true
   }
 

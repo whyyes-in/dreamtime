@@ -14,7 +14,7 @@
       </nuxt-link>
 
       <a v-if="isDev" class="navbar__item" @click.prevent="createError">
-        Force Error
+        DEV: UI Error
       </a>
     </div>
 

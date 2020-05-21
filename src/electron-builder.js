@@ -8,7 +8,7 @@ const pkg = require('./package.json')
 const windows = {
   win: {
     target: process.env.BUILD_PORTABLE ? 'zip' : 'nsis',
-    artifactName: '${productName}-v${version}-windows.${ext}',
+    artifactName: process.env.BUILD_PORTABLE ? '${productName}-v${version}-windows-portable.${ext}' : '${productName}-v${version}-windows.${ext}',
     extraResources: [
       {
         from: 'node_modules/regedit/vbs',
@@ -37,7 +37,7 @@ const windows = {
 const linux = {
   linux: {
     target: process.env.BUILD_PORTABLE ? 'zip' : 'snap',
-    artifactName: '${productName}-v${version}-ubuntu.${ext}',
+    artifactName: process.env.BUILD_PORTABLE ? '${productName}-v${version}-ubuntu-portable.${ext}' : '${productName}-v${version}-ubuntu.${ext}',
     executableName: process.env.npm_package_name,
     synopsis: pkg.description,
     category: 'Graphics',
@@ -56,7 +56,7 @@ const linux = {
 const macos = {
   mac: {
     target: process.env.BUILD_PORTABLE ? 'zip' : 'dmg',
-    artifactName: '${productName}-v${version}-macos.${ext}',
+    artifactName: process.env.BUILD_PORTABLE ? '${productName}-v${version}-macos-portable.${ext}' : '${productName}-v${version}-macos.${ext}',
     darkModeSupport: true,
     category: 'public.app-category.graphics-design',
     minimumSystemVersion: '10.15.0',

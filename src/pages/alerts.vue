@@ -27,7 +27,7 @@
       <!-- RAM -->
       <div v-if="!requirements.recommended.ram" class="notification notification--warning">
         <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
-        <span>Your system has less than <strong>8 GB</strong> of RAM. Please buy more RAM!</span>
+        <span>Your system has less than <strong>12 GB</strong> of RAM. Please buy more RAM!</span>
       </div>
       <div v-else class="notification notification--success">
         <span class="icon"><font-awesome-icon icon="check-circle" /></span>

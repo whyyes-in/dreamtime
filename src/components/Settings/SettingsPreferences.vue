@@ -54,7 +54,7 @@
     </section>
 
     <!-- Boobs -->
-    <Preference id="preferences-body" v-model="currentValue.body.boobs" label="Boobs" />
+    <Preference id="preferences-body" v-model="currentValue.body.boobs" label="Boobs" :min="0" />
 
     <!-- Areola -->
     <Preference v-model="currentValue.body.areola" label="Areola" :min="0" />

@@ -4,16 +4,16 @@
       <div class="box__content">
         <box-item
           label="Upload mode."
-          description="What will happen when uploading a photo.">
+          description="The uploaded photos will be added to the selected section.">
           <select v-model="currentValue.app.uploadMode" class="input">
             <option value="none">
-              Put in Pending
-            </option>
-            <option value="add-queue">
-              Put in Queue
+              Pending
             </option>
             <option value="go-preferences">
-              Put in Pending and Open preferences
+              Pending -> Preferences
+            </option>
+            <option value="add-queue">
+              Queue
             </option>
           </select>
         </box-item>

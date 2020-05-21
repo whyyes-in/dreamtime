@@ -1,60 +1,53 @@
-<h1 align="center">
+<div align="center">
   <a href="https://time.dreamnet.tech">
     <img src="assets/dreamtime.png" alt="DreamTime">
   </a>
-  <p align="center">DreamTime</p>
+  
+  <p align="center" style="font-size: 2.0em;">DreamTime</p>
 
-  <p align="center" style="font-size: 0.8em;">
-    🙈 Use artificial intelligence to undress people.
+  <p align="center" style="font-size: 1.6em;">
+    🙈 Use artificial intelligence to create fake nudes.
   </p>
-</h1>
+
+  <p align="center">
+    Available for Windows, Linux and Mac.
+  </p>
+</div>
 
 <p align="center">
   <a href="https://github.com/dreamnettech/dreamtime/actions"><img src="https://github.com/dreamnettech/dreamtime/workflows/CI/CD/badge.svg" /></a>
   <a href="https://github.com/dreamnettech/dreamtime/releases"><img src="https://img.shields.io/github/downloads/dreamnettech/dreamtime/total?logo=github&logoColor=white" /></a>
-  <a href="https://www.codacy.com/app/kolessios/dreamtime?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=dreamnettech/dreamtime&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/0ecb8ba6eeae42e7bfd0d414d1bacee1" /></a>
-  <a href="https://codeclimate.com/github/dreamnettech/dreamtime/maintainability"><img src="https://api.codeclimate.com/v1/badges/8d325515768f221e235f/maintainability" /></a>
+  <a target="_blank" href="https://www.codacy.com/app/kolessios/dreamtime?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=dreamnettech/dreamtime&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/0ecb8ba6eeae42e7bfd0d414d1bacee1" /></a>
+  <a target="_blank" href="https://codeclimate.com/github/private-dreamnet/dreamtime/maintainability"><img src="https://api.codeclimate.com/v1/badges/8d325515768f221e235f/maintainability" /></a>
 </p>
 
 <p align="center">
-  <a href="https://time.dreamnet.tech"><img src="https://img.shields.io/uptimerobot/status/m783500405-1d347e6a5472fdb2035c7003?label=website" /></a>
+  <a target="_blank" href="https://time.dreamnet.tech"><img src="https://img.shields.io/uptimerobot/status/m783500405-1d347e6a5472fdb2035c7003?label=website" /></a>
   <a href="CONTRIBUTING.md#pull-requests"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
 </p>
 
-## Introduction
+## Download
 
-DreamTime is a user interface for [DreamPower](https://github.com/dreamnettech/dreampower), an application that uses artificial intelligence to remove clothing from photos of people.
+[Download the latest version of DreamTime here!](https://time.dreamnet.tech/docs/installation)
 
-With DreamTime you can use the same technology introduced by DeepNude more easily thanks to a friendlier user interface and new features that improve the quality of the nudifications. 💪
-
-- **Totally free.** Free and open-source user interface to nudify photos. It is constantly updated and does not need cracks.
-- **Friendly and Stable.** Easy to use thanks to its modern design similar to a web application, you can nudify photo after photo without the app freezing. 🥶
-- **Multi platform.** Available for Windows, Linux and macOS.
-- **Are you still using DeepNude?** [Check out the features that make it better.](https://time.dreamnet.tech/docs/dreamtime)
-
-## Installation
-
-💻 Visit the [installation page](https://time.dreamnet.tech/docs/installation) to download and install DreamTime.
-
-You can also visit the [Releases](https://github.com/dreamnettech/dreamtime/releases) section to download DreamTime.
+You can also visit the [Releases](https://github.com/dreamnettech/dreamtime/releases) page.
 
 ## Development
 
-👩‍💻 Start hacking DreamTime or help us improve it by creating a PR. 
+Visit the [Getting Started](https://time.dreamnet.tech/docs/development/getting-started) page to start hacking DreamTime. 👩‍💻
 
-Visit the [Getting Started](https://time.dreamnet.tech/docs/development/getting-started) page for more information.
+## Community
 
-## Contact
+- [Chat](https://chat.dreamnet.tech)
+- [Forum](https://forum.dreamnet.tech)
+- [Twitter](https://twitter.com/DreamNetTechno)
+- [Facebook](https://web.facebook.com/DreamNetTechnology)
 
-📧 Stay in touch with the developers and the community:
+## Supporting DreamTime
 
-- [![](https://img.shields.io/uptimerobot/status/m783500390-1e7fe0c3dd2ccf723a66a1b5?label=Chat&style=flat-square)](https://chat.dreamnet.tech)
-- [![](https://img.shields.io/uptimerobot/status/m783500403-8eacc06341d120efccad2c5a?label=Forum&style=flat-square)](https://forum.dreamnet.tech)
-- [ivan@dreamnet.tech](mailto:ivan@dreamnet.tech)
+DreamTime is an open-source project that will be **free forever**. The project is kept in development thanks to the support of our incredible backers.
 
-## Funding
-
-💖 DreamTime will be free and open-source **forever**. You can help us speed up and continue with the development and offer servers for the download:
+These are the ways you can support us:
 
 - [Patreon](https://patreon.com/dreamnet)
 - [Ko-fi](https://ko-fi.com/dreamnet)
@@ -62,7 +55,9 @@ Visit the [Getting Started](https://time.dreamnet.tech/docs/development/getting-
 
 ## Sponsors
 
-🥰 Support this project by becoming a sponsor. Your logo will show up here and in the about section of our apps, with a link to your website. [[Become a sponsor](https://www.patreon.com/join/dreamnet/checkout?rid=4426478)]
+🥰 Support this project by becoming a sponsor. Your logo will show up here and in the about section of our apps, with a link to your website. 
+
+[[Become a sponsor](https://www.patreon.com/join/dreamnet/checkout?rid=4426478)]
 
 ## License
 

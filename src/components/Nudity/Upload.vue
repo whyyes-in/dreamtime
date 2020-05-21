@@ -6,16 +6,16 @@
         <select
           id="uploader-settings"
           v-model="$settings.app.uploadMode"
-          v-tooltip="{ content: 'Upload mode. What will happen when uploading a photo.', placement: 'right' }"
+          v-tooltip="{ content: 'Upload mode. The uploaded photos will be added to the selected section.', placement: 'right' }"
           class="input">
-          <option value="add-queue">
-            Put in Queue
-          </option>
           <option value="none">
-            Put in Pending
+            Pending
           </option>
           <option value="go-preferences">
-            Put in Pending and Open preferences
+            Pending -> Preferences
+          </option>
+          <option value="add-queue">
+            Queue
           </option>
         </select>
 
@@ -72,7 +72,7 @@
           <input v-model="webAddress" type="url" class="input mb-2" placeholder="https://" data-private="lipsum">
 
           <p class="help">
-            Enter the web address of a photo that ends in a valid extension. <i>(jpg, png, gif)</i>
+            Only web addresses that end in: <code>jpg, png or gif</code>.
           </p>
 
           <button class="button" @click="openUrl">
@@ -86,7 +86,7 @@
           <input v-model="instagramPhoto" type="url" class="input mb-2" placeholder="https://www.instagram.com/p/dU4fHDw-Ho/" data-private="lipsum">
 
           <p class="help">
-            Enter the web address or ID of an Instagram photo.
+            Public photos from any Instagram profile.
           </p>
 
           <button class="button" @click="openInstagramPhoto">

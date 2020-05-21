@@ -140,7 +140,8 @@ export class File {
     this.extension = metadata.ext
     this.fullname = `${this.name}${this.extension}`
     this.directory = slash(metadata.dir)
-    this.path = slash(path.join(this.directory, this.fullname))
+    this.realpath = path.join(this.directory, this.fullname)
+    this.path = slash(this.realpath)
     this.mimetype = metadata.mimetype
     this.size = metadata.size
     this.exists = metadata.exists

@@ -14,7 +14,7 @@ import {
   existsSync, statSync, stat, readdir,
 } from 'fs-extra'
 import mime from 'mime-types'
-import md5File from 'md5-file/promise'
+import md5File from 'md5-file'
 
 /**
  *

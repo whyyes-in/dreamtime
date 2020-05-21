@@ -15,20 +15,6 @@
         <ProjectUpdate project="dreamtime" />
       </div>
     </div>
-
-    <div class="project__installation">
-      <div class="project__overview">
-        <figure>
-          <img src="~/assets/images/apps/dreamtime.png">
-        </figure>
-
-        <h1 class="title">
-          {{ $dream.name }}
-        </h1>
-
-        <h2>{{ $dream.description }}</h2>
-      </div>
-    </div>
   </div>
 </template>
 
