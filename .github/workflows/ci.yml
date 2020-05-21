@@ -22,6 +22,7 @@ jobs:
     # https://help.github.com/en/articles/workflow-syntax-for-github-actions#jobsjob_idstrategy
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         os:
           - ubuntu-latest
@@ -69,12 +70,14 @@ jobs:
       - name: Build (Portable)
         working-directory: src/
         env:
+          GITHUB_SHA: ${{ github.sha }}
           BUILD_PORTABLE: true
         run: yarn run build
 
       - name: Deploy
         working-directory: src/
         continue-on-error: true
+        timeout-minutes: 20
         env:
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_REF: ${{ github.ref }}

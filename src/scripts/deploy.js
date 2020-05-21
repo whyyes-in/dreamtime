@@ -21,11 +21,11 @@ const VERSION = `v${pkg.version}`
 const FILENAME = `DreamTime-${VERSION}-${process.env.BUILD_PLATFORM}`
 const DISTPATH = path.resolve(__dirname, '../../dist')
 const PROVIDERS = [
-  'Github',
-  'Teknik',
   'DreamLinkCluster',
   'Pinata',
   'MEGA',
+  'Github',
+  'Teknik',
 ]
 
 if (process.env.GITHUB_REF) {
@@ -47,7 +47,7 @@ async function run(release) {
     console.log(`Uploading to ${provider.label}...`)
   })
 
-  release.on('upload_success', (provider) => {
+  release.on('upload_success', (result, provider) => {
     console.log(`✔️ Uploaded to ${provider.label}!`)
   })
 
@@ -59,7 +59,7 @@ async function run(release) {
     console.log(`Pinning to ${provider.label}...`)
   })
 
-  release.on('pin_success', (provider) => {
+  release.on('pin_success', (cid, provider) => {
     console.log(`✔️ Pinned to ${provider.label}!`)
   })
 
