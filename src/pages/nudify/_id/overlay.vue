@@ -1,21 +1,16 @@
 <template>
   <div class="nudify-cropper">
-    <div class="cropper__crop">
-      <canvas ref="cropCanvas"
-              data-private />
-    </div>
-
     <div class="cropper__help">
-      <button id="cropper-reload"
-              v-tooltip="'Get recent changes from the editor.'"
-              class="button"
-              @click.prevent="reload">
-        <span class="icon"><font-awesome-icon icon="sync" /></span>
-        <span>Reload</span>
-      </button>
+      <section class="box">
+        <div class="box__content flex justify-center items-center h-full">
+          <button id="cropper-reload" v-tooltip="'Get recent changes from the editor.'" class="button" @click.prevent="reload">
+            <span class="icon"><font-awesome-icon icon="sync" /></span>
+            <span>Reload</span>
+          </button>
+        </div>
+      </section>
 
-      <section id="cropper-about"
-               class="box">
+      <section id="cropper-about" class="box">
         <div class="box__header">
           <h2 class="title">
             <font-awesome-icon icon="magic" /> Overlay.
@@ -72,6 +67,10 @@
           </p>
         </div>
       </section>
+    </div>
+
+    <div class="cropper__crop">
+      <canvas ref="cropCanvas" data-private />
     </div>
   </div>
 </template>
@@ -144,25 +143,31 @@ export default {
 
 <style lang="scss" scoped>
 .nudify-cropper {
-  @apply flex h-full;
+  @apply flex flex-col h-full;
 }
 
 .cropper__help {
-  @apply w-1/4 ml-4;
+  @apply flex overflow-y-hidden overflow-x-auto;
+  @apply mb-4;
+  height: 150px;
 
   .button {
     @apply mb-6 w-full;
   }
 
-  .box p {
-    @apply text-sm mb-4;
-  }
+  .box {
+    @apply flex-1 mb-0 overflow-auto;
 
-  .box ul {
-    @apply ml-4 list-disc;
+    p {
+      @apply text-xs mb-4;
+    }
 
-    li {
-      @apply mb-2;
+    ul {
+      @apply ml-4 list-disc;
+
+      li {
+        @apply mb-2;
+      }
     }
   }
 }

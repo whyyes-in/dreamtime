@@ -79,7 +79,7 @@
                          class="icon" />
 
       <h2>
-        Waiting for other dreams to end...
+        Waiting for other dreams to complete...
       </h2>
     </div>
   </div>
@@ -92,7 +92,7 @@
                          class="icon" />
 
       <h2>
-        Add me to the queue to dream together.
+        Add me to the queue and let's dream together.
       </h2>
     </div>
   </div>

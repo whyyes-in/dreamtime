@@ -14,10 +14,8 @@ import Logger from '@dreamnet/logplease'
 import fs from 'fs-extra'
 import { AppError } from './modules/app-error'
 import { system } from './modules/tools/system'
-import {
-  getPath, getModelsPath, getMasksPath, getAppPath,
-} from './modules/tools/paths'
-import { settings, ngrok } from './modules'
+import { getPath, getAppPath } from './modules/tools/paths'
+import { settings } from './modules'
 import config from '~/nuxt.config'
 
 const logger = Logger.create('electron')
@@ -50,9 +48,8 @@ class DreamApp {
     })
 
     logger.info('Booting...')
-
     logger.debug(`Enviroment: ${process.env.NODE_ENV}`)
-    logger.debug(`Portable: ${process.env.BUILD_PORTABLE}`)
+    logger.debug(`Portable: ${process.env.BUILD_PORTABLE ? 'Yes' : 'No'}`)
     logger.debug(`App Path: ${app.getAppPath()}`)
     logger.debug(`Exe Path: ${app.getPath('exe')}`)
 
@@ -89,6 +86,8 @@ class DreamApp {
       logger.debug('Hardware Acceleration disabled.')
       app.disableHardwareAcceleration()
     }
+
+    app.allowRendererProcessReuse = true
   }
 
   /**
@@ -201,33 +200,18 @@ class DreamApp {
       showSaveImageAs: true,
     })
 
-    // system stats.
+    // System setup.
     await system.setup()
 
     // user settings.
     await settings.setup()
-
-    //
-    this.createDirs()
-
-    /*
-    if (process.env.NODE_ENV === 'development') {
-      const address = await ngrok.connect()
-      logger.debug(`Proxy for debugging: ${address}`)
-    }
-    */
   }
 
   /**
    *
    */
-  // eslint-disable-next-line no-empty-function
   static async shutdown() {
     logger.debug('Shutting down services...')
-
-    if (process.env.NODE_ENV === 'development') {
-      await ngrok.disconnect()
-    }
   }
 
   /**
@@ -247,7 +231,7 @@ class DreamApp {
       webPreferences: {
         nodeIntegration: true,
         nodeIntegrationInWorker: true,
-        webSecurity: false, // Necessary to load local photos and not put them in memory.
+        webSecurity: false, // Necessary to load filesystem photos.
         preload: resolve(app.getAppPath(), 'electron', 'dist', 'provider.js'),
       },
     })
@@ -260,12 +244,12 @@ class DreamApp {
     this.window.setMenu(null)
 
     // ui location
-    this.uiUrl = this.getUiUrl()
+    this.interfaceURL = this.getInterfaceURL()
 
     if (config.dev) {
-      this.pollUi()
+      this.loadServer()
     } else {
-      this.window.loadFile(this.uiUrl)
+      this.window.loadFile(this.interfaceURL)
     }
 
     if (process.env.DEVTOOLS) {
@@ -277,24 +261,24 @@ class DreamApp {
   /**
    * Wait until the NuxtJS server is ready.
    */
-  static pollUi() {
-    logger.debug(`Requesting server (${this.uiUrl})...`)
+  static loadServer() {
+    logger.debug(`Requesting server (${this.interfaceURL})...`)
 
     const http = require('http')
 
     http
-      .get(this.uiUrl, (response) => {
+      .get(this.interfaceURL, (response) => {
         if (response.statusCode === 200) {
-          logger.debug('Server ready, dream time!')
-          this.window.loadURL(this.uiUrl)
+          logger.debug('Server ready!')
+          this.window.loadURL(this.interfaceURL)
         } else {
           logger.warn(`Server reported: ${response.statusCode}`)
-          setTimeout(this.pollUi.bind(this), 300)
+          setTimeout(this.loadServer.bind(this), 300)
         }
       })
       .on('error', (error) => {
         logger.warn('Server error', error)
-        setTimeout(this.pollUi.bind(this), 300)
+        setTimeout(this.loadServer.bind(this), 300)
       })
   }
 
@@ -303,30 +287,12 @@ class DreamApp {
    *
    * @return {string}
    */
-  static getUiUrl() {
+  static getInterfaceURL() {
     if (!config.dev) {
       return resolve(config.rootDir, 'dist', 'index.html')
     }
 
     return `http://localhost:${config.server.port}`
-  }
-
-  /**
-   * Create required directories.
-   */
-  static createDirs() {
-    const dirs = [
-      getModelsPath('Uncategorized'),
-      getMasksPath(),
-    ]
-
-    dirs.forEach((dir) => {
-      try {
-        fs.ensureDirSync(dir)
-      } catch (error) {
-        throw new AppError(`Could not create the directory:\n${dir}`, { error })
-      }
-    })
   }
 }
 
@@ -334,7 +300,7 @@ app.on('ready', async () => {
   try {
     await DreamApp.start()
   } catch (error) {
-    throw new AppError(error, { title: 'Failed to start correctly.', level: 'error' })
+    throw new AppError(error, { title: `DreamTime failed to start.`, level: 'error' })
   }
 })
 

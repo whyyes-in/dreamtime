@@ -30,7 +30,7 @@ module.exports = {
    ** Headers of the page
    */
   head: {
-    title: process.env.npm_package_displayName,
+    title: process.env.npm_package_displayName || 'DreamTime',
 
     meta: [
       { charset: 'utf-8' },
@@ -40,7 +40,7 @@ module.exports = {
     link: [
       {
         rel: 'preload',
-        href: 'https://rsms.me/inter/inter.css',
+        href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Roboto+Slab:wght@300;400;500;600&display=swap',
         as: 'style',
         onload: 'this.rel = \'stylesheet\'',
       },
@@ -92,9 +92,7 @@ module.exports = {
    */
   buildModules: [
     // Doc: https://github.com/nuxt-community/eslint-module
-    '@nuxtjs/eslint-module',
-    // Doc: https://github.com/Developmint/nuxt-purgecss
-    'nuxt-purgecss',
+    // '@nuxtjs/eslint-module',
     // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
     '@nuxtjs/tailwindcss',
     // Doc: https://github.com/nuxt-community/style-resources-module
@@ -111,36 +109,6 @@ module.exports = {
    */
   tailwindcss: {
     cssPath: '~/assets/css/tailwind.scss',
-  },
-
-  /**
-   *
-   */
-  styleResources: {
-    scss: '~/assets/css/utilities/all.scss',
-  },
-
-  /**
-   *
-   */
-  purgeCSS: {
-    enabled: uglify,
-    mode: 'postcss',
-
-    paths: [
-      'components/**/*.vue',
-      'layouts/**/*.vue',
-      'pages/**/*.vue',
-      'plugins/**/*.js',
-      'modules/**/*.js',
-      'assets/css/**/*.scss',
-    ],
-
-    whitelistPatterns: [
-      /(tippy|vue-slider|cropper|tui|color-picker|swal2|introjs|nuxt)/,
-      /(text|top|bottom|editor|only|fixed|filter|apply|tie|triangle)/,
-      /(body|html|pre|svg)/,
-    ],
   },
 
   /**
@@ -190,21 +158,25 @@ module.exports = {
     extractCSS: false,
 
     /**
+     *
+     */
+    publicPath: '/assets/',
+
+    /**
+     * Customize options of Nuxt.js integrated webpack loaders.
+     * https://nuxtjs.org/api/configuration-build#loaders
+     */
+    loaders: {
+      imgUrl: {
+        limit: 10 * 1000,
+      },
+    },
+
+    /**
      * Customize Babel configuration for JavaScript and Vue files.
      */
     babel: {
       sourceType: 'unambiguous',
-
-      presets: [
-        [
-          '@babel/preset-env',
-          {
-            targets: {
-              chrome: '78',
-            },
-          },
-        ],
-      ],
 
       plugins: [
         'lodash',
@@ -221,68 +193,34 @@ module.exports = {
           },
         ],
       ],
-    },
 
-    /**
-     * Customize options of Nuxt.js integrated webpack loaders.
-     * https://nuxtjs.org/api/configuration-build#loaders
-     */
-    loaders: {
-      imgUrl: {
-        limit: 5 * 1000,
-      },
-    },
+      presets({ envName }) {
+        const envTargets = {
+          client: { chrome: '83' },
+          server: { node: 'current' },
+        }
 
-    /**
-     * Webpack Optimization.
-     * https://nuxtjs.org/api/configuration-build#optimization
-     */
-    /* optimization: {
-      splitChunks: {
-        name: false,
-        automaticNameMaxLength: 30,
-        maxSize: 500 * 1000,
-
-        cacheGroups: {
-          // Disable the built-in cacheGroups.
-          default: false,
-
-          commons: {
-            name: 'commons',
-            priority: 10,
-            test: /node_modules[\\/](vue|vue-loader|vue-router|vuex|vue-meta|core-js|@babel\/runtime|axios|webpack|setimmediate|timers-browserify|process|regenerator-runtime|cookie|js-cookie|is-buffer|dotprop|nuxt\.js)[\\/]/,
-            chunks: 'all',
-          },
-
-          vendors: {
-            name: 'vendors',
-            test: /node_modules[\\/]/,
-            priority: 20,
-            chunks: 'all',
-          },
-
-          modules: {
-            name: 'modules',
-            test: /(modules|workers|mixins|)[\\/]/,
-            priority: 30,
-            chunks: 'all',
-          },
-        },
-      },
-    }, */
-
-    postcss: {
-      plugins: {
-        tailwindcss: './tailwind.config.js',
+        return [
+          [
+            '@nuxt/babel-preset-app',
+            {
+              targets: envTargets[envName],
+              corejs: { version: 3 },
+            },
+          ],
+        ]
       },
     },
 
     /*
      ** You can extend webpack config here.
      */
-    extend(config, ctx) {
+    extend(config, { isDev }) {
       //
       config.target = 'electron-renderer'
+
+      //
+      config.output.publicPath = './assets/'
 
       // Don't throw warning when asset created is over 250kb
       config.performance.hints = false
@@ -313,17 +251,8 @@ module.exports = {
         },
       })
 
-      //
-      config.module.rules.push({
-        test: /\.ya?ml$/,
-        use: ['js-yaml-loader'],
-      })
-
-      //
-      config.devtool = 'source-map'
-
-      if (!ctx.isDev) {
-        config.output.publicPath = './_nuxt/'
+      if (isDev) {
+        config.devtool = 'source-map'
       }
     },
   },

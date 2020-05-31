@@ -1,3 +1,5 @@
+/* eslint-disable mocha/no-hooks-for-single-case */
+/* eslint-disable mocha/no-top-level-hooks */
 // DreamTime.
 // Copyright (C) DreamNet. All rights reserved.
 //
@@ -17,42 +19,52 @@ import { handleError } from '~/modules/consola'
 
 localStorage.debug = ''
 
-// eslint-disable-next-line no-unused-vars
-export default async ({ app }, inject) => {
-  // Error Handlers.
-  window.addEventListener('error', (event) => handleError(event))
-
-  window.addEventListener('unhandledrejection', (rejection) => handleError(rejection.reason))
-
-  Vue.config.errorHandler = (err) => handleError(err)
-
-  // Analytics & Track.
+/**
+ *
+ *
+ */
+async function setupDreamTrack() {
+  // Analytics & App settings.
   await dreamtrack.setup()
 
   // Bug/Session tracking.
   Promise.all([
     rollbar.setup(),
     logrocket.setup(),
-  ]).catch(() => {})
+  ])
 
+  // Update providers.
+  await Promise.all([
+    dreamtime.setup(),
+    dreampower.setup(true),
+    checkpoints.setup(true),
+  ])
+}
+
+/**
+ *
+ *
+ */
+async function setup() {
   // Requirements check.
   await requirements.setup()
 
-  // Update providers.
   if (!requirements.power.installed || !requirements.power.checkpoints) {
-    // This information is needed for the wizard.
-    await Promise.all([
-      dreamtime.setup(),
-      dreampower.setup(true),
-      checkpoints.setup(true),
-    ])
+    // DreamTrack is necessary for the wizard.
+    await setupDreamTrack()
   } else {
-    Promise.all([
-      dreamtime.setup(),
-      dreampower.setup(),
-      checkpoints.setup(),
-    ]).catch(() => {})
+    setupDreamTrack()
   }
+}
+
+// eslint-disable-next-line no-unused-vars
+export default async ({ app }, inject) => {
+  // Error Handlers.
+  window.addEventListener('error', (event) => handleError(event))
+  window.addEventListener('unhandledrejection', (rejection) => handleError(rejection.reason))
+  Vue.config.errorHandler = (err) => handleError(err)
+
+  await setup()
 
   // Shortcuts.
   inject('provider', $provider)

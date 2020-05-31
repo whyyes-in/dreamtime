@@ -12,41 +12,22 @@
 
     <div class="project__content">
       <div class="project__update">
+        <div v-if="!requirements.power.checkpoints" class="notification notification--warning">
+          This component is required to continue using {{ $dream.name }}.
+        </div>
+
+        <div v-else class="notification">
+          Installed version: <strong>{{ checkpoints.currentVersion }}</strong>
+        </div>
+
         <ProjectUpdate project="checkpoints" />
-      </div>
 
-      <div class="project__description">
-        <p>
-          Now you need the data models required by the algorithm to carry out the nudification process.
-          It is a mandatory component to use {{ $dream.name }}.
-        </p>
-
-        <p>
-          Click "Start" to start the automatic download and installation.
-          Approximately <strong>2 GB</strong> will be downloaded.
-        </p>
-      </div>
-    </div>
-
-    <div class="project__installation">
-      <div class="project__overview">
-        <figure>
-          <font-awesome-icon icon="robot" />
-        </figure>
-
-        <h1 class="title">
-          {{ checkpoints.title }}
-        </h1>
-
-        <h2>{{ checkpoints.description }}</h2>
-      </div>
-
-      <div class="project__settings text-center">
-        <button class="button"
-                @click="$dream.openPowerFolder()">
-          <span class="icon"><font-awesome-icon icon="folder-open" /></span>
-          <span>DreamPower</span>
-        </button>
+        <div class="text-center mt-6">
+          <button class="button" @click="$dream.openPowerFolder()">
+            <span class="icon"><font-awesome-icon icon="folder-open" /></span>
+            <span>DreamPower</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -68,6 +49,10 @@ export default {
       redirect('/wizard/telemetry')
     }
   },
+
+  data: () => ({
+    requirements,
+  }),
 
   computed: {
     checkpoints() {

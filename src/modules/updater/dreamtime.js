@@ -11,6 +11,7 @@ import { dirname } from 'path'
 import delay from 'delay'
 import { exec } from 'child_process'
 import { BaseUpdater } from './base'
+import dream from '../dream'
 
 const { activeWindow } = $provider.util
 const { shell, app, Notification } = $provider.api
@@ -31,20 +32,41 @@ class DreamTimeUpdater extends BaseUpdater {
   }
 
   /**
+   * @type {string}
+   */
+  get platform() {
+    let platform = super.platform
+
+    if (dream.isPortable) {
+      platform = `${platform}-portable`
+    }
+
+    return platform
+  }
+
+  /**
    *
    * @param {string} filepath
    */
   async install(filepath) {
-    try {
-      exec(filepath)
+    if (!dream.isPortable) {
+      try {
+        exec(filepath)
 
-      await delay(1000)
+        await delay(1000)
 
-      // Quit to update
+        // Quit to update
+        app.quit()
+      } catch (error) {
+        shell.openItem(dirname(filepath))
+        throw error
+      }
+    } else {
+      if (!shell.openItem(filepath)) {
+        shell.openItem(dirname(filepath))
+      }
+
       app.quit()
-    } catch (error) {
-      shell.openItem(dirname(filepath))
-      throw error
     }
   }
 

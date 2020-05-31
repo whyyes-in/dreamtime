@@ -34,6 +34,12 @@ class Settings {
   _default = {}
 
   /**
+   *
+   *
+   */
+  isSaving = false
+
+  /**
    * file where to save the payload.
    *
    * @type {string}
@@ -56,7 +62,7 @@ class Settings {
 
     try {
       this.payload = fs.readJsonSync(this.path)
-      logger.debug('Settings:', this.payload)
+      logger.debug('Settings loaded!')
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error)
@@ -68,8 +74,19 @@ class Settings {
    * This function is called automatically.
    */
   async save() {
-    fs.writeJsonSync(this.path, this.payload, { spaces: 2 })
-    logger.debug('Settings saved!')
+    if (this.isSaving) {
+      return
+    }
+
+    try {
+      this.isSaving = true
+      fs.writeJsonSync(this.path, this.payload, { spaces: 2 })
+      logger.debug('Settings saved!')
+    } catch (error) {
+      logger.warn('An error occurred while saving the settings.', error)
+    } finally {
+      this.isSaving = false
+    }
   }
 
   /**
@@ -115,7 +132,7 @@ class Settings {
    * Load the default configuration (and the current version)
    */
   _loadDefault() {
-    const uuid = require('uuid')
+    const { v4: uuid } = require('uuid')
     const hasGPU = process.platform === 'darwin' ? false : system.graphics.length > 0
     const cores = round(system.cpu?.cores / 2) || 1
 

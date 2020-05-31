@@ -12,50 +12,20 @@
 
     <div class="project__content">
       <div class="project__update">
-        <ProjectUpdate project="dreampower" />
-      </div>
-
-      <div class="project__description">
-        <p>
-          {{ power.title }} is the artificial intelligence algorithm necessary to nudify the photos.
-          It is a mandatory component to use {{ $dream.name }}.
-        </p>
-
-        <p>
-          Click "Start" to start the automatic download and installation.
-          Approximately <strong>1 GB</strong> will be downloaded. (Depending on your system)
-        </p>
-
-        <p v-if="requirements.power.installed">
-          Installed version: <strong>{{ dreampower.currentVersion }}</strong>
-        </p>
-
-        <p v-if="requirements.power.installed && !requirements.power.compatible"
-           class="text-danger">
-          The installed version of {{ power.title }} is not compatible with this version of {{ $dream.name }}. Please update to continue using the application.
-        </p>
-      </div>
-    </div>
-
-    <div class="project__installation">
-      <div class="project__overview">
-        <figure>
-          <img src="~/assets/images/apps/dreampower.png">
-        </figure>
-
-        <h1 class="title">
-          {{ power.title }}
-        </h1>
-
-        <h2>{{ power.description }}</h2>
-
-        <div class="project__navigation">
-          <a v-for="(item, index) in power.navigation"
-             :key="index"
-             :href="item.href"
-             target="_blank"
-             class="button button--sm">{{ item.label }}</a>
+        <div v-if="!requirements.power.installed" class="notification notification--warning">
+          This component is required to continue using {{ $dream.name }}.
         </div>
+
+        <div v-else-if="!requirements.power.compatible" class="notification notification--danger">
+          <h5>ALERT</h5>
+          The installed version is not compatible with this version of {{ $dream.name }}. Please update to continue.
+        </div>
+
+        <div v-else class="notification">
+          Installed version: <strong>{{ dreampower.currentVersion }}</strong>
+        </div>
+
+        <ProjectUpdate project="dreampower" />
       </div>
 
       <div class="project__settings">
@@ -71,9 +41,7 @@
               v-if="!isMacOS"
               label="Device."
               description="Device that will be used to transform photos and choose the appropriate version of DreamPower.">
-              <select v-model="$settings.processing.device"
-                      :disabled="updating"
-                      class="input">
+              <select v-model="$settings.processing.device" :disabled="updating" class="input">
                 <option value="CPU">
                   CPU
                 </option>
@@ -87,9 +55,7 @@
               v-else
               label="Device."
               description="GPU is not available in macOS.">
-              <select v-model="$settings.processing.device"
-                      class="input"
-                      disabled>
+              <select v-model="$settings.processing.device" class="input" disabled>
                 <option value="CPU">
                   CPU
                 </option>
@@ -112,9 +78,7 @@
             <box-item
               label="Use Python."
               description="Use DreamPower Python script instead of the executable. Enable this only if you know what are you doing.">
-              <select v-model="$settings.processing.usePython"
-                      :disabled="updating"
-                      class="input">
+              <select v-model="$settings.processing.usePython" :disabled="updating" class="input">
                 <option :value="true">
                   Enabled
                 </option>
@@ -127,8 +91,7 @@
         </div>
 
         <div class="text-center">
-          <button class="button"
-                  @click="$dream.openAppDataFolder()">
+          <button class="button" @click="$dream.openAppDataFolder()">
             <span class="icon"><font-awesome-icon icon="folder-open" /></span>
             <span>AppData</span>
           </button>

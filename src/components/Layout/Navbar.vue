@@ -44,6 +44,10 @@
                  class="nav__item nav__item--button">
         <font-awesome-icon icon="cog" />
       </nuxt-link>
+
+      <a v-if="isDev" class="nav__item" @click.prevent="createError">
+        DEV: UI Error
+      </a>
     </div>
   </div>
 </template>

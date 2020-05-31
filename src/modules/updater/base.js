@@ -9,7 +9,7 @@
 
 import {
   isNil, isArray, isPlainObject, find,
-  startsWith, filter, isEmpty,
+  startsWith, filter, isEmpty, toNumber,
 } from 'lodash'
 import axios from 'axios'
 import compareVersions from 'compare-versions'
@@ -164,7 +164,7 @@ export class BaseUpdater {
       return filename
     }
 
-    return null
+    throw new Error('The file name could not be obtained!')
   }
 
   /**
@@ -267,7 +267,7 @@ export class BaseUpdater {
     try {
       urls = dreamtrack.get(['projects', this.name, 'releases', this.latestVersion, 'urls'])
     } catch (err) {
-      // not the best way, but it works
+      // not the best way, but works
       urls = []
     }
 
@@ -439,7 +439,12 @@ export class BaseUpdater {
     })
 
     this.downloadEvents.on('progress', (payload) => {
-      this.update.progress = (payload.progress * 100).toFixed(2)
+      if (payload.total > 0) {
+        this.update.progress = toNumber(payload.progress * 100).toFixed(2)
+      } else {
+        this.update.progress = -1
+      }
+
       this.update.total = payload.total
       this.update.written = payload.written
     })
