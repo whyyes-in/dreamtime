@@ -13,18 +13,19 @@ import {
   trim, kebabCase, truncate, deburr,
 } from 'lodash'
 import deferred from 'deferred'
-import Swal from 'sweetalert2/dist/sweetalert2.js'
+import Swal from 'sweetalert2/dist/sweetalert2'
 import emojiStrip from 'emoji-strip'
 import { File } from '../file'
 import { Timer } from '../timer'
-import cliErrors from '../config/cli-errors'
-import preferencesConfig from '../config/preferences'
-import { settings, achievements } from '../system'
+import cliErrors from '../config/cli-errors.json'
+import preferencesConfig from '../config/preferences.json'
+import { achievements } from '../system'
+import { settings, PMODE } from '../system/settings'
 
 const { getCurrentWindow } = require('electron').remote
 
 const { transform } = $provider.power
-const { getMasksPath } = $provider.paths
+const { getMasksPath, getTempPath } = $provider.paths
 
 export class PhotoRun {
   /**
@@ -48,9 +49,10 @@ export class PhotoRun {
   outputFile
 
   /**
-   * @type {File}
+   * Indicates if this run is used to generate the custom masks.
+   * @type {boolean}
    */
-  maskfinFile
+  isMasksGeneration = false
 
   /**
    * @type {string}
@@ -70,7 +72,7 @@ export class PhotoRun {
   /**
    * @type {Timer}
    */
-  timer = new Timer
+  timer = new Timer()
 
   /**
    * @type {Object}
@@ -102,18 +104,17 @@ export class PhotoRun {
     name = kebabCase(trim(name))
     name = truncate(name, { length: 20, omission: '' })
 
-    return `${name}-RUN${this.id}-${now}-dreamtime${file.extension}`
+    return `${name}-RUN${this.id}-${now}-dreamtime.${file.extension}`
   }
 
-  constructor(id, photo) {
+  constructor(id, photo, isMasksGeneration = false) {
     this.id = id
     this.photo = photo
 
-    // output file
-    this.outputFile = new File(photo.getFolderPath(this.outputName))
+    this.isMasksGeneration = isMasksGeneration
 
-    // maskfin file
-    this.maskfinFile = new File(getMasksPath(`maskfin-${this.outputName}`))
+    // Output
+    this.outputFile = new File(photo.getFolderPath(this.outputName))
 
     // preferences
     this.preferences = cloneDeep(this.photo.preferences)
@@ -125,13 +126,14 @@ export class PhotoRun {
   toObject() {
     return {
       photo: {
-        fileFinal: this.photo.fileFinal,
+        finalFile: this.photo.finalFile,
         scaleMode: this.photo.scaleMode,
         overlay: this.photo.overlay,
+        masksPath: getTempPath(this.photo.id),
       },
       preferences: this.preferences,
       outputFile: this.outputFile,
-      maskfinFile: this.maskfinFile,
+      isMasksGeneration: this.isMasksGeneration,
     }
   }
 
@@ -140,32 +142,57 @@ export class PhotoRun {
    */
   setupPreferences() {
     this.preferences = cloneDeep(this.photo.preferences)
-    const preferences = this.preferences.body
 
-    if (preferences.randomize) {
-      // randomize.
-      forIn(preferencesConfig, (payload, key) => {
-        const { enabled, min, max } = preferences[key].randomize
+    const { mode } = this.preferences
 
-        if (enabled) {
-          preferences[key].size = random(min, max, true)
-        }
-      })
-    } else if (preferences.progressive.enabled) {
-      // progressive.
-      const add = preferences.progressive.rate * (this.id - 1)
-
-      forIn(preferencesConfig, (payload, key) => {
-        if (preferences[key].progressive) {
-          let value = Number.parseFloat(preferences[key].size)
-          value = Math.min(value + add, payload.max)
-
-          preferences[key].size = value
-        }
-      })
+    // We make these changes in the run so
+    // don't affect the original photo preferences.
+    if (mode === PMODE.MINIMAL || mode === PMODE.SIMPLE) {
+      this.preferences = {
+        ...this.preferences,
+        body: {
+          executions: 1,
+          randomize: false,
+          progressive: {
+            enabled: false,
+          },
+        },
+        advanced: {
+          useColorTransfer: false,
+          useWaifu: false,
+        },
+      }
     }
 
-    this.preferences.body = preferences
+    if (mode !== PMODE.ADVANCED) {
+      // Body randomize/progresive.
+      const { body } = this.preferences
+
+      if (body.randomize) {
+        // randomize.
+        forIn(preferencesConfig, (payload, key) => {
+          const { enabled, min, max } = body[key].randomize
+
+          if (enabled) {
+            body[key].size = random(min, max, true)
+          }
+        })
+      } else if (body.progressive.enabled) {
+        // progressive.
+        const add = body.progressive.rate * (this.id - 1)
+
+        forIn(preferencesConfig, (payload, key) => {
+          if (body[key].progressive) {
+            let value = Number.parseFloat(body[key].size)
+            value = Math.min(value + add, payload.max)
+
+            body[key].size = value
+          }
+        })
+      }
+
+      this.preferences.body = body
+    }
   }
 
   /**
@@ -192,8 +219,6 @@ export class PhotoRun {
       def.reject(new Warning('Failed to start.', 'There was a problem trying to start DreamPower, make sure the installation is not corrupt.', error))
     }
 
-    // this.onStart()
-
     try {
       this.process = transform(this.toObject())
     } catch (error) {
@@ -201,15 +226,13 @@ export class PhotoRun {
       return def.promise
     }
 
-    // const { consola } = this.photo
-
     this.process.on('error', (error) => {
       // DreamPower could not start.
       onSpawnError(error)
     })
 
     this.process.on('stdout', (output) => {
-      // DreamPower Output.
+      // DreamPower output.
       output.forEach((text) => {
         text = toString(text)
 
@@ -217,15 +240,13 @@ export class PhotoRun {
           text,
           css: {},
         })
-
-        // consola.debug(text)
       })
     })
 
     this.process.on('stderr', (output) => {
       const text = toString(output)
 
-      // DreamPower Errors.
+      // DreamPower errors.
       this.cli.lines.unshift({
         text,
         css: {
@@ -234,8 +255,6 @@ export class PhotoRun {
       })
 
       this.cli.error += `${text}\n`
-
-      // consola.debug(text)
     })
 
     this.process.on('success', async () => {
@@ -251,7 +270,13 @@ export class PhotoRun {
 
     this.process.on('fail', (fileError) => {
       if (fileError) {
-        def.reject(new Warning('Nudification failed!', 'The photo has been transformed but could not be saved. Please make sure you have enough disk space and that DreamTime can write to it.', fileError))
+        def.reject(
+          new Warning(
+            'Nudification failed!',
+            'The photo has been transformed but could not be saved. Please make sure you have enough disk space and that DreamTime can write to it.',
+            fileError,
+          ),
+        )
       } else {
         def.reject(this.getPowerError())
       }
@@ -334,8 +359,8 @@ export class PhotoRun {
     }
 
     if (Swal.isVisible()) {
-      // There is already an open modal,
-      // we avoid SPAM of errors to the user.
+      // There is already an modal opened,
+      // avoid spamming the user.
       return null
     }
 

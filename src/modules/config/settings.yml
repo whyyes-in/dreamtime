@@ -1,0 +1,241 @@
+- id: app.disableHardwareAcceleration
+  label: Hardware acceleration.
+  description: Can improve performance on some devices. (Requires restart to take effect)
+  input: select
+  options:
+    - label: Disabled
+      value: true
+    - label: Enabled
+      value: false
+
+- id: app.uploadMode
+  label: Upload mode.
+  description: The uploaded photos will be added to the selected section.
+  input: select
+  options:
+    - label: Pending
+      value: none
+    - label: Pending -> Preferences
+      value: go-preferences
+    - label: Queue
+      value: add-queue
+
+- id: app.duplicates
+  label: Allow duplicates.
+  description: Allow the upload of duplicate photos. This allows you to use different preferences/crops for a single photo.
+  input: select
+  options:
+    - label: Enabled
+      value: true
+    - label: Disabled
+      value: false
+
+- id: app.queuePosition
+  label: Queue position.
+  description: Change the position of the queue bar to the place that is most comfortable for you.
+  input: select
+  options:
+    - label: Right
+      value: right
+    - label: Left
+      value: left
+
+- id: app.showAds
+  label: Show Ads.
+  description: Show anonymous ads that might interest you and support the development of DreamTime.
+  input: select
+  options:
+    - label: Enabled
+      value: true
+    - label: Disabled
+      value: false
+
+- id: app.showTips
+  label: Show Tips.
+  description: Show help tips.
+  input: select
+  options:
+    - label: Enabled
+      value: true
+    - label: Disabled
+      value: false
+
+- id: processing.device
+  label: Device.
+  description: Device that will be used to nudify. GPU is faster.
+  input: select
+  options:
+    - label: CPU
+      value: CPU
+    - label: NVIDIA GPU
+      value: GPU
+
+- id: processing.gpus
+  label: GPU.
+  description: Graphics card to use.
+
+- id: processing.cores
+  label: CPU Cores.
+  description: Increasing this can improve transformation speed but decrease system stability.
+  input: input
+
+- id: processing.usePython
+  label: Use Python.
+  description: Use Python to start the nudification algorithm. Enable this only if you know what are you doing.
+  input: select
+  options:
+    - label: Enabled
+      value: true
+    - label: Disabled
+      value: false
+
+- id: preferences.mode
+  label: Mode.
+  description: Complexity of options for the photo.
+  input: select
+  options:
+    - label: Minimal
+      value: 0
+    - label: Simple
+      value: 1
+    - label: Normal
+      value: 2
+    - label: Advanced (Custom masks)
+      value: 3
+
+- id: preferences.advanced.scaleMode
+  label: Scale method.
+  description: Indicates how the photo will be scaled.
+  input: select
+  options:
+    - label: None
+      value: none
+    - label: Fixed
+      value: auto-rescale
+    - label: Scale and pad
+      value: auto-resize
+    - label: Scale and crop
+      value: auto-resize-crop
+    - label: Overlay
+      value: overlay
+    - label: Crop
+      value: cropjs
+
+- id: preferences.body.executions
+  label: Runs.
+  description: Number of times the photo will be nudified.
+  input: input
+  attrs:
+    type: number
+    min: 1
+
+- id: preferences.body.randomize
+  label: Randomize.
+  description: Set random body preferences at each run.
+  input: select
+  options:
+    - label: Enabled
+      value: true
+    - label: Disabled
+      value: false
+
+- id: preferences.body.progressive.enabled
+  label: Progressive.
+  description: Body preferences increase.
+  input: select
+  options:
+    - label: Enabled
+      value: true
+    - label: Disabled
+      value: false
+
+- id: preferences.body.progressive.rate
+  label: Progressive rate.
+  description: Rate.
+  input: input
+
+- id: preferences.advanced.useColorTransfer
+  label: Color transfer.
+  description: Use a experimental algorithm to try to recover the original colors of the photo.
+  input: select
+  options:
+    - label: Enabled
+      value: true
+    - label: Disabled
+      value: false
+
+- id: preferences.advanced.useWaifu
+  label: Waifu2X.
+  description: Use an algorithm to scale & denoise the nudified photo.
+  input: select
+  options:
+    - label: Enabled
+      value: true
+    - label: Disabled
+      value: false
+
+- id: notifications.run
+  label: Every run.
+  description: Notify when the program is not in the foreground and a single run have finished.
+  input: select
+  options:
+    - label: Enabled
+      value: true
+    - label: Disabled
+      value: false
+
+- id: notifications.allRuns
+  label: Every dream.
+  description: Notify when the program is not in the foreground and all the runs have finished.
+  input: select
+  options:
+    - label: Enabled
+      value: true
+    - label: Disabled
+      value: false
+
+- id: notifications.update
+  label: Update available.
+  description: Notify when there is a new version of DreamTime, DreamPower or the checkpoints.
+  input: select
+  options:
+    - label: Enabled
+      value: true
+    - label: Disabled
+      value: false
+
+- id: folders.cli
+  label: DreamPower.
+  description: Deep learning algorithm location.
+
+- id: folders.models
+  label: Models.
+  description: Location where all nudified photos will be saved.
+
+- id: folders.cropped
+  label: Crop & Editor.
+  description: Location where the cropped and editor photos will be saved before nudifying.
+
+- id: folders.masks
+  label: Masks.
+  description: Location where the algorithm masks photos will be saved.
+
+- id: telemetry.bugs
+  label: Error report.
+  description: Allow to report errors automatically.
+  input: select
+  options:
+    - label: Enabled
+      value: true
+    - label: Disabled
+      value: false
+
+- id: telemetry.dom
+  label: Session tracking.
+  description: Allow to send information about how you use the application. (No sensitive information or photos will be sent)
+  input: select
+  options:
+    - label: Enabled
+      value: true
+    - label: Disabled
+      value: false

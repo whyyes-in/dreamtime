@@ -1,8 +1,19 @@
 <template>
-  <div class="settings-folders" scoped>
+  <div class="settings-folders">
+    <PageHeader>
+      <h2 class="title">
+        <span class="icon"><font-awesome-icon icon="folder" /></span>
+        <span>Folders</span>
+      </h2>
+
+      <h3 class="subtitle">
+        Change the location of the components and files.
+      </h3>
+    </PageHeader>
+
     <div v-if="$dream.isPortable" class="notification">
       <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
-      <span>To maximize portability these options cannot be changed in the portable version.</span>
+      <span>These options cannot be changed in the portable version.</span>
     </div>
 
     <div v-else class="notification">
@@ -10,14 +21,12 @@
       <span>Changing this options needs a restart to take effect.</span>
     </div>
 
-    <section class="box box--items">
+    <section class="box">
       <div class="box__content">
-        <box-item
-          label="DreamPower"
-          description="Algorithm location.">
+        <SettingsField v-model="value$" field-id="folders.cli">
           <input
             v-if="!$dream.isPortable"
-            v-model="currentValue.folders.cli"
+            v-model="value$.folders.cli"
             :disabled="$dream.isPortable"
             readonly
             class="input"
@@ -30,14 +39,12 @@
             readonly
             :value="paths.getPowerPath()"
             class="input">
-        </box-item>
+        </SettingsField>
 
-        <box-item
-          label="Models"
-          description="Location where all nudified photos will be saved.">
+        <SettingsField v-model="value$" field-id="folders.models">
           <input
             v-if="!$dream.isPortable"
-            v-model="currentValue.folders.models"
+            v-model="value$.folders.models"
             :disabled="$dream.isPortable"
             class="input"
             readonly
@@ -50,14 +57,12 @@
             readonly
             :value="paths.getModelsPath()"
             class="input">
-        </box-item>
+        </SettingsField>
 
-        <box-item
-          label="Cropped"
-          description="Location where the cropped and editor photos will be saved before nudifying.">
+        <SettingsField v-model="value$" field-id="folders.cropped">
           <input
             v-if="!$dream.isPortable"
-            v-model="currentValue.folders.cropped"
+            v-model="value$.folders.cropped"
             :disabled="$dream.isPortable"
             class="input"
             readonly
@@ -70,14 +75,12 @@
             readonly
             :value="paths.getCropPath()"
             class="input">
-        </box-item>
+        </SettingsField>
 
-        <box-item
-          label="Masks"
-          description="Location where the algorithm masks photos will be saved.">
+        <SettingsField v-model="value$" field-id="folders.masks">
           <input
             v-if="!$dream.isPortable"
-            v-model="currentValue.folders.masks"
+            v-model="value$.folders.masks"
             :disabled="$dream.isPortable"
             class="input"
             readonly
@@ -90,14 +93,14 @@
             readonly
             :value="paths.getMasksPath()"
             class="input">
-        </box-item>
+        </SettingsField>
       </div>
     </section>
   </div>
 </template>
 
 <script>
-import _ from 'lodash'
+import { isNil } from 'lodash'
 import { VModel } from '~/mixins'
 
 const { paths } = $provider
@@ -118,7 +121,7 @@ export default {
         properties: ['openDirectory'],
       })
 
-      if (_.isNil(dir)) {
+      if (isNil(dir)) {
         return path
       }
 
@@ -135,8 +138,8 @@ export default {
         return
       }
 
-      const dir = this.showOpenDialog(this.currentValue.folders.models)
-      this.currentValue.folders.models = dir
+      const dir = this.showOpenDialog(this.value$.folders.models)
+      this.value$.folders.models = dir
     },
 
     changeCropped() {
@@ -144,8 +147,8 @@ export default {
         return
       }
 
-      const dir = this.showOpenDialog(this.currentValue.folders.cropped)
-      this.currentValue.folders.cropped = dir
+      const dir = this.showOpenDialog(this.value$.folders.cropped)
+      this.value$.folders.cropped = dir
     },
 
     changeMasks() {
@@ -153,8 +156,8 @@ export default {
         return
       }
 
-      const dir = this.showOpenDialog(this.currentValue.folders.masks)
-      this.currentValue.folders.masks = dir
+      const dir = this.showOpenDialog(this.value$.folders.masks)
+      this.value$.folders.masks = dir
     },
 
     changePower() {
@@ -162,8 +165,8 @@ export default {
         return
       }
 
-      const dir = this.showOpenDialog(this.currentValue.folders.cli)
-      this.currentValue.folders.cli = dir
+      const dir = this.showOpenDialog(this.value$.folders.cli)
+      this.value$.folders.cli = dir
     },
   },
 }

@@ -117,7 +117,7 @@ export function extractSeven(path, destinationPath) {
  */
 export function download(url, options = {}) {
   const EventBus = require('js-event-bus')
-  const bus = new EventBus
+  const bus = new EventBus()
 
   // eslint-disable-next-line no-param-reassign
   options = {

@@ -106,10 +106,10 @@ export function nudify(args, events, outputFile) {
 export const transform = (run) => {
   // Preferences for the photo
   const { preferences } = run
-  const { fileFinal, scaleMode, overlay } = run.photo
+  const { finalFile, scaleMode, overlay } = run.photo
 
   // input
-  const inputFilepath = fileFinal.path
+  const inputFilepath = finalFile.path
 
   // output
   const outputFilepath = run.outputFile.path
@@ -117,7 +117,7 @@ export const transform = (run) => {
   // CLI Args
   const args = ['run', '--input', inputFilepath, '--output', outputFilepath]
 
-  // device preferences
+  // Device
   if (settings.processing.device === 'CPU') {
     args.push('--cpu', '--n-cores', settings.processing.cores)
   } else {
@@ -154,7 +154,7 @@ export const transform = (run) => {
     args.push('--hsize', preferences.body.pubicHair.size)
   }
 
-  const events = (new EventBus)
+  const events = (new EventBus())
 
   setTimeout(() => {
     // Give time for the renderer to receive the events object.

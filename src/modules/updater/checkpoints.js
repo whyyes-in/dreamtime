@@ -88,4 +88,4 @@ class CheckpointsUpdater extends BaseUpdater {
   }
 }
 
-export const checkpoints = (new CheckpointsUpdater)
+export const checkpoints = (new CheckpointsUpdater())

@@ -1,7 +1,7 @@
+/* eslint-disable max-len */
+
 const dev = process.env.NODE_ENV === 'development'
-const analyze = false
-const uglify = !dev
-const cache = !uglify && dev
+const cache = false
 
 module.exports = {
   /**
@@ -20,8 +20,8 @@ module.exports = {
    * Server settings
    */
   server: {
-    port: process.env.SERVER_PORT,
-    host: process.env.SERVER_HOST,
+    port: process.env.SERVER_PORT || 4000,
+    host: process.env.SERVER_HOST || 'localhost',
   },
 
   /*
@@ -41,6 +41,13 @@ module.exports = {
         href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Roboto+Slab:wght@300;400;500;600&display=swap',
         as: 'style',
         onload: 'this.rel = \'stylesheet\'',
+      },
+    ],
+
+    script: [
+      {
+        src: '//ads.dreamnet.tech/www/delivery/asyncjs.php',
+        async: true,
       },
     ],
   },
@@ -70,7 +77,6 @@ module.exports = {
     '~/assets/css/tailwind.scss',
     '~/assets/css/reset/all.scss',
     '~/assets/css/components/all.scss',
-    '~/assets/css/utilities/all.scss',
   ],
 
   /*
@@ -82,7 +88,7 @@ module.exports = {
     '~/plugins/setup.js',
     '~/plugins/fontawesome.js',
     '~/plugins/vue-slider.js',
-    '~/components',
+    '~/plugins/vue-portal.js',
   ],
 
   /*
@@ -93,6 +99,10 @@ module.exports = {
     // '@nuxtjs/eslint-module',
     // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
     '@nuxtjs/tailwindcss',
+    // Doc: https://github.com/nuxt-community/style-resources-module
+    '@nuxtjs/style-resources',
+    // Doc: https://github.com/nuxt/components#setup
+    '@nuxt/components',
   ],
 
   /*
@@ -110,29 +120,26 @@ module.exports = {
   /**
    *
    */
-  eslint: {
-    cache: dev,
+  styleResources: {
+    scss: '~/assets/css/utilities/all.scss',
   },
+
+  /**
+   *
+   */
+  components: [
+    '~/components/',
+  ],
 
   /**
    *
    */
   dev,
 
-  /**
-   * Enable the profiler in WebpackBar.
-   */
-  profile: analyze,
-
   /*
    ** Build configuration
    */
   build: {
-    /**
-     * Visualize bundles and how to optimize them.
-     */
-    analyze,
-
     /**
      * Enable thread-loader in webpack building.
      */
@@ -247,7 +254,14 @@ module.exports = {
         },
       })
 
+      //
+      config.module.rules.push({
+        test: /\.ya?ml$/,
+        use: ['js-yaml-loader'],
+      })
+
       if (isDev) {
+        // Source maps.
         config.devtool = 'source-map'
       }
     },

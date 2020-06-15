@@ -4,7 +4,8 @@
       <p class="inline-field-label">
         {{ label }}
       </p>
-      <p v-if="hint" class="inline-field-hint">
+      <p v-if="hint"
+         class="inline-field-hint">
         {{ hint }}
       </p>
     </div>

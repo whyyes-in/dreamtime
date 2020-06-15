@@ -1,22 +1,22 @@
 <template>
-  <!-- Cannot update, only show the version... -->
-  <box-item
+  <!-- Offline mode -->
+  <MenuItem
     v-if="!updater.enabled"
     v-tooltip="{ content: 'Installed version', placement: 'bottom' }"
-    :label="currentVersion"
+    :label="project.version"
     icon="rocket" />
 
-  <!-- Updated! -->
-  <box-item
+  <!-- Updated -->
+  <MenuItem
     v-else-if="!updater.available"
-    :label="`${projectTitle} is up to date.`"
-    :description="currentVersion"
-    icon="rocket" />
+    :label="`${project.name} is up to date.`"
+    :description="project.version"
+    icon="thumbs-up" />
 
   <!-- Update available -->
-  <box-item
+  <MenuItem
     v-else
-    :label="`${projectTitle} ${updater.latest.tag_name} available.`"
+    :label="`${project.name} ${updater.latest.tag_name} available.`"
     icon="fire-alt"
     class="update-item"
     :is-link="true"
@@ -24,19 +24,11 @@
 </template>
 
 <script>
-/* eslint import/namespace: ['error', { allowComputed: true }] */
-import * as providers from '~/modules/updater'
-
 export default {
   props: {
     project: {
-      type: String,
+      type: Object,
       required: true,
-    },
-
-    projectTitle: {
-      type: String,
-      default: 'Project',
     },
 
     href: {
@@ -45,18 +37,10 @@ export default {
     },
   },
 
-  data: () => ({
-    updater: {},
-  }),
-
   computed: {
-    currentVersion() {
-      return this.updater?.currentVersion || 'v0.0.0'
+    updater() {
+      return this.project.updater
     },
-  },
-
-  created() {
-    this.updater = providers[this.project]
   },
 
   methods: {
@@ -83,7 +67,7 @@ export default {
 }
 
 .update-item {
-  transition: all 0.2s ease-in-out;
+  //transition: all 0.2s ease-in-out;
   animation-name: updateAnim;
   animation-duration: 2s;
   animation-iteration-count: infinite;

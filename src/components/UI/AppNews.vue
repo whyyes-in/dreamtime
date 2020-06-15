@@ -8,7 +8,9 @@
       data-theme="dark"
       data-link-color="#D67411"
       :href="`${twitterUrl}?ref_src=twsrc%5Etfw`">Tweets by DreamNetTechno</a>
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8" />
+    <script async
+            src="https://platform.twitter.com/widgets.js"
+            charset="utf-8" />
   </div>
 </template>
 
@@ -26,7 +28,7 @@ export default {
 
 <style lang="scss" scoped>
 .c-news {
-  width: 100%;
   max-width: 1200px;
+  width: 100%;
 }
 </style>

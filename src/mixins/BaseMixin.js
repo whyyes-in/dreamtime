@@ -1,5 +1,11 @@
 import { isString } from 'lodash'
 import tippy from 'tippy.js'
+import {
+  dreamtime, dreampower, checkpoints, community,
+} from '~/modules/projects'
+import {
+  dreamtrack,
+} from '~/modules/services'
 import { NudifyStore } from '~/modules/nudify'
 import { settings } from '~/modules/system'
 
@@ -25,10 +31,35 @@ export default {
         tippy(el, options)
       },
     },
+
+    tippy: {
+      inserted(el, binding) {
+        let options = {}
+
+        if (isString(binding.value)) {
+          options.content = binding.value
+        } else {
+          options = binding.value || {}
+        }
+
+        tippy(el, options)
+      },
+    },
   },
 
   data: () => ({
     $nudify: NudifyStore,
     $settings: settings,
+    $dreamtrack: dreamtrack,
+    $dreamtime: dreamtime,
+    $dreampower: dreampower,
+    $checkpoints: checkpoints,
+    $community: community,
   }),
+
+  activated() {
+    if (this.$options.layout) {
+      this.$store.commit('app/setLayoutClass', this.$options.layout)
+    }
+  },
 }

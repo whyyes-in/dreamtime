@@ -1,47 +1,47 @@
 <template>
-  <div class="settings content__body">
-    <div class="settings__menu">
-      <div class="menu__container">
-        <div class="box box--items">
-          <div class="box__content">
-            <box-item
-              label="Application"
-              icon="window-maximize"
-              href="/settings/app" />
+  <div class="settings">
+    <!-- Menu -->
+    <portal to="menu">
+      <section id="uploader-methods" class="menu__items">
+        <MenuItem
+          label="Application"
+          icon="window-maximize"
+          href="/settings/app" />
 
-            <box-item
-              label="Processing"
-              icon="cogs"
-              href="/settings/processing" />
+        <MenuItem
+          label="Processing"
+          icon="cogs"
+          href="/settings/processing" />
 
-            <box-item
-              label="Preferences"
-              icon="sliders-h"
-              href="/settings/preferences" />
+        <MenuItem
+          label="Preferences"
+          icon="sliders-h"
+          href="/settings/preferences" />
 
-            <box-item
-              label="Notifications"
-              icon="bell"
-              href="/settings/notifications" />
+        <MenuItem
+          label="Share"
+          icon="share-alt"
+          href="/settings/share" />
 
-            <box-item
-              label="Folders"
-              icon="folder"
-              href="/settings/folders" />
+        <MenuItem
+          label="Notifications"
+          icon="bell"
+          href="/settings/notifications" />
 
-            <box-item
-              label="Telemetry"
-              icon="paper-plane"
-              href="/settings/telemetry" />
-          </div>
-        </div>
-      </div>
-    </div>
+        <MenuItem
+          label="Folders"
+          icon="folder"
+          href="/settings/folders" />
+
+        <MenuItem
+          label="Telemetry"
+          icon="paper-plane"
+          href="/settings/telemetry" />
+      </section>
+    </portal>
 
     <div class="settings__content">
-      <div class="wrapper">
-        <nuxt-child v-model="settings" keep-alive />
-      </div>
+      <nuxt-child v-model="settings" keep-alive />
     </div>
   </div>
 </template>
@@ -68,7 +68,7 @@ export default {
   },
 
   middleware: ({ route, redirect }) => {
-    if (route.fullPath === `/settings`) {
+    if (route.fullPath === '/settings') {
       redirect('/settings/app')
     }
   },

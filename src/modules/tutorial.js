@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 // DreamTime.
 // Copyright (C) DreamNet. All rights reserved.
 //

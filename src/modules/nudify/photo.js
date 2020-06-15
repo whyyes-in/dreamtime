@@ -8,25 +8,45 @@
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
 import {
-  cloneDeep, isNil, merge, isError,
+  cloneDeep, isNil, merge, isError, random,
 } from 'lodash'
 import path from 'path'
 import { Queue } from '@dreamnet/queue'
 import EventBus from 'js-event-bus'
-import { settings } from '../system'
+import randomcolor from 'randomcolor'
+import Avatars from '@dicebear/avatars'
+import sprites from '@dicebear/avatars-bottts-sprites'
+import { uniqueNamesGenerator, names } from 'unique-names-generator'
+import { settings, PMODE } from '../system/settings'
 import { Consola, handleError } from '../consola'
 import { NudifyQueue } from './queue'
 import { Nudify } from './nudify'
 import { PhotoRun } from './photo-run'
+import { PhotoMask, STEP } from './photo-mask'
 import { File } from '../file'
 import { Timer } from '../timer'
 import { events } from '../events'
 
 const { getCurrentWindow } = require('electron').remote
 
-const { getModelsPath, getCropPath } = $provider.paths
+const { getModelsPath, getTempPath } = $provider.paths
 const { fs } = $provider
 const { shell, dialog } = $provider.api
+
+/**
+ * @typedef {object} PhotoFiles
+ * @property {File} PhotoFiles.editor
+ * @property {File} PhotoFiles.crop
+*/
+
+/**
+ * @typedef {object} PhotoMasks
+ * @property {PhotoMask} PhotoMask.correct
+ * @property {PhotoMask} PhotoMask.mask
+ * @property {PhotoMask} PhotoMask.maskref
+ * @property {PhotoMask} PhotoMask.maskdet
+ * @property {PhotoMask} PhotoMask.maskfin
+*/
 
 export class Photo {
   /**
@@ -34,25 +54,40 @@ export class Photo {
    */
   id
 
+  avatar = {
+    name: 'Amanari',
+    color: '#000',
+    image: '',
+  }
+
   /**
    * @type {File}
    */
   file
 
   /**
-   * @type {File}
+   * @type {PhotoFiles}
    */
-  fileEditor
+  files = {
+    editor: null,
+    crop: null,
+  }
 
   /**
-   * @type {File}
+   * @type {PhotoMasks}
    */
-  fileCrop
+  masks = {
+    correct: null, // 0 = dress -> correct
+    mask: null, // 1 = correct -> mask
+    maskref: null, // 2 = mask -> maskref
+    maskdet: null, // 3 = maskref -> maskdet
+    maskfin: null, // 4 = maskdet -> maskfin
+  }
 
   /**
    * @type {EventBus}
    */
-  events = new EventBus
+  events = new EventBus()
 
   /**
    * @type {string}
@@ -91,12 +126,7 @@ export class Photo {
   /**
    * @type {Timer}
    */
-  timer = new Timer
-
-  /**
-   * @type {boolean}
-   */
-  isMaskfin = false
+  timer = new Timer()
 
   /**
    * @type {import('cropperjs').default}
@@ -122,8 +152,12 @@ export class Photo {
    */
   consola
 
+  get mode() {
+    return this.preferences.mode
+  }
+
   get folderName() {
-    // todo: implement models
+    // TODO: Implement models
     return 'Uncategorized'
   }
 
@@ -147,12 +181,36 @@ export class Photo {
     return this.running || this.finished
   }
 
-  get executions() {
-    return this.preferences.body.executions
+  get runsCount() {
+    return this.preferences.mode === PMODE.ADVANCED ? 1 : this.preferences.body.executions
   }
 
   get canModify() {
     return this.file.mimetype !== 'image/gif'
+  }
+
+  get canShowEditor() {
+    return this.canModify && this.preferences.mode >= PMODE.NORMAL
+  }
+
+  get canShowCropTool() {
+    return this.canModify && this.preferences.mode >= PMODE.SIMPLE && this.preferences.advanced.scaleMode === 'cropjs'
+  }
+
+  get canShowOverlayTool() {
+    return this.canModify && this.preferences.mode >= PMODE.SIMPLE && this.preferences.advanced.scaleMode === 'overlay'
+  }
+
+  get isCustomMasks() {
+    return this.preferences.mode === PMODE.ADVANCED
+  }
+
+  get isCustomMasksValid() {
+    return this.masks.correct.exists
+      && this.masks.mask.exists
+      && this.masks.maskref.exists
+      && this.masks.maskdet.exists
+      && this.masks.maskfin.exists
   }
 
   get isScaleModeCorrected() {
@@ -161,23 +219,33 @@ export class Photo {
   }
 
   get scaleMode() {
+    const { mode } = this.preferences
     const { scaleMode } = this.preferences.advanced
+
+    if (mode === PMODE.MINIMAL) {
+      return 'auto-rescale'
+    }
 
     if (scaleMode === 'cropjs') {
       if (!this.canModify) {
-        this.consola.warn('Wanted to use the cropper but we cannot modify.')
         return 'auto-rescale'
       }
 
-      if (!this.fileCrop.exists) {
-        // The Cropper has not been used.
+      if (!this.files.crop.exists) {
+        // Crop tool has not been used.
         return 'auto-rescale'
       }
     }
 
-    if (scaleMode === 'overlay' && isNil(this.overlay)) {
-      // The Cropper has not been used.
-      return 'auto-rescale'
+    if (scaleMode === 'overlay') {
+      if (!this.canModify) {
+        return 'auto-rescale'
+      }
+
+      if (isNil(this.overlay)) {
+        // Overlay tool has not been used.
+        return 'auto-rescale'
+      }
     }
 
     return scaleMode
@@ -188,26 +256,26 @@ export class Photo {
    *
    * @type {File}
    */
-  get fileFinal() {
+  get finalFile() {
     if (this.scaleMode === 'cropjs') {
-      return this.fileCrop
+      return this.files.crop
     }
 
-    if (this.canModify && this.fileEditor.exists) {
-      return this.fileEditor
+    if (this.files.editor.exists && this.canModify) {
+      return this.files.editor
     }
 
     return this.file
   }
 
   /**
-   * File for the croppper.
+   * File for the crop tool.
    *
    * @type {File}
    */
-  get fileInput() {
-    if (this.fileEditor.exists) {
-      return this.fileEditor
+  get inputFile() {
+    if (this.files.editor.exists) {
+      return this.files.editor
     }
 
     return this.file
@@ -219,20 +287,42 @@ export class Photo {
    * @param {*} [model]
    */
   // eslint-disable-next-line no-unused-vars
-  constructor(file, { isMaskfin = false, model = null } = {}) {
-    this.id = file.md5
+  constructor(file, { model = null } = {}) {
+    if (settings.app.duplicates) {
+      const now = Date.now() + random(1, 100)
+      this.id = `${file.md5}-${now}`
+    } else {
+      this.id = file.md5
+    }
 
     this.file = file
 
-    this.fileEditor = new File(getCropPath(`${this.id}-editor${file.extension}`), true)
+    fs.ensureDirSync(getTempPath(this.id))
 
-    this.fileCrop = new File(getCropPath(`${this.id}-crop${file.extension}`), true)
+    this.files = {
+      editor: this.createFile('Editor'),
+      crop: this.createFile('Crop'),
+    }
+
+    this.masks = {
+      correct: new PhotoMask(STEP.CORRECT, this),
+      mask: new PhotoMask(STEP.MASK, this),
+      maskref: new PhotoMask(STEP.MASKREF, this),
+      maskdet: new PhotoMask(STEP.MASKDET, this),
+      maskfin: new PhotoMask(STEP.MASKFIN, this),
+    }
 
     this.consola = Consola.create(file.fullname)
 
-    this.isMaskfin = isMaskfin
-
     this.setup()
+  }
+
+  /**
+   *
+   * @returns {File}
+   */
+  createFile(name) {
+    return new File(getTempPath(this.id, `${name}.${this.file.extension}`), true)
   }
 
   /**
@@ -244,13 +334,14 @@ export class Photo {
     }
 
     const dataURL = this.editor.toDataURL({
-      format: this.file.extension.substring(1),
+      format: this.file.extension,
       quality: 1,
       multiplier: 1,
     })
 
-    await this.fileEditor.writeDataURL(dataURL)
-    this.consola.debug(`Saved editor changes.`)
+    await this.files.editor.writeDataURL(dataURL)
+
+    this.consola.debug('Saved editor changes.')
   }
 
   /**
@@ -277,10 +368,10 @@ export class Photo {
       throw new Warning('The cropper has failed.', 'There was a problem executing the cropper, please open the tool and try again.')
     }
 
-    const dataURL = canvas.toDataURL(this.fileCrop.mimetype, 1)
-    await this.fileCrop.writeDataURL(dataURL)
+    const dataURL = canvas.toDataURL(this.files.crop.mimetype, 1)
+    await this.files.crop.writeDataURL(dataURL)
 
-    this.consola.debug(`Saved crop changes.`)
+    this.consola.debug('Saved crop changes.')
   }
 
   /**
@@ -297,6 +388,8 @@ export class Photo {
   setup() {
     this.validate()
 
+    this.setupAvatar()
+
     this.setupPreferences()
 
     this.setupQueue()
@@ -306,6 +399,7 @@ export class Photo {
    *
    */
   validate() {
+    // eslint-disable-next-line no-shadow
     const { exists, mimetype, path } = this.file
 
     if (!exists) {
@@ -319,80 +413,46 @@ export class Photo {
 
   /**
    *
+   *
    */
-  saveAll() {
-    const dir = dialog.showOpenDialogSync({
-      // defaultPath: this.getFolderPath(),
-      properties: ['openDirectory'],
+  setupAvatar() {
+    this.avatar.name = uniqueNamesGenerator({ dictionaries: [names], length: 1 })
+
+    this.avatar.color = randomcolor()
+
+    const avatars = new Avatars(sprites, {
+      base64: true,
+      radius: 100,
+      background: this.avatar.color,
     })
 
-    if (isNil(dir)) {
-      return
-    }
-
-    if (!fs.existsSync(dir[0])) {
-      return
-    }
-
-    this.consola.debug(`Saving all results in ${dir[0]}`)
-
-    this.runs.forEach((photoRun) => {
-      const savePath = path.join(dir[0], photoRun.outputName)
-
-      this.consola.debug(savePath)
-      photoRun.outputFile.copy(savePath)
-    })
-  }
-
-  openFolder() {
-    shell.openItem(this.getFolderPath())
+    this.avatar.image = avatars.create()
   }
 
   /**
    *
+   *
    */
   setupPreferences() {
     this.preferences = cloneDeep(settings.payload.preferences)
-    let forcedPreferences = {}
 
-    if (this.isMaskfin) {
-      forcedPreferences = {
-        body: {
-          executions: 1,
-          randomize: false,
-          progressive: {
-            enabled: false,
-          },
-        },
+    let forced = {}
+
+    if (!this.canModify) {
+      forced = {
         advanced: {
-          scaleMode: 'auto-rescale',
-          transformMode: 'import-maskfin',
-          useColorTransfer: false,
-        },
-      }
-    } else if (!this.canModify) {
-      forcedPreferences = {
-        advanced: {
-          transformMode: 'normal',
+          scaleMode: this.scaleMode,
         },
       }
     }
 
-    this.preferences = merge(this.preferences, forcedPreferences)
+    this.preferences = merge(this.preferences, forced)
   }
 
   /**
    *
    */
   setupQueue() {
-    /*
-    let maxTimeout = settings.processing.device === 'GPU' ? (3 * 60 * 1000) : (20 * 60 * 1000)
-
-    if (this.file.mimetype === 'image/gif') {
-      maxTimeout += (30 * 60 * 1000)
-    }
-    */
-
     this.queue = new Queue(this.worker)
 
     this.queue.on('finished', () => {
@@ -445,6 +505,33 @@ export class Photo {
 
   /**
    *
+   */
+  saveAll() {
+    const dir = dialog.showOpenDialogSync({
+      // defaultPath: this.getFolderPath(),
+      properties: ['openDirectory'],
+    })
+
+    if (isNil(dir)) {
+      return
+    }
+
+    if (!fs.existsSync(dir[0])) {
+      return
+    }
+
+    this.consola.debug(`Saving all results in ${dir[0]}`)
+
+    this.runs.forEach((photoRun) => {
+      const savePath = path.join(dir[0], photoRun.outputName)
+
+      this.consola.debug(savePath)
+      photoRun.outputFile.copy(savePath)
+    })
+  }
+
+  /**
+   *
    * @param {*} id
    */
   getRunById(id) {
@@ -476,10 +563,11 @@ export class Photo {
    *
    */
   track() {
-    const { useColorTransfer, transformMode } = this.preferences.advanced
+    const { mode } = this.preferences
+    const { transformMode, useColorTransfer } = this.preferences.advanced
     const { randomize, progressive } = this.preferences.body
 
-    consola.track('DREAM_START')
+    consola.track('DREAM_START', { mode })
 
     if (transformMode === 'export-maskfin') {
       consola.track('DREAM_EXPORT_MASKFIN')
@@ -504,19 +592,49 @@ export class Photo {
 
   /**
    * Nudification start.
-   * This should only be called from the queue.
+   * This should only be called from the [NudifyQueue].
    */
   async start() {
-    if (this.executions === 0) {
+    if (this.runsCount === 0) {
       return
     }
 
     await this.syncEditor()
     await this.syncCrop()
 
+    if (this.isCustomMasks && !this.isCustomMasksValid) {
+      await this.generateCustomMasks()
+      return
+    }
+
+    await this.generateNudes()
+  }
+
+  /**
+   *
+   *
+   */
+  async generateCustomMasks() {
+    const run = new PhotoRun(it, this, true)
+
+    this.runs.push(run)
+    this.queue.add(run)
+
+    await new Promise((resolve) => {
+      this.queue.once('finished', () => {
+        resolve()
+      })
+    })
+  }
+
+  /**
+   *
+   *
+   */
+  async generateNudes() {
     this.track()
 
-    for (let it = 1; it <= this.executions; it += 1) {
+    for (let it = 1; it <= this.runsCount; it += 1) {
       const run = new PhotoRun(it, this)
 
       this.runs.push(run)
@@ -524,7 +642,7 @@ export class Photo {
     }
 
     await new Promise((resolve) => {
-      this.queue.on('finished', () => {
+      this.queue.once('finished', () => {
         consola.track('DREAM_END')
         resolve()
       })
@@ -619,7 +737,7 @@ export class Photo {
         return
       }
 
-      const notification = new Notification(`💖 Dream fulfilled!`, {
+      const notification = new Notification('💖 Dream fulfilled!', {
         icon: this.file.path,
         body: 'All runs have finished.',
       })

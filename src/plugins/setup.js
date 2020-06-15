@@ -9,9 +9,13 @@
 
 import Vue from 'vue'
 import tippy from 'tippy.js'
+import { Help } from '~/modules'
 import { Consola } from '~/modules/consola'
 import { achievements } from '~/modules/system'
 import BaseMixin from '~/mixins/BaseMixin'
+import { dream } from '~/modules'
+import { Nudify, NudifyStore } from '~/modules/nudify'
+import { settings } from '~/modules/system'
 
 const consola = Consola.create('setup')
 
@@ -25,20 +29,20 @@ Vue.mixin(BaseMixin)
 tippy.setDefaultProps({
   delay: [500, 0],
   arrow: true,
+  allowHTML: true,
 })
 
-export default ({ app }, inject) => {
-  const { dream } = require('~/modules')
-  const { Nudify, NudifyStore } = require('~/modules/nudify')
-  const { settings } = require('~/modules/system')
-
+export default (ctx, inject) => {
   // User settings.
-  app.$settings = settings
+  ctx.app.$settings = settings
   inject('settings', settings)
 
   // DreamTime.
-  app.$dream = dream
+  ctx.app.$dream = dream
   inject('dream', dream)
+
+  // Help system.
+  Help.load()
 
   // Nudification/Queue.
   Nudify.setup()

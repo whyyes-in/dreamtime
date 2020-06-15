@@ -12,7 +12,8 @@
 
     <div class="content-body">
       <div class="buttons">
-        <nuxt-link to="/models/add" class="button">
+        <nuxt-link to="/models/add"
+                   class="button">
           Create
         </nuxt-link>
       </div>

@@ -120,7 +120,7 @@ class System {
     this.memory = memory
     this.online = online
 
-    logger.info(`GPU:`, this.graphics)
+    logger.info('GPU:', this.graphics)
     logger.info(`RAM: ${memory.total} bytes.`)
     logger.info(`Online: ${online}`)
   }
@@ -148,10 +148,10 @@ class System {
       settings: settings.payload,
     }
 
-    logger.info(`Current load:`, load)
-    logger.info(`CPU Speed:`, cpuSpeed)
-    logger.info(`CPU Temperature:`, cpuTemperature)
-    logger.info(`Memory:`, memory)
+    logger.info('Current load:', load)
+    logger.info('CPU Speed:', cpuSpeed)
+    logger.info('CPU Temperature:', cpuTemperature)
+    logger.info('Memory:', memory)
 
     return this.snapshot
   }
@@ -176,4 +176,4 @@ class System {
   }
 }
 
-export const system = new System
+export const system = new System()

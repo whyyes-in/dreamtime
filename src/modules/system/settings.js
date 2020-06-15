@@ -8,8 +8,9 @@
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
 import {
-  isEmpty, isPlainObject, get, set,
+  isEmpty, isPlainObject, get, set, find, debounce,
 } from 'lodash'
+import fields from '../config/settings.yml'
 
 const theSettings = {
   /**
@@ -20,17 +21,27 @@ const theSettings = {
    */
   payload: $provider.settings.payload,
 
+  init() {
+    this.save = debounce(() => {
+      $provider.settings.payload = this.payload
+      return $provider.settings.save()
+    }, 1000)
+  },
+
+  /**
+   *
+   *
+   * @returns
+   */
   load() {
     return $provider.settings.load()
   },
 
-  save() {
-    $provider.settings.payload = this.payload
-    return $provider.settings.save()
-  },
-
   /**
-   * @param {string} path
+   *
+   *
+   * @param {string} [path='']
+   * @returns
    */
   get(path = '') {
     if (isEmpty(path)) {
@@ -41,8 +52,10 @@ const theSettings = {
   },
 
   /**
-   * @param {string} path
-   * @param {any} payload
+   *
+   *
+   * @param {*} path
+   * @param {*} payload
    */
   set(path, payload) {
     if (isPlainObject(path)) {
@@ -52,6 +65,16 @@ const theSettings = {
     }
 
     this.save()
+  },
+
+  /**
+   *
+   *
+   * @param {*} id
+   * @returns
+   */
+  getField(id) {
+    return find(fields, { id })
   },
 }
 
@@ -92,3 +115,12 @@ const handler = {
 }
 
 export const settings = new Proxy(theSettings, handler)
+
+export const PMODE = {
+  MINIMAL: 0,
+  SIMPLE: 1,
+  NORMAL: 2,
+  ADVANCED: 3,
+}
+
+settings.init()

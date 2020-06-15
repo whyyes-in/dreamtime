@@ -8,7 +8,9 @@
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
 import { startsWith } from 'lodash'
-import { app, BrowserWindow, shell } from 'electron'
+import {
+  app, BrowserWindow, shell, protocol,
+} from 'electron'
 import { dirname, resolve } from 'path'
 import Logger from '@dreamnet/logplease'
 import fs from 'fs-extra'
@@ -193,6 +195,20 @@ class DreamApp {
       })
     })
 
+    // https://github.com/electron/electron/issues/23757#issuecomment-640146333
+    protocol.registerFileProtocol('file', (request, callback) => {
+      const pathname = decodeURI(request.url.replace('file:///', ''))
+      callback(pathname)
+    })
+
+    if (process.env.DEVTOOLS) {
+      const { default: installExtension, VUEJS_DEVTOOLS } = require('electron-devtools-installer')
+
+      installExtension(VUEJS_DEVTOOLS)
+        .then((extension) => console.log(`Added Extension:  ${extension.name}`))
+        .catch((err) => console.log('An error occurred: ', err))
+    }
+
     const contextMenu = require('electron-context-menu')
 
     // allow save image option
@@ -227,7 +243,10 @@ class DreamApp {
       minWidth: 1200,
       minHeight: 700,
       frame: false,
+      show: false,
+      backgroundColor: '#060709',
       icon: resolve(config.rootDir, 'dist', 'icon.ico'),
+
       webPreferences: {
         nodeIntegration: true,
         nodeIntegrationInWorker: true,
@@ -235,10 +254,6 @@ class DreamApp {
         preload: resolve(app.getAppPath(), 'electron', 'dist', 'provider.js'),
       },
     })
-
-    // maximize
-    // TODO: custom preferences
-    this.window.maximize()
 
     // disable menu
     this.window.setMenu(null)
@@ -253,8 +268,19 @@ class DreamApp {
     }
 
     if (process.env.DEVTOOLS) {
-      // devtools
-      this.window.webContents.openDevTools()
+      this.window.webContents.once('dom-ready', () => {
+        console.log('dom-ready')
+
+        this.window.show()
+        this.window.maximize()
+
+        // DevTools
+        this.window.webContents.openDevTools()
+      })
+
+      this.window.once('ready-to-show', () => {
+        console.log('ready-to-show')
+      })
     }
   }
 
@@ -300,7 +326,7 @@ app.on('ready', async () => {
   try {
     await DreamApp.start()
   } catch (error) {
-    throw new AppError(error, { title: `DreamTime failed to start.`, level: 'error' })
+    throw new AppError(error, { title: 'DreamTime failed to start.', level: 'error' })
   }
 })
 

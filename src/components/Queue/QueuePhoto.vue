@@ -2,6 +2,8 @@
   <div class="photo" :class="photoClass">
     <div class="photo__preview" :style="previewStyle" />
 
+    <img v-tooltip="photo.avatar.name" :src="photo.avatar.image" class="photo__badge">
+
     <div class="photo__content">
       <span v-show="photo.running || photo.finished">{{ photo.timer.duration }}s</span>
 
@@ -80,9 +82,8 @@ export default {
 
 <style lang="scss" scoped>
 .photo {
-  @apply w-1/2 relative border-2 border-dark-300;
-  background-image: url("~@/assets/images/curls.png");
-  height: 150px;
+  @apply relative border-2 border-transparent;
+  background-image: url('~@/assets/images/curls.png');
   will-change: transform;
 
   &.photo--running {
@@ -98,33 +99,42 @@ export default {
       @apply opacity-100;
     }
   }
+}
 
-  .photo__preview {
-    @apply absolute top-0 bottom-0 left-0 right-0 z-10;
-    @apply bg-contain bg-no-repeat bg-center;
+.photo__preview {
+  @apply absolute top-0 bottom-0 left-0 right-0 z-10;
+  @apply bg-contain bg-no-repeat bg-center;
+}
+
+.photo__badge {
+  @apply absolute z-20;
+  top: 5px;
+  right: 5px;
+  width: 30px;
+  height: 30px;
+}
+
+.photo__content {
+  @apply absolute top-0 bottom-0 left-0 right-0 z-30;
+  @apply flex bg-dark-500-60 opacity-0;
+  backdrop-filter: blur(4px);
+  transition: opacity 0.1s linear;
+
+  span,
+  button {
+    @apply flex-1;
   }
 
-  .photo__content {
-    @apply absolute top-0 bottom-0 left-0 right-0 z-30;
-    @apply flex bg-dark-500-60 opacity-0;
-    backdrop-filter: blur(4px);
-    transition: opacity .1s linear;
+  span {
+    @apply flex items-center justify-center;
+    @apply text-white font-semibold;
+  }
 
-    span, button {
-      @apply flex-1;
-    }
+  button {
+    @apply outline-none;
 
-    span {
-      @apply flex items-center justify-center;
-      @apply text-white font-semibold;
-    }
-
-    button {
-      @apply outline-none;
-
-      &:hover {
-        @apply text-primary;
-      }
+    &:hover {
+      @apply text-primary;
     }
   }
 }

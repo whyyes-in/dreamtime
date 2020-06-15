@@ -139,4 +139,4 @@ class DreamPowerUpdater extends BaseUpdater {
   }
 }
 
-export const dreampower = (new DreamPowerUpdater)
+export const dreampower = (new DreamPowerUpdater())

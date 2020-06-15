@@ -93,4 +93,4 @@ class DreamTimeUpdater extends BaseUpdater {
   }
 }
 
-export const dreamtime = new DreamTimeUpdater
+export const dreamtime = new DreamTimeUpdater()

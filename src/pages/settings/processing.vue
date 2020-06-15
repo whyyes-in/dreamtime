@@ -1,65 +1,44 @@
 <template>
   <div class="settings-fields">
-    <section class="box box--items">
+    <PageHeader>
+      <h2 class="title">
+        <span class="icon"><font-awesome-icon icon="cogs" /></span>
+        <span>Processing</span>
+      </h2>
+
+      <h3 class="subtitle">
+        Settings that affect the use of resources for the nudification.
+      </h3>
+    </PageHeader>
+
+    <section class="box">
       <div class="box__content">
-        <box-item
-          v-if="!isMacOS"
-          label="Device."
-          description="Device that will be used to nudify. GPU is faster.">
-          <select v-model="currentValue.processing.device" class="input">
-            <option value="CPU">
-              CPU
-            </option>
-            <option value="GPU">
-              NVIDIA GPU
-            </option>
-          </select>
-        </box-item>
+        <SettingsField v-if="!isMacOS" v-model="value$" field-id="processing.device" />
 
-        <box-item
-          v-else
-          label="Device."
-          description="GPU is not available in macOS.">
-          <select v-model="currentValue.processing.device" class="input" disabled>
+        <SettingsField v-else field-id="processing.device" description="Mac only supports CPU.">
+          <select v-model="value$.processing.device" class="input" disabled>
             <option value="CPU">
               CPU
             </option>
           </select>
-        </box-item>
+        </SettingsField>
 
-        <box-item
-          v-if="currentValue.processing.device === 'GPU'"
-          label="GPU."
-          description="Graphics card to use.">
-          <select v-model="currentValue.processing.gpus[0]" class="input">
+        <SettingsField v-show="value$.processing.device === 'GPU'" field-id="processing.gpus">
+          <select v-model="value$.processing.gpus[0]" class="input">
             <option v-for="(device, index) in $provider.system.graphics" :key="index" :value="index">
               {{ device.model }}
             </option>
-            <option v-for="n in 5" :key="`slot-${n - 1}`" :value="n - 1">
+            <option v-for="n in 5"
+                    :key="`slot-${n - 1}`"
+                    :value="n - 1">
               Slot {{ n - 1 }}
             </option>
           </select>
-        </box-item>
+        </SettingsField>
 
-        <box-item
-          v-if="currentValue.processing.device === 'CPU'"
-          label="CPU Cores."
-          description="Increasing this can improve transformation speed but decrease system stability.">
-          <input v-model="currentValue.processing.cores" type="number" min="1" :max="$provider.system.cores" class="input">
-        </box-item>
+        <SettingsField v-show="value$.processing.device === 'CPU'" field-id="processing.cores" :attrs="{ type: 'number', min: 1, max: $provider.system.cores }" />
 
-        <box-item
-          label="Use Python."
-          description="Use DreamPower Python script instead of the executable. Enable this only if you know what are you doing.">
-          <select v-model="currentValue.processing.usePython" class="input">
-            <option :value="true">
-              Enabled
-            </option>
-            <option :value="false">
-              Disabled
-            </option>
-          </select>
-        </box-item>
+        <SettingsField field-id="processing.usePython" />
       </div>
     </section>
   </div>

@@ -14,8 +14,8 @@ import { existsSync, readJsonSync, writeJsonSync } from 'fs-extra'
 
 const logger = require('@dreamnet/logplease').create('services')
 
-export function makeServiceProxy(obj) {
-  return new Proxy(obj, {
+export function makeServiceProxy(item) {
+  return new Proxy(item, {
     get: (obj, prop) => {
       if (prop in obj) {
         return obj[prop]
@@ -92,7 +92,7 @@ export class BaseService {
   static make(obj) {
     if (!obj) {
       // eslint-disable-next-line no-param-reassign
-      obj = new this
+      obj = new this()
     }
 
     return makeServiceProxy(obj)

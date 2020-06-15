@@ -265,7 +265,10 @@ class Settings {
     try {
       fs.outputFileSync(this.path, JSON.stringify(this._default, null, 2))
     } catch (error) {
-      throw new AppError(`Could not create settings file. Please make sure the program has the necessary permissions to write to:\n${this.path}`, { fatal: true, error })
+      throw new AppError(
+        `Could not create settings file. Please make sure the program has the necessary permissions to write to:\n${this.path}`,
+        { fatal: true, error },
+      )
     }
   }
 
@@ -419,7 +422,7 @@ class Settings {
   }
 }
 
-export const theSettings = new Settings
+export const theSettings = new Settings()
 
 const saveHandler = {
   get(target, property, receiver) {

@@ -14,7 +14,7 @@ import {
 } from 'lodash'
 import { basename } from 'path'
 import delay from 'delay'
-import Swal from 'sweetalert2/dist/sweetalert2.js'
+import Swal from 'sweetalert2/dist/sweetalert2'
 import { watch } from 'melanke-watchjs'
 import { NudifyQueue } from './queue'
 import { events } from '../events'
@@ -49,7 +49,7 @@ const Toast = Swal.mixin({
  */
 export const Nudify = {
   /**
-   * All open photos.
+   * Uploaded photos.
    * @type {Array<Photo>}
    */
   photos: [],
@@ -101,10 +101,12 @@ export const Nudify = {
   add(file, params = {}) {
     const photo = new Photo(file, params)
 
-    const exists = this.getPhotoById(photo.id)
+    if (!settings.app.duplicates) {
+      const exists = this.getPhotoById(photo.id)
 
-    if (!isNil(exists)) {
-      return
+      if (!isNil(exists)) {
+        return
+      }
     }
 
     this.photos.unshift(photo)
@@ -204,7 +206,11 @@ export const Nudify = {
 
       this.add(file)
     } catch (error) {
-      throw new Warning('Upload failed.', 'Unable to download the photo, please verify that the address is correct and that you are connected to the Internet.', error)
+      throw new Warning(
+        'Upload failed.',
+        'Unable to download the photo, please verify that the address is correct and that you are connected to the Internet.',
+        error,
+      )
     }
   },
 

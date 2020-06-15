@@ -1,21 +1,30 @@
 /*
  * DreamTime.
  * Copyright (C) DreamNet. All rights reserved.
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License 3.0 as published by
  * the Free Software Foundation. See <https://www.gnu.org/licenses/gpl-3.0.html>
- * 
+ *
  * Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
  */
 
 .box {
-  @apply bg-dark-600 shadow mb-6 border-t border-l border-r border-dark-100;
+  @apply flex flex-col;
+  @apply bg-menus shadow-lg rounded;
+
+  &:not(:last-child) {
+    @apply mb-6;
+  }
 
   .box__photo {
     @apply relative;
-    @apply bg-cover bg-center;
+    @apply bg-cover bg-center bg-no-repeat;
     min-height: 120px;
+
+    &:first-child {
+      @apply rounded-t-lg;
+    }
 
     .box__photo__content {
       @apply absolute w-full h-full;
@@ -24,10 +33,14 @@
   }
 
   .box__header {
-    @apply px-4 pt-2;
+    @apply px-6 pt-6;
+
+    &:not(:first-child) {
+      @apply pt-3;
+    }
 
     .title {
-      @apply text-base font-semibold text-generic-200;
+      @apply font-serif font-semibold text-lg text-common-light;
     }
 
     .subtitle {
@@ -36,15 +49,20 @@
   }
 
   .box__content {
-    @apply px-4 py-2;
+    @apply flex-1 p-6;
+
+    p {
+      @apply text-sm mb-3;
+    }
   }
 
   .box__footer {
-    @apply px-4 py-2 text-sm;
-    @apply border-t border-dark-400;
+    @apply px-6 py-3;
+    @apply border-t border-menus-light;
   }
 }
 
+/*
 .box-section {
   @apply px-0 py-2;
 
@@ -87,3 +105,4 @@
     }
   }
 }
+*/

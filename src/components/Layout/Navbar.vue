@@ -1,74 +1,58 @@
 <template>
-  <div class="layout__navbar">
-    <div class="navbar__left">
-      <nuxt-link v-if="canNudify" to="/" class="navbar__item navbar__item--home">
-        Upload
+  <div class="nav">
+    <div class="nav__left">
+      <nuxt-link v-if="isBadTimeAvailable"
+                 v-tooltip="'Bad Time Minigame 🎮'"
+                 to="/games/badtime"
+                 class="nav__item nav__item--button">
+        <img src="~/assets/images/games/sans.png">
       </nuxt-link>
-
-      <nuxt-link id="settings" class="navbar__item" to="/settings">
-        Settings
-      </nuxt-link>
-
-      <nuxt-link v-if="unlockedBadTime" v-tooltip="{ content: 'Mini-game. Can you survive until the end? 🎮💀', placement: 'bottom' }" class="navbar__item" to="/games/badtime">
-        Bad Time Game
-      </nuxt-link>
-
-      <a v-if="isDev" class="navbar__item" @click.prevent="createError">
-        DEV: UI Error
-      </a>
     </div>
 
-    <div class="navbar__right">
-      <nuxt-link v-tooltip="{placement: 'bottom', content: 'Alert Center'}" class="navbar__icon" to="/alerts">
-        <font-awesome-icon v-if="hasAlerts" icon="exclamation-triangle" class="alerts--active" />
-        <font-awesome-icon v-else icon="check-circle" class="alerts--ok" />
+    <div class="nav__center">
+      <nuxt-link v-tooltip="'Upload'" to="/" class="nav__item nav__item--link">
+        <font-awesome-icon icon="upload" />
       </nuxt-link>
 
-      <nuxt-link v-tooltip="{placement: 'bottom', content: 'About'}" class="navbar__icon" to="/about">
+      <nuxt-link v-tooltip="'Photos'" to="/" class="nav__item nav__item--link">
+        <font-awesome-icon icon="images" />
+      </nuxt-link>
+    </div>
+
+    <div class="nav__right">
+      <nuxt-link v-tooltip="'Settings'" to="/settings" class="nav__item nav__item--button">
+        <font-awesome-icon icon="cog" />
+      </nuxt-link>
+
+      <nuxt-link v-tooltip="'About'" to="/about" class="nav__item nav__item--button">
         <font-awesome-icon icon="info-circle" />
       </nuxt-link>
 
-      <nuxt-link
-        v-if="$provider.system.online"
-        v-tooltip="{placement: 'bottom', content: 'DreamNet'}"
-        class="navbar__icon"
-        to="/dreamnet">
-        <font-awesome-icon icon="users" />
-      </nuxt-link>
-
-      <a
-        v-if="$provider.system.online"
-        id="guide"
-        v-tooltip="{placement: 'bottom', content: 'User\'s Guide.'}"
-        class="navbar__icon"
-        :href="manualURL"
-        target="_blank">
+      <nuxt-link v-tooltip="'Help & Tips'" to="/help" class="nav__item nav__item--button">
         <font-awesome-icon icon="question-circle" />
-      </a>
-
-      <a
-        v-if="$provider.system.online"
-        v-tooltip="{placement: 'bottom', content: 'Donate and get benefits!'}"
-        class="navbar__icon"
-        :href="donateUrl"
-        target="_blank">
-        <font-awesome-icon :icon="['fab', 'patreon']" />
-      </a>
+      </nuxt-link>
     </div>
   </div>
 </template>
 
 <script>
+import Avatars from '@dicebear/avatars'
+import sprites from '@dicebear/avatars-jdenticon-sprites'
 import { requirements, settings } from '~/modules/system'
 import { dreamtrack } from '~/modules/services'
 import { events } from '~/modules'
 
 export default {
   data: () => ({
-    unlockedBadTime: settings.achievements.badtime,
+    isBadTimeAvailable: settings.achievements.badtime,
   }),
 
   computed: {
+    avatar() {
+      const avatars = new Avatars(sprites, { base64: true })
+      return avatars.create(settings.user)
+    },
+
     canNudify() {
       return requirements.canNudify
     },
@@ -92,7 +76,7 @@ export default {
 
   mounted() {
     events.on('achievements.badtime', () => {
-      this.unlockedBadTime = true
+      this.isBadTimeAvailable = true
     })
   },
 
@@ -109,17 +93,81 @@ export default {
   0% {
     @apply text-danger-500;
   }
+
   50% {
     @apply text-warning-500;
   }
+
   100% {
     @apply text-danger-500;
+  }
+}
+
+.nav {
+  @apply flex z-10;
+  @apply h-full bg-menus border-b border-menus-light shadow px-3;
+  grid-area: nav;
+
+  .nav__left,
+  .nav__center,
+  .nav__right {
+    @apply flex-1 flex;
+  }
+
+  .nav__left {
+    @apply items-center;
+  }
+
+  .nav__center {
+    @apply justify-center;
+  }
+
+  .nav__right {
+    @apply justify-end items-center;
+  }
+}
+
+.nav__item {
+  @apply flex items-center;
+
+  img {
+    @apply rounded-full;
+    height: 30px;
+  }
+
+  &.nav__item--link {
+    @apply justify-center border-b-2 border-transparent;
+    width: 100px;
+
+    .icon {
+      @apply text-lg;
+    }
+
+    &:hover {
+      @apply text-primary border-primary;
+    }
+  }
+
+  &.nav__item--button {
+    @apply justify-center;
+    @apply rounded-full text-lg mx-2;
+    height: 40px;
+    width: 40px;
+
+    &:hover {
+      @apply bg-dark-400;
+    }
+
+    img {
+      height: 20px;
+    }
   }
 }
 
 .layout__navbar {
   @apply flex bg-dark-500 z-10;
   @apply border-b border-dark-100;
+  grid-area: nav;
   height: 50px;
 
   .navbar__left,
@@ -169,9 +217,9 @@ export default {
 }
 
 .alerts--active {
-  animation-name: alertAnim;
-  animation-iteration-count: infinite;
   animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-name: alertAnim;
   animation-timing-function: ease-in-out;
 }
 

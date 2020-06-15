@@ -1,8 +1,10 @@
 <template>
-  <figure class="photo" :class="{'photo--hover': hover}">
+  <figure class="photo"
+          :class="{'photo--hover': hover}">
     <img :src="src">
 
-    <p v-if="$slots.default" class="photo__label">
+    <p v-if="$slots.default"
+       class="photo__label">
       <slot />
     </p>
   </figure>
@@ -28,7 +30,7 @@ export default {
 .photo {
   @apply relative flex flex-col z-50;
   box-sizing: content-box;
-  transition: all 0.2s ease-in-out;
+  //transition: all 0.2s ease-in-out;
 
   &.photo--hover:hover {
     transform: scale(1.5);

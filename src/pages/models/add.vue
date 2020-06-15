@@ -12,7 +12,8 @@
 
     <div class="content-body">
       <div class="buttons">
-        <nuxt-link to="/models" class="button is-danger">
+        <nuxt-link to="/models"
+                   class="button is-danger">
           Cancel
         </nuxt-link>
       </div>
@@ -20,7 +21,9 @@
       <div class="fields">
         <div class="field">
           <label class="label">Name:</label>
-          <input v-model="name" class="input" required>
+          <input v-model="name"
+                 class="input"
+                 required>
         </div>
       </div>
     </div>

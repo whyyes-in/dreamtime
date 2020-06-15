@@ -231,7 +231,8 @@ export class BaseUpdater {
         dialog.showMessageBoxSync({
           type: 'error',
           title: 'Connect to Internet.',
-          message: 'There was a problem getting the latest version of the components needed to use DreamTime. Please make sure you are connected to the Internet just for this time and try again.',
+          message: `There was a problem getting the latest version of the components needed to use DreamTime. 
+          Please make sure you are connected to the Internet just for this time and try again.`,
         })
 
         // Close.
@@ -281,7 +282,7 @@ export class BaseUpdater {
     if (this.latest.assets.length === 1) {
       [asset] = this.latest.assets
     } else {
-      asset = find(this.latest.assets, (asset) => asset.name.includes(this.platform))
+      asset = find(this.latest.assets, (item) => item.name.includes(this.platform))
     }
 
     if (!isNil(asset)) {

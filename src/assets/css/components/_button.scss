@@ -1,44 +1,39 @@
 /*
  * DreamTime.
  * Copyright (C) DreamNet. All rights reserved.
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License 3.0 as published by
  * the Free Software Foundation. See <https://www.gnu.org/licenses/gpl-3.0.html>
- * 
+ *
  * Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
  */
 
 .button {
   @apply inline-flex items-center justify-center;
-  @apply border border-primary-500-30;
-  @apply px-4 rounded;
-  @apply text-primary-400 font-semibold uppercase;
+  @apply px-3 rounded bg-button text-white font-semibold;
   @apply outline-none #{!important};
-  height: 40px;
-  transition: all 0.2s ease-in-out;
+  @include transition('background-color, color');
+  height: 35px;
 
-  &:hover {
-    @apply bg-primary-500-20;
-  }
-
+  &:hover,
   &:active {
-    @apply bg-primary-500-30;
+    @apply bg-button-dark;
   }
 
   &.button--xs {
-    @apply px-2 text-xs;
-    height: 21px;
+    @apply text-xs;
+    height: 25px;
   }
 
   &.button--sm {
-    @apply px-2 text-sm;
-    height: 31px;
+    @apply text-sm;
+    height: 30px;
   }
 
   &.button--xl {
     @apply px-6 text-xl;
-    height: 51px;
+    height: 45px;
   }
 
   &.button--active,
@@ -46,39 +41,39 @@
     @apply text-white bg-primary-500;
   }
 
-  &.button--danger {
-    @apply text-danger-400 border-danger-500-30;
+  &.button--primary {
+    @apply bg-primary text-black;
 
-    &:hover {
-      @apply bg-danger-500-20;
-    }
-
+    &:hover,
     &:active {
-      @apply bg-danger-500-30;
+      @apply bg-primary-dark;
+    }
+  }
+
+  &.button--danger {
+    @apply bg-danger text-black;
+
+    &:hover,
+    &:active {
+      @apply bg-danger-dark;
     }
   }
 
   &.button--success {
-    @apply text-success-400 border-success-500-30;
+    @apply bg-success text-black;
 
-    &:hover {
-      @apply bg-success-500-20;
-    }
-
+    &:hover,
     &:active {
-      @apply bg-success-500-30;
+      @apply bg-success-dark;
     }
   }
 
   &.button--info {
-    @apply text-blue-400 border-blue-500-30;
+    @apply bg-blue text-black;
 
-    &:hover {
-      @apply bg-blue-500-20;
-    }
-
+    &:hover,
     &:active {
-      @apply bg-blue-500-30;
+      @apply bg-blue-dark;
     }
   }
 
@@ -88,25 +83,17 @@
 }
 
 .buttons {
-  @apply flex items-center flex-wrap justify-start;
+  @apply flex flex-wrap;
 
-  &.is-center {
-    @apply justify-center;
-  }
+  .button {
+    @apply flex-1 rounded-none;
 
-  &.is-right {
-    @apply justify-end;
-  }
+    &:first-child {
+      @apply rounded-l;
+    }
 
-  &.is-group {
-    .button {
-      &:not(:last-child) {
-        @apply rounded-r-none;
-      }
-
-      &:not(:first-child) {
-        @apply rounded-l-none border-l-0;
-      }
+    &:last-child {
+      @apply rounded-r;
     }
   }
 }
