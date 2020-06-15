@@ -29,6 +29,7 @@ Vue.mixin(BaseMixin)
 tippy.setDefaultProps({
   delay: [500, 0],
   arrow: true,
+  allowHTML: true,
 })
 
 export default (ctx, inject) => {
@@ -52,20 +53,6 @@ export default (ctx, inject) => {
 
   // Achievements.
   achievements.setup()
-
-  ctx.app.router.afterEach((to) => {
-    console.log(to)
-
-    /*
-    if (to.path === '/games/badtime') {
-
-    } else {
-
-    }
-    */
-  })
-
-  console.log(ctx)
 
   consola.info('The front-end is ready!')
 }

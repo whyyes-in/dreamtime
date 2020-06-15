@@ -2,8 +2,7 @@
   <div class="settings">
     <!-- Menu -->
     <portal to="menu">
-      <section id="uploader-methods"
-               class="menu__items">
+      <section id="uploader-methods" class="menu__items">
         <MenuItem
           label="Application"
           icon="window-maximize"
@@ -18,6 +17,11 @@
           label="Preferences"
           icon="sliders-h"
           href="/settings/preferences" />
+
+        <MenuItem
+          label="Share"
+          icon="share-alt"
+          href="/settings/share" />
 
         <MenuItem
           label="Notifications"
@@ -37,10 +41,7 @@
     </portal>
 
     <div class="settings__content">
-      <div class="wrapper">
-        <nuxt-child v-model="settings"
-                    keep-alive />
-      </div>
+      <nuxt-child v-model="settings" keep-alive />
     </div>
   </div>
 </template>

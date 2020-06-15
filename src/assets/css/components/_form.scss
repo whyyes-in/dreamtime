@@ -1,11 +1,11 @@
 /*
  * DreamTime.
  * Copyright (C) DreamNet. All rights reserved.
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License 3.0 as published by
  * the Free Software Foundation. See <https://www.gnu.org/licenses/gpl-3.0.html>
- * 
+ *
  * Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
  */
 
@@ -21,22 +21,34 @@
   @apply block font-bold mb-2;
 }
 
+label[for] {
+  @apply cursor-pointer;
+}
+
+input[type="checkbox"] {
+  @apply bg-primary;
+}
+
 .input {
-  @apply border border-dark-400 bg-dark-500 text-generic-500; 
-  @apply py-2 px-3 rounded w-full shadow-inner;
+  @apply border border-input-light bg-input text-common;
+  @apply p-2 rounded w-full;
   @include transition('background-color, color');
   outline: none !important;
 
   &:hover, &:focus {
-    @apply text-white bg-dark-400;
+    @apply text-white bg-input-light;
   }
 
   &::placeholder {
-    @apply text-generic-900;
+    @apply text-common-dark;
   }
 
   &[disabled] {
-    @apply opacity-75 text-generic-900 cursor-not-allowed;
+    @apply opacity-75 cursor-not-allowed;
+  }
+
+  &[readonly] {
+    @apply text-common-light cursor-default #{!important};
   }
 
   &.input--sm {

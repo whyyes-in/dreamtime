@@ -1,48 +1,23 @@
 <template>
   <div class="settings-fields">
+    <PageHeader>
+      <h2 class="title">
+        <span class="icon"><font-awesome-icon icon="bell" /></span>
+        <span>Notifications</span>
+      </h2>
+
+      <h3 class="subtitle">
+        Desktop notification settings.
+      </h3>
+    </PageHeader>
+
     <section class="box">
       <div class="box__content">
-        <MenuItem
-          label="Every Run"
-          description="Notify when the program is not in the foreground and a single run have finished.">
-          <select v-model="currentValue.notifications.run"
-                  class="input">
-            <option :value="true">
-              Enabled
-            </option>
-            <option :value="false">
-              Disabled
-            </option>
-          </select>
-        </MenuItem>
+        <SettingsField v-model="value$" field-id="notifications.run" />
 
-        <MenuItem
-          label="Every Dream"
-          description="Notify when the program is not in the foreground and all the runs have finished.">
-          <select v-model="currentValue.notifications.allRuns"
-                  class="input">
-            <option :value="true">
-              Enabled
-            </option>
-            <option :value="false">
-              Disabled
-            </option>
-          </select>
-        </MenuItem>
+        <SettingsField v-model="value$" field-id="notifications.allRuns" />
 
-        <MenuItem
-          :description="`Notify when there is a new version of ${$dream.name}, DreamPower or Checkpoints.`"
-          label="Update Available">
-          <select v-model="currentValue.notifications.update"
-                  class="input">
-            <option :value="true">
-              Enabled
-            </option>
-            <option :value="false">
-              Disabled
-            </option>
-          </select>
-        </MenuItem>
+        <SettingsField v-model="value$" field-id="notifications.update" />
       </div>
     </section>
   </div>

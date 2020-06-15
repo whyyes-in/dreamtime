@@ -1,11 +1,18 @@
 <template>
   <div class="settings-fields">
-    <div class="notification">
-      <span class="icon"><font-awesome-icon icon="info-circle" /></span>
-      <span>These preferences will be applied by default on new photos.</span>
-    </div>
+    <PageHeader>
+      <h2 class="title">
+        <span class="icon"><font-awesome-icon icon="sliders-h" /></span>
+        <span>Preferences</span>
+      </h2>
 
-    <settings-preferences v-model="currentValue.preferences" />
+      <h3 class="subtitle">
+        Default settings for all photos.
+        <AppTip tooltip="You can change these options individually in each photo." />
+      </h3>
+    </PageHeader>
+
+    <SettingsPreferences v-model="value$.preferences" />
   </div>
 </template>
 

@@ -76,7 +76,27 @@ export const getCropPath = (...args) => {
     }
   }
 
-  attempt(() => fs.ensureDirSync(folder))
+  // attempt(() => fs.ensureDirSync(folder))
+
+  return join(folder, ...args)
+}
+
+export const getTempPath = (...args) => {
+  let folder
+
+  if (process.env.BUILD_PORTABLE) {
+    folder = getPath('temp')
+
+    if (!fs.existsSync(folder)) {
+      folder = getAppPath('AppData', 'Temp')
+    }
+  } else {
+    folder = settings.folders.cropped
+
+    if (!fs.existsSync(folder)) {
+      folder = getPath('temp')
+    }
+  }
 
   return join(folder, ...args)
 }

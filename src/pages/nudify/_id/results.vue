@@ -1,105 +1,71 @@
 <template>
   <!-- Results -->
-  <div v-if="photo.started"
-       class="results">
-    <!-- Tool alert -->
-    <div v-if="photo.isScaleModeCorrected"
-         class="notification notification--warning">
-      <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
-      <span>
-        The scale method is set to <strong>Crop/Overlay</strong> but the tool has not been used.
-        The photos will be nudified with <strong>Fixed</strong> instead.
-      </span>
-    </div>
+  <div class="results">
+    <PageHeader v-if="photo.isCustomMasks">
+      <h2 class="title">
+        <span class="icon"><font-awesome-icon icon="mask" /></span>
+        <span>Masks & Results</span>
+      </h2>
 
-    <!-- Quick settings -->
-    <div class="box box--items box--items--horizontal">
-      <div class="box__content">
-        <box-item v-tooltip="{
-          placement: 'bottom',
-          content: 'Scale method. Indicates how the photo will be scaled, this changes the quality of the result dramatically.'
-        }">
-          <select
-            v-model="photo.preferences.advanced.scaleMode"
-            :disabled="photo.running"
-            class="input input--sm">
-            <option value="none">
-              None
-            </option>
-            <option value="auto-rescale">
-              Fixed
-            </option>
-            <option value="auto-resize">
-              Scale and pad
-            </option>
-            <option value="auto-resize-crop">
-              Scale and crop
-            </option>
-            <option value="overlay">
-              Overlay
-            </option>
-            <option value="cropjs">
-              Crop
-            </option>
-          </select>
-        </box-item>
+      <h3 class="subtitle">
+        Generate and customize the masks to create the fake nude of your dreams.
+        <AppTip tooltip="As long as you stay on this page the drag and drop photos functionality will be used to upload the masks." />
+      </h3>
+    </PageHeader>
 
-        <box-item v-tooltip="{
-          placement: 'bottom',
-          content: 'Color transfer. Use a experimental algorithm to try to recover the original colors of the photo.'
-        }">
-          <select
-            v-model="photo.preferences.advanced.useColorTransfer"
-            :disabled="photo.running"
-            class="input input--sm">
-            <option :value="true">
-              Enabled
-            </option>
-            <option :value="false">
-              Disabled
-            </option>
-          </select>
-        </box-item>
-      </div>
-    </div>
+    <PageHeader v-else>
+      <h2 class="title">
+        <span class="icon"><font-awesome-icon icon="heart" /></span>
+        <span>Results</span>
+      </h2>
 
-    <!-- Runs -->
-    <div class="runs">
-      <nudify-photo-run v-for="(run, index) in photo.runs"
-                        :key="index"
-                        :run="run" />
-    </div>
-  </div>
+      <h3 class="subtitle">
+        Look at the results of the nudification. Was it a good dream?
+      </h3>
+    </PageHeader>
 
-  <!-- Waiting -->
-  <div v-else-if="photo.waiting"
-       class="results">
-    <div class="results__status">
-      <font-awesome-icon icon="cloud-sun-rain"
-                         class="icon" />
+    <!-- Custom Masks -->
+    <section v-if="photo.isCustomMasks" class="results__masks">
+      <NudifyMaskPhoto :photo="photo" step="correct" />
+
+      <NudifyMaskPhoto :photo="photo" step="mask" />
+
+      <NudifyMaskPhoto :photo="photo" step="maskref" />
+
+      <NudifyMaskPhoto :photo="photo" step="maskdet" />
+
+      <NudifyMaskPhoto :photo="photo" step="maskfin" />
+    </section>
+
+    <!-- Results -->
+    <section v-if="photo.started" class="results__runs">
+      <NudifyPhotoRun v-for="(run, index) in photo.runs" :key="index" :run="run" />
+    </section>
+
+    <!-- Waiting -->
+    <section v-else-if="photo.waiting" class="results__status">
+      <font-awesome-icon icon="cloud-sun-rain" class="icon" />
 
       <h2>
         Waiting for other dreams to complete...
       </h2>
-    </div>
-  </div>
+    </section>
 
-  <!-- Pending -->
-  <div v-else
-       class="results">
-    <div class="results__status">
-      <font-awesome-icon icon="cloud-moon"
-                         class="icon" />
+    <!-- Pending -->
+    <section v-else class="results__status">
+      <font-awesome-icon icon="cloud-moon" class="icon" />
 
       <h2>
         Add me to the queue and let's dream together.
       </h2>
-    </div>
+    </section>
   </div>
 </template>
 
 <script>
 export default {
+  layout: 'layout--wide',
+
   computed: {
     photo() {
       return this.$parent.photo
@@ -120,19 +86,11 @@ export default {
   @apply h-full;
 }
 
-.results__status {
-  @apply flex flex-col justify-center items-center h-full;
-
-  .icon {
-    @apply text-6xl text-white mb-4;
-  }
-
-  h2 {
-    @apply text-2xl;
-  }
+.results__masks {
+  @apply mb-6 grid grid-cols-5 gap-3;
 }
 
-.runs {
+.results__runs {
   @apply flex flex-wrap;
 
   .photo-run {
@@ -141,6 +99,19 @@ export default {
     @media (min-height: 1280px) {
       height: 1024px;
     }
+  }
+}
+
+.results__status {
+  @apply flex flex-col justify-center items-center;
+  height: 300px;
+
+  .icon {
+    @apply text-6xl text-white mb-4;
+  }
+
+  h2 {
+    @apply text-2xl;
   }
 }
 </style>

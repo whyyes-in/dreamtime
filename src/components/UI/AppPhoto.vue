@@ -30,7 +30,7 @@ export default {
 .photo {
   @apply relative flex flex-col z-50;
   box-sizing: content-box;
-  transition: all 0.2s ease-in-out;
+  //transition: all 0.2s ease-in-out;
 
   &.photo--hover:hover {
     transform: scale(1.5);

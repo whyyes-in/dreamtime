@@ -1,22 +1,20 @@
 <template>
-  <section class="box box--items">
+  <section v-if="!readonly" class="box">
     <div class="box__content">
-      <box-item :description="`Value: ${currentValue.size}`"
-                :label="`${label} size`">
-        <div :style="{ opacity: body.randomize ? 0.3 : 1.0 }">
-          <VueSlider v-model="currentValue.size"
+      <MenuItem :description="`Value: ${value$.size}`" :label="`${label} size`">
+        <div v-if="!body.randomize">
+          <VueSlider v-model="value$.size"
                      :min="min"
                      :max="max"
                      :interval="0.05" />
         </div>
-      </box-item>
+      </MenuItem>
 
-      <box-item
-        v-show="!body.randomize && body.progressive.enabled"
+      <MenuItem
+        v-if="!body.randomize && body.progressive.enabled"
         label="Progressive?"
         description="Increase this body part progressively in each run.">
-        <select v-model="currentValue.progressive"
-                class="input">
+        <select v-model="value$.progressive" class="input">
           <option :value="true">
             Enabled
           </option>
@@ -24,13 +22,13 @@
             Disabled
           </option>
         </select>
-      </box-item>
+      </MenuItem>
 
-      <div v-show="body.randomize">
-        <box-item
+      <div v-if="body.randomize">
+        <MenuItem
           label="Randomize?"
           description="Randomize this body part in each run.">
-          <select v-model="currentValue.randomize.enabled"
+          <select v-model="value$.randomize.enabled"
                   class="input">
             <option :value="true">
               Enabled
@@ -39,29 +37,38 @@
               Disabled
             </option>
           </select>
-        </box-item>
+        </MenuItem>
 
-        <box-item
+        <MenuItem
           label="Random range"
-          :description="`Min: ${currentValue.randomize.min} - Max: ${currentValue.randomize.max}`">
+          :description="`Min: ${value$.randomize.min} - Max: ${value$.randomize.max}`">
           <VueSlider
             v-model="randomizeRange"
             :min-range="0.05"
             :min="min"
             :max="max"
             :interval="0.05" />
-        </box-item>
+        </MenuItem>
       </div>
     </div>
   </section>
+
+  <MenuItem
+    v-else
+    :label="label"
+    action-class="preference__list">
+    <span class="font-bold">{{ value$.size }}</span>
+    <span v-if="value$.randomize.enabled === true">Randomized ({{ value$.randomize.min }} - {{ value$.randomize.max }})</span>
+    <span v-else-if="value$.progressive === true">Progresive</span>
+  </MenuItem>
 </template>
 
 <script>
 import { VModel } from '~/mixins'
 
 export default {
-
   mixins: [VModel],
+
   props: {
     label: {
       type: String,
@@ -75,24 +82,36 @@ export default {
       type: Number,
       default: 2,
     },
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   computed: {
     randomizeRange: {
       get() {
-        return [this.currentValue.randomize.min, this.currentValue.randomize.max]
+        return [this.value$.randomize.min, this.value$.randomize.max]
       },
       set(value) {
         const [min, max] = value
 
-        this.currentValue.randomize.min = min
-        this.currentValue.randomize.max = max
+        this.value$.randomize.min = min
+        this.value$.randomize.max = max
       },
     },
 
     body() {
-      return this.$parent.currentValue?.body
+      return this.$parent.value$?.body
     },
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.preference__list {
+  span {
+    @apply text-sm text-center block;
+  }
+}
+</style>

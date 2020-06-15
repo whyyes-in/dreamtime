@@ -16,7 +16,7 @@
     <div v-if="dreampower.available"
          class="notification notification--warning cursor-pointer"
          @click="$router.push('/wizard/power')">
-       🎉 <strong>{{ dreampower.displayName }} {{ dreampower.latest.tag_name }}</strong> is available for download!
+      🎉 <strong>{{ dreampower.displayName }} {{ dreampower.latest.tag_name }}</strong> is available for download!
     </div>
 
     <!-- Checkpoints Updater -->
@@ -28,8 +28,7 @@
 
     <!-- Menu -->
     <portal to="menu">
-      <section id="uploader-methods"
-               class="menu__items">
+      <section id="uploader-methods" class="menu__items">
         <menu-item
           label="Instagram"
           :icon="['fab', 'instagram']"
@@ -62,8 +61,7 @@
 
     <div class="uploader__methods">
       <!-- Web Address -->
-      <div v-show="selectionId === 0"
-           class="methods__content">
+      <div v-show="selectionId === 0" class="methods__content">
         <PageHeader>
           <h2 class="title">
             <span class="icon"><font-awesome-icon icon="globe" /></span>
@@ -72,8 +70,7 @@
 
           <h3 class="subtitle">
             Upload photos from the web.
-            <span v-tooltip="'Only valid with web addresses that end in: jpg, png or gif.'"
-                  class="help">
+            <span v-tooltip="'Only web addresses that end in: jpg, png or gif.'" class="help">
               <font-awesome-icon icon="info-circle" />
             </span>
           </h3>
@@ -86,16 +83,14 @@
                  placeholder="https://"
                  data-private="lipsum">
 
-          <button class="button"
-                  @click="openUrl">
+          <button class="button" @click="openUrl">
             <span>Upload</span>
           </button>
         </div>
       </div>
 
       <!-- Instagram -->
-      <div v-show="selectionId === 1"
-           class="methods__content">
+      <div v-show="selectionId === 1" class="methods__content">
         <PageHeader>
           <h2 class="title">
             <span class="icon"><font-awesome-icon :icon="['fab', 'instagram']" /></span>
@@ -103,7 +98,7 @@
           </h2>
 
           <h3 class="subtitle">
-            Upload public photos from any Instagram profile.
+            Upload photos from any public Instagram profile.
           </h3>
         </PageHeader>
 

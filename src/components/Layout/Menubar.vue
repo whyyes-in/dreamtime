@@ -1,33 +1,14 @@
 <template>
   <div class="menu">
-    <section>
-      <!-- Upload Mode -->
-      <select
-        v-model="$settings.app.uploadMode"
-        v-tooltip="{ content: 'Upload mode. The uploaded photos will be added to the selected section.', placement: 'right' }"
-        class="input input--menu">
-        <option value="none">
-          Pending
-        </option>
-        <option value="go-preferences">
-          Pending -> Preferences
-        </option>
-        <option value="add-queue">
-          Queue
-        </option>
-      </select>
-    </section>
+    <div class="menu__content">
+      <!-- Custom menu -->
+      <portal-target name="menu" class="menu__custom" />
+    </div>
 
-    <!-- Custom menu -->
-    <portal-target name="menu"
-                   class="menu__custom" />
-
-    <!-- Random Lesson -->
-    <section v-if="help.randomLesson">
-      <HelpLesson :lesson="help.randomLesson"
-                  :small="true"
-                  @click="$router.push('/help')" />
-    </section>
+    <!-- Ads/Lesson -->
+    <div class="menu__bottom">
+      <AppAds />
+    </div>
   </div>
 </template>
 
@@ -42,30 +23,37 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@keyframes logoAnim {
+  0% {
+    background-position: 0% 0%;
+  }
+
+  50% {
+    background-position: 100% 0%;
+  }
+
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
 .menu {
   @apply flex flex-col;
-  @apply p-3 bg-dark-500;
+  @apply bg-menus relative border-r border-menus-light;
   grid-area: menu;
 
-  section {
-    &:not(:last-child) {
-      @apply pb-6 border-b border-dark-400;
-      @apply mb-3;
+  &::v-deep {
+    section {
+      @apply mb-6;
+    }
+
+    .item {
+      @apply mb-1 p-3 #{!important};
     }
   }
 }
 
-.menu__custom {
-  @apply flex-1;
-}
-
-.lesson {
-  @apply bg-dark-900 cursor-pointer;
-  @apply shadow;
-  @include transition('background-color, box-shadow', 0.2s);
-
-  &:hover {
-    @apply bg-dark-800 shadow-lg;
-  }
+.menu__content {
+  @apply flex-1 p-3 h-full overflow-y-auto;
 }
 </style>

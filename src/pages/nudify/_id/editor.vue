@@ -1,9 +1,8 @@
 <template>
   <div class="nudify-editor">
-    <div v-if="photo.scaleMode === 'cropjs' || photo.scaleMode === 'overlay'"
-         class="notification notification--warning">
+    <div v-if="photo.scaleMode === 'cropjs' || photo.scaleMode === 'overlay'" class="notification notification--warning">
       <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
-      <span>The changes will not be reflected in the nudification until you click on the <strong>Reload</strong> button of the Crop/Overlay tool.</span>
+      <span>The changes you make here will not be reflected in the final result until you click on the <strong>Reload</strong> button of the Crop/Overlay tool.</span>
     </div>
 
     <div ref="imageEditor"
@@ -16,6 +15,8 @@
 import { tutorial } from '~/modules'
 
 export default {
+  layout: 'layout--wide',
+
   computed: {
     photo() {
       return this.$parent.photo
@@ -44,6 +45,7 @@ export default {
           theme: blackTheme,
           initMenu: 'draw',
           menu: ['draw', 'shape', 'flip', 'rotate', 'filter', 'mask'],
+          menuBarPosition: 'left',
         },
         usageStatistics: false,
       })

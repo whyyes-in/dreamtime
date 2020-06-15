@@ -1,66 +1,20 @@
 <template>
-  <div v-if="photo"
-       class="nudify content__body">
-    <div class="nudify__menu">
-      <div class="menu__container">
-        <!-- Original Preview -->
-        <div class="mb-6 flex justify-center">
-          <app-photo :src="photo.file.path"
-                     :hover="false"
-                     data-private />
-        </div>
-
-        <!-- Navigation -->
-        <div id="nudify-navigation"
-             class="box box--items">
-          <div class="box__content">
-            <box-item
-              label="Preferences"
-              icon="sliders-h"
-              :href="`/nudify/${photo.id}/preferences`" />
-
-            <box-item
-              label="Results"
-              icon="heart"
-              :href="`/nudify/${photo.id}/results`" />
-          </div>
-        </div>
-
-        <!-- Tools -->
-        <div v-if="photo.canModify"
-             id="nudify-tools"
-             class="box box--items">
-          <div class="box__content">
-            <box-item
-              label="Editor"
-              icon="paint-brush"
-              :href="`/nudify/${photo.id}/editor`" />
-
-            <box-item
-              v-if="photo.preferences.advanced.scaleMode === 'cropjs'"
-              label="Crop"
-              icon="crop"
-              :href="`/nudify/${photo.id}/crop`" />
-
-            <box-item
-              v-if="photo.preferences.advanced.scaleMode === 'overlay'"
-              label="Overlay"
-              icon="magic"
-              :href="`/nudify/${photo.id}/overlay`" />
-          </div>
-        </div>
-
-        <!-- Buttons -->
+  <div v-if="photo" class="nudify">
+    <!-- Menu -->
+    <portal to="menu">
+      <section class="nudify__buttons">
+        <!-- Nudify -->
         <button
           v-show="!photo.running && !photo.waiting"
           id="nudify-nudify"
           v-tooltip="{content: 'Add the photo to the queue to be nudified as soon as it is turn.', placement: 'right', boundary: 'viewport'}"
-          class="button button--success"
+          class="button button--lg button--success"
           @click.prevent="add">
           <span class="icon"><font-awesome-icon icon="play" /></span>
           <span>Nudify</span>
         </button>
 
+        <!-- Save all -->
         <button
           v-show="photo.finished && photo.executions > 1"
           v-tooltip="{content: 'Save all the photos generated in the location you select.', placement: 'right', boundary: 'viewport'}"
@@ -70,6 +24,7 @@
           <span>Save all</span>
         </button>
 
+        <!-- Remove from queue-->
         <button
           v-show="photo.waiting"
           class="button button--danger"
@@ -77,6 +32,7 @@
           <span>Remove from queue</span>
         </button>
 
+        <!-- Stop -->
         <button
           v-show="photo.running"
           class="button button--danger"
@@ -85,15 +41,7 @@
           <span>Stop</span>
         </button>
 
-        <button
-          id="nudify-folder"
-          v-tooltip="{content: 'Open the folder where all the nudified photos are located.', placement: 'right', boundary: 'viewport'}"
-          class="button"
-          @click.prevent="openFolder">
-          <span class="icon"><font-awesome-icon icon="folder-open" /></span>
-          <span>Folder</span>
-        </button>
-
+        <!-- Forget -->
         <button
           id="nudify-forget"
           v-tooltip="{
@@ -105,12 +53,56 @@
           <span class="icon"><font-awesome-icon icon="trash-alt" /></span>
           <span>Forget</span>
         </button>
-      </div>
-    </div>
+      </section>
 
-    <div class="nudify__content">
-      <nuxt-child keep-alive />
-    </div>
+      <!-- Original Preview -->
+      <section class="nudify__photo">
+        <div class="nudify__photo__preview"
+             :style="{ backgroundImage: `url('${photo.file.path}')` }" />
+
+        <img v-tooltip="photo.avatar.name" :src="photo.avatar.image" class="nudify__photo__badge">
+      </section>
+
+      <!-- Menu -->
+      <section class="menu__items">
+        <MenuItem
+          label="Preferences"
+          icon="sliders-h"
+          :href="`/nudify/${photo.id}/preferences`" />
+
+        <MenuItem
+          v-show="photo.canShowEditor"
+          label="Editor"
+          icon="paint-brush"
+          :href="`/nudify/${photo.id}/editor`" />
+
+        <MenuItem
+          v-show="photo.canShowCropTool"
+          label="Crop"
+          icon="crop"
+          :href="`/nudify/${photo.id}/crop`" />
+
+        <MenuItem
+          v-show="photo.canShowOverlayTool"
+          label="Overlay"
+          icon="magic"
+          :href="`/nudify/${photo.id}/overlay`" />
+
+        <MenuItem
+          v-show="!photo.isCustomMasks"
+          label="Results"
+          icon="heart"
+          :href="`/nudify/${photo.id}/results`" />
+
+        <MenuItem
+          v-show="photo.isCustomMasks"
+          label="Masks & Results"
+          icon="mask"
+          :href="`/nudify/${photo.id}/results`" />
+      </section>
+    </portal>
+
+    <nuxt-child keep-alive />
   </div>
 </template>
 
@@ -189,20 +181,42 @@ export default {
 
 <style lang="scss" scoped>
 .nudify {
-  @apply relative flex pb-0;
-  height: 100%;
+  @apply relative h-full;
 }
 
-.nudify__menu {
-  @apply mr-4 pr-6 h-full overflow-y-auto;
-  width: 250px;
+.nudify__photo {
+  @apply relative rounded;
+  background-image: url('~@/assets/images/curls.png');
+  will-change: transform;
+  height: 250px;
+}
+
+.nudify__photo__preview {
+  @apply absolute top-0 bottom-0 left-0 right-0 z-10;
+  @apply bg-contain bg-no-repeat bg-center;
+}
+
+.nudify__photo__badge {
+  @apply absolute z-20;
+  top: 5px;
+  right: 5px;
+  width: 40px;
+  height: 40px;
+}
+
+.nudify__buttons {
+  @apply flex;
 
   .button {
-    @apply block w-full mb-6;
-  }
-}
+    @apply w-full rounded-none;
 
-.nudify__content {
-  @apply flex-1 h-full overflow-auto;
+    &:first-child {
+      @apply rounded-tl rounded-bl;
+    }
+
+    &:last-child {
+      @apply rounded-tr rounded-br;
+    }
+  }
 }
 </style>

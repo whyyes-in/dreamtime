@@ -1,34 +1,24 @@
 <template>
-  <div class="item"
-       :class="cssClass"
-       @click="click">
+  <div class="item" :class="cssClass" @click="click">
     <!-- Icon -->
     <slot name="icon">
-      <div v-if="icon"
-           class="item__icon">
-        <img v-if="isImageIcon"
-             :src="icon">
-        <font-awesome-icon v-else
-                           :icon="icon" />
+      <div v-if="icon" class="item__icon">
+        <img v-if="isImageIcon" :src="icon">
+        <font-awesome-icon v-else :icon="icon" />
       </div>
     </slot>
 
     <!-- Title & Description -->
-    <div v-if="label"
-         class="item__label">
-      <span class="item__title"
-            v-html="label" />
+    <div v-if="label" class="item__label">
+      <span class="item__title" v-html="label" />
 
       <slot name="description">
-        <span v-if="description"
-              class="item__description"
-              v-html="description" />
+        <span v-if="description" class="item__description" v-html="description" />
       </slot>
     </div>
 
     <!-- Action -->
-    <div v-if="$slots.default"
-         class="item__action">
+    <div v-if="$slots.default" class="item__action" :class="actionClass">
       <slot />
     </div>
   </div>
@@ -65,6 +55,11 @@ export default {
     isLink: {
       type: Boolean,
       default: false,
+    },
+
+    actionClass: {
+      type: [String, Object, Array],
+      default: '',
     },
   },
 
@@ -103,13 +98,17 @@ export default {
 
 <style lang="scss" scoped>
 .item {
-  @apply flex p-3 rounded;
-  @apply border-b border-t border-transparent;
-  @include transition('background-color, color, border-color');
+  @apply flex items-center;
+  @include transition('background-color');
   min-height: 50px;
 
-  &.item--active {
-    @apply bg-dark-400 border-dark-800 text-white;
+  &:not(:last-child) {
+    @apply mb-6;
+  }
+
+  &.item--active,
+  &.item--link:hover {
+    @apply bg-menus-light text-white;
 
     .item__icon, .item__title {
       @apply text-generic-500;
@@ -117,15 +116,8 @@ export default {
   }
 
   &.item--link {
-    @apply cursor-pointer;
-
-    &:hover {
-      @apply bg-dark-400 border-dark-800 text-white;
-
-      .item__icon, .item__title {
-        @apply text-generic-500;
-      }
-    }
+    @apply rounded cursor-pointer;
+    @include transition('background-color, color');
   }
 }
 
@@ -134,6 +126,11 @@ export default {
   @apply text-2xl text-generic-500;
   width: 42px;
   min-width: 42px;
+
+  img {
+    width: 24px;
+    height: 24px;
+  }
 }
 
 .item__label {
@@ -155,5 +152,9 @@ export default {
 
 .item__action {
   @apply flex-1;
+
+  &.item__action--center {
+    @apply flex justify-center items-center;
+  }
 }
 </style>

@@ -15,18 +15,16 @@ export default {
   },
 
   data: () => ({
-    /**
-     * Current value, this is the variable that must be changed.
-     */
-    currentValue: null,
+    // Current value, this is the variable that must be changed.
+    value$: null,
   }),
 
   created() {
-    // initial value.
+    // Initial value.
     if (!isNative(this.value)) {
-      this.currentValue = this.value
+      this.value$ = this.value
     } else {
-      this.currentValue = cloneDeep(this.value)
+      this.value$ = cloneDeep(this.value)
     }
   },
 
@@ -34,11 +32,13 @@ export default {
     /**
      * Local value changed, update the v-model.
      */
-    currentValue: {
+    value$: {
       handler(value) {
         if (isEqual(this.value, value)) {
           return
         }
+
+        console.log(`value$ -> v-model - ${value}`)
 
         this.$emit('input', value)
       },
@@ -49,11 +49,13 @@ export default {
      * v-model value changed, update the local value.
      */
     value(value) {
-      if (isEqual(this.currentValue, value)) {
+      if (isEqual(this.value$, value)) {
         return
       }
 
-      this.currentValue = value
+      console.log(`v-model -> value$ - ${value}`)
+
+      this.value$ = value
     },
   },
 }

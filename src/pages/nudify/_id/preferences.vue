@@ -1,14 +1,18 @@
 <template>
-  <div class="nudify-preferences wrapper">
-    <div class="notification">
-      <span class="icon"><font-awesome-icon icon="info-circle" /></span>
-      <span>
-        These preferences will only apply to the current photo.
-        To change global preferences visit the <nuxt-link to="/settings/preferences">settings</nuxt-link>.
-      </span>
-    </div>
+  <div class="preferences">
+    <PageHeader>
+      <h2 class="title">
+        <span class="icon"><font-awesome-icon icon="sliders-h" /></span>
+        <span>Preferences</span>
+      </h2>
 
-    <settings-preferences v-model="photo.preferences" />
+      <h3 class="subtitle">
+        Settings for the photo.
+        <AppTip tooltip="These preferences will only apply to the current photo. To change default preferences visit the settings." />
+      </h3>
+    </PageHeader>
+
+    <SettingsPreferences v-model="photo.preferences" />
   </div>
 </template>
 
@@ -22,8 +26,8 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.nudify-preferences {
+<style lang="scss" scoped>
+.preferences {
 
 }
 </style>

@@ -49,7 +49,7 @@ const Toast = Swal.mixin({
  */
 export const Nudify = {
   /**
-   * All open photos.
+   * Uploaded photos.
    * @type {Array<Photo>}
    */
   photos: [],
@@ -101,10 +101,12 @@ export const Nudify = {
   add(file, params = {}) {
     const photo = new Photo(file, params)
 
-    const exists = this.getPhotoById(photo.id)
+    if (!settings.app.duplicates) {
+      const exists = this.getPhotoById(photo.id)
 
-    if (!isNil(exists)) {
-      return
+      if (!isNil(exists)) {
+        return
+      }
     }
 
     this.photos.unshift(photo)

@@ -10,35 +10,38 @@
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
 import Vue from 'vue'
-import { dreamtime, dreampower, checkpoints } from '~/modules/updater'
+import {
+  dreamtime, dreampower, checkpoints, community,
+} from '~/modules/projects'
 import {
   dreamtrack, logrocket, rollbar,
 } from '~/modules/services'
 import { requirements } from '~/modules/system'
 import { handleError } from '~/modules/consola'
 
-localStorage.debug = ''
+localStorage.debug = 'none'
 
 /**
  *
  *
  */
-async function setupDreamTrack() {
-  // Analytics & App settings.
+async function setupRemote() {
+  // Analytics & Remote settings.
   await dreamtrack.setup()
 
   // Bug/Session tracking.
   Promise.all([
     rollbar.setup(),
     logrocket.setup(),
-  ])
+  ]).catch(() => { })
 
-  // Update providers.
+  // Projects.
   await Promise.all([
-    dreamtime.setup(),
-    dreampower.setup(true),
-    checkpoints.setup(true),
-  ])
+    dreamtime.init(),
+    dreampower.init(),
+    checkpoints.init(),
+    community.init(),
+  ]).catch(() => { })
 }
 
 /**
@@ -49,11 +52,11 @@ async function setup() {
   // Requirements check.
   await requirements.setup()
 
-  if (!requirements.power.installed || !requirements.power.checkpoints) {
+  if (!requirements.canNudify) {
     // DreamTrack is necessary for the wizard.
-    await setupDreamTrack()
+    await setupRemote()
   } else {
-    setupDreamTrack()
+    setupRemote()
   }
 }
 
@@ -68,4 +71,9 @@ export default async ({ app }, inject) => {
 
   // Shortcuts.
   inject('provider', $provider)
+  inject('dreamtrack', dreamtrack)
+  inject('dreamtime', dreamtime)
+  inject('dreampower', dreampower)
+  inject('checkpoints', checkpoints)
+  inject('community', community)
 }

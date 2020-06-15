@@ -1,59 +1,41 @@
 <template>
   <div class="nav">
     <div class="nav__left">
-      <div v-tooltip="$dream.version"
-           class="nav__item nav__item--logo">
-        <span>{{ $dream.name }}</span>
-      </div>
-
-      <div class="nav__item nav__item--greetings">
-        <span v-if="!isBadTime">{{ greetings }}</span>
-        <span v-else><img src="~/assets/images/games/sans.png"> i don't like what you are doing.</span>
-      </div>
-    </div>
-
-    <div class="nav__center">
-      <nuxt-link v-tooltip="'Upload'"
-                 to="/"
-                 class="nav__item nav__item--link">
-        <font-awesome-icon icon="upload" />
-      </nuxt-link>
-
-      <div v-tooltip="'My panel'"
-           class="nav__item nav__item--link">
-        <img :src="avatar"
-             alt="Me">
-      </div>
-
-      <div v-tooltip="'Advanced Mode'"
-           class="nav__item nav__item--link">
-        <font-awesome-icon icon="mask" />
-      </div>
-    </div>
-
-    <div class="nav__right">
       <nuxt-link v-if="isBadTimeAvailable"
-                 v-tooltip="'Bad Time Game'"
+                 v-tooltip="'Bad Time Minigame 🎮'"
                  to="/games/badtime"
                  class="nav__item nav__item--button">
         <img src="~/assets/images/games/sans.png">
       </nuxt-link>
+    </div>
 
-      <nuxt-link v-tooltip="'Settings'"
-                 to="/settings"
-                 class="nav__item nav__item--button">
+    <div class="nav__center">
+      <nuxt-link v-tooltip="'Upload'" to="/" class="nav__item nav__item--link">
+        <font-awesome-icon icon="upload" />
+      </nuxt-link>
+
+      <nuxt-link v-tooltip="'Photos'" to="/" class="nav__item nav__item--link">
+        <font-awesome-icon icon="images" />
+      </nuxt-link>
+    </div>
+
+    <div class="nav__right">
+      <nuxt-link v-tooltip="'Settings'" to="/settings" class="nav__item nav__item--button">
         <font-awesome-icon icon="cog" />
       </nuxt-link>
 
-      <a v-if="isDev" class="nav__item" @click.prevent="createError">
-        DEV: UI Error
-      </a>
+      <nuxt-link v-tooltip="'About'" to="/about" class="nav__item nav__item--button">
+        <font-awesome-icon icon="info-circle" />
+      </nuxt-link>
+
+      <nuxt-link v-tooltip="'Help & Tips'" to="/help" class="nav__item nav__item--button">
+        <font-awesome-icon icon="question-circle" />
+      </nuxt-link>
     </div>
   </div>
 </template>
 
 <script>
-import dayjs from 'dayjs'
 import Avatars from '@dicebear/avatars'
 import sprites from '@dicebear/avatars-jdenticon-sprites'
 import { requirements, settings } from '~/modules/system'
@@ -63,31 +45,12 @@ import { events } from '~/modules'
 export default {
   data: () => ({
     isBadTimeAvailable: settings.achievements.badtime,
-    isBadTime: false,
   }),
 
   computed: {
     avatar() {
       const avatars = new Avatars(sprites, { base64: true })
       return avatars.create(settings.user)
-    },
-
-    greetings() {
-      const hours = dayjs().hour()
-
-      if (hours >= 6 && hours <= 11) {
-        return '☕ Good morning'
-      }
-
-      if (hours >= 12 && hours <= 19) {
-        return '🌞 Good afternoon'
-      }
-
-      if (hours >= 0 && hours <= 5) {
-        return '🐏 Sweet dreams'
-      }
-
-      return '🌛 Good night'
     },
 
     canNudify() {
@@ -115,16 +78,6 @@ export default {
     events.on('achievements.badtime', () => {
       this.isBadTimeAvailable = true
     })
-
-    this.$router.afterEach((to) => {
-      if (to.path === '/games/badtime') {
-        this.$dream.name = 'BadDreamTime'
-        this.isBadTime = true
-      } else {
-        this.$dream.name = process.env.npm_package_displayName
-        this.isBadTime = false
-      }
-    })
   },
 
   methods: {
@@ -136,20 +89,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@keyframes logoAnim {
-  0% {
-    background-position: 0% 0%;
-  }
-
-  50% {
-    background-position: 100% 0%;
-  }
-
-  100% {
-    background-position: 0% 0%;
-  }
-}
-
 @keyframes alertAnim {
   0% {
     @apply text-danger-500;
@@ -166,7 +105,7 @@ export default {
 
 .nav {
   @apply flex z-10;
-  @apply h-full bg-dark-500 border-b-2 border-dark-600 shadow;
+  @apply h-full bg-menus border-b border-menus-light shadow px-3;
   grid-area: nav;
 
   .nav__left,
@@ -176,7 +115,7 @@ export default {
   }
 
   .nav__left {
-    @apply flex-1;
+    @apply items-center;
   }
 
   .nav__center {
@@ -197,18 +136,21 @@ export default {
   }
 
   &.nav__item--link {
-    @apply justify-center;
-    @apply border-b-2 border-transparent text-lg;
+    @apply justify-center border-b-2 border-transparent;
     width: 100px;
 
+    .icon {
+      @apply text-lg;
+    }
+
     &:hover {
-      @apply text-primary-500 border-primary-500;
+      @apply text-primary border-primary;
     }
   }
 
   &.nav__item--button {
     @apply justify-center;
-    @apply rounded-full text-lg mr-3;
+    @apply rounded-full text-lg mx-2;
     height: 40px;
     width: 40px;
 
@@ -219,26 +161,6 @@ export default {
     img {
       height: 20px;
     }
-  }
-
-  &.nav__item--logo {
-    @apply text-white text-sm font-bold px-6 select-none;
-    animation-duration: 10s;
-    animation-iteration-count: infinite;
-
-    animation-name: logoAnim;
-    animation-timing-function: ease-in-out;
-
-    background: rgb(99, 66, 245);
-    background: linear-gradient(40deg,
-    rgba(99, 66, 245, 1) 0%,
-    rgba(239, 125, 199, 1) 100%);
-    background-position: 0% 0%;
-    background-size: 200% 100%;
-  }
-
-  &.nav__item--greetings {
-    @apply text-white text-sm font-light px-3 select-none;
   }
 }
 

@@ -1,17 +1,17 @@
 /*
  * DreamTime.
  * Copyright (C) DreamNet. All rights reserved.
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License 3.0 as published by
  * the Free Software Foundation. See <https://www.gnu.org/licenses/gpl-3.0.html>
- * 
+ *
  * Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
  */
 
 .box {
   @apply flex flex-col;
-  @apply pb-3 bg-dark-500 shadow-lg rounded-lg;
+  @apply bg-menus shadow-lg rounded;
 
   &:not(:last-child) {
     @apply mb-6;
@@ -33,14 +33,14 @@
   }
 
   .box__header {
-    @apply px-6;
+    @apply px-6 pt-6;
 
     &:not(:first-child) {
       @apply pt-3;
     }
 
     .title {
-      @apply font-semibold text-generic-300;
+      @apply font-serif font-semibold text-lg text-common-light;
     }
 
     .subtitle {
@@ -49,31 +49,20 @@
   }
 
   .box__content {
-    @apply flex-1 px-6;
-
-    &:not(:first-child) {
-      @apply pt-3;
-    }
-
-    &:not(:last-child) {
-      @apply pb-3;
-    }
+    @apply flex-1 p-6;
 
     p {
       @apply text-sm mb-3;
     }
-
-    .item {
-      @apply px-0;
-    }
   }
 
   .box__footer {
-    @apply px-6 pt-3;
-    @apply border-t border-dark-400;
+    @apply px-6 py-3;
+    @apply border-t border-menus-light;
   }
 }
 
+/*
 .box-section {
   @apply px-0 py-2;
 
@@ -116,3 +105,4 @@
     }
   }
 }
+*/

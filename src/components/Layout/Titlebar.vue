@@ -1,7 +1,22 @@
 <template>
   <div class="titlebar">
+    <!-- Logo -->
+    <div class="titlebar__left">
+      <div class="logo">
+        <span>{{ $dream.name }}</span>
+        <span class="ml-2">{{ $dream.version }}</span>
+      </div>
+
+      <div class="logo__greetings">
+        <span v-if="!isBadTime">{{ greetings }}</span>
+        <span v-else><img src="~/assets/images/games/sans.png"> i don't like what you are doing.</span>
+      </div>
+    </div>
+
+    <!-- Drag -->
     <div class="titlebar__drag" />
 
+    <!-- Window Buttons -->
     <div class="titlebar__buttons">
       <button id="minimize"
               type="button"
@@ -26,11 +41,49 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
+
 const { getCurrentWindow } = require('electron').remote
 
 const { api } = $provider.util
 
 export default {
+  data: () => ({
+    isBadTime: false,
+  }),
+
+  computed: {
+    greetings() {
+      const hours = dayjs().hour()
+
+      if (hours >= 6 && hours <= 11) {
+        return '☕ Good morning'
+      }
+
+      if (hours >= 12 && hours <= 19) {
+        return '🌞 Good afternoon'
+      }
+
+      if (hours >= 0 && hours <= 5) {
+        return '🐏 Sweet dreams'
+      }
+
+      return '🌛 Good night'
+    },
+  },
+
+  mounted() {
+    this.$router.afterEach((to) => {
+      if (to.path === '/games/badtime') {
+        this.$dream.name = 'BadDreamTime'
+        this.isBadTime = true
+      } else {
+        this.$dream.name = process.env.npm_package_displayName
+        this.isBadTime = false
+      }
+    })
+  },
+
   methods: {
     minimize() {
       try {
@@ -56,7 +109,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@keyframes logoAnim {
+  0% {
+    background-position: 0% 0%;
+  }
 
+  50% {
+    background-position: 100% 0%;
+  }
+
+  100% {
+    background-position: 0% 0%;
+  }
+}
 
 .titlebar {
   @apply flex justify-end;
@@ -75,27 +140,57 @@ export default {
       height: 18px;
     }
   }
+}
 
-  .titlebar__drag {
-    @apply flex-1;
-    -webkit-app-region: drag;
+.titlebar__left {
+  @apply flex;
+}
+
+.logo {
+  @apply flex justify-center items-center;
+  @apply text-white text-sm font-bold px-6 select-none;
+  animation-duration: 10s;
+  animation-iteration-count: infinite;
+
+  animation-name: logoAnim;
+  animation-timing-function: ease-in-out;
+
+  background: rgb(99, 66, 245);
+  background: linear-gradient(40deg,
+  rgba(99, 66, 245, 1) 0%,
+  rgba(239, 125, 199, 1) 100%);
+  background-position: 0% 0%;
+  background-size: 200% 100%;
+}
+
+.logo__greetings {
+  @apply flex justify-center items-center;
+  @apply text-white text-sm font-light px-3 select-none;
+
+  img {
+    height: 30px;
   }
+}
 
-  .titlebar__buttons {
-    @apply flex;
+.titlebar__drag {
+  @apply flex-1;
+  -webkit-app-region: drag;
+}
 
-    button {
-      @apply flex items-center justify-center outline-none;
-      @apply text-xs;
-      height: 30px;
-      width: 50px;
+.titlebar__buttons {
+  @apply flex;
 
-      &:hover {
-        @apply bg-dark-800;
+  button {
+    @apply flex items-center justify-center outline-none;
+    @apply text-xs;
+    height: 30px;
+    width: 50px;
 
-        &.close {
-          @apply bg-danger-500;
-        }
+    &:hover {
+      @apply bg-dark-800;
+
+      &.close {
+        @apply bg-danger-500;
       }
     }
   }

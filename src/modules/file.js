@@ -137,8 +137,8 @@ export class File {
    */
   setMetadata(metadata) {
     this.name = metadata.name
-    this.extension = metadata.ext
-    this.fullname = `${this.name}${this.extension}`
+    this.extension = metadata.ext.substring(1)
+    this.fullname = `${this.name}.${this.extension}`
     this.directory = slash(metadata.dir)
     this.realpath = path.join(this.directory, this.fullname)
     this.path = slash(this.realpath)

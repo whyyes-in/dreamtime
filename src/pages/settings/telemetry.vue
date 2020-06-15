@@ -1,34 +1,21 @@
 <template>
   <div class="settings-fields">
-    <section class="box box--items">
-      <div class="box__content">
-        <box-item
-          label="Bug report."
-          description="Allow to report errors automatically.">
-          <select v-model="currentValue.telemetry.bugs"
-                  class="input">
-            <option :value="true">
-              Enabled
-            </option>
-            <option :value="false">
-              Disabled
-            </option>
-          </select>
-        </box-item>
+    <PageHeader>
+      <h2 class="title">
+        <span class="icon"><font-awesome-icon icon="paper-plane" /></span>
+        <span>Telemetry</span>
+      </h2>
 
-        <box-item
-          label="Session tracking."
-          description="Allow to send detailed information about how you use the application. (No sensitive information or photos will be sent)">
-          <select v-model="currentValue.telemetry.dom"
-                  class="input">
-            <option :value="true">
-              Enabled
-            </option>
-            <option :value="false">
-              Disabled
-            </option>
-          </select>
-        </box-item>
+      <h3 class="subtitle">
+        Settings for sending usage information to improve the application.
+      </h3>
+    </PageHeader>
+
+    <section class="box">
+      <div class="box__content">
+        <SettingsField v-model="value$" field-id="telemetry.bugs" />
+
+        <SettingsField v-model="value$" field-id="telemetry.dom" />
       </div>
     </section>
   </div>

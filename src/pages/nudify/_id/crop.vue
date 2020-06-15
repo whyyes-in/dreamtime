@@ -1,69 +1,26 @@
 <template>
-  <div class="nudify-cropper">
-    <div class="cropper__help">
-      <section class="box">
-        <div class="box__content flex justify-center items-center h-full">
-          <button id="cropper-reload" v-tooltip="'Get recent changes from the editor.'" class="button" @click.prevent="reload">
-            <span class="icon"><font-awesome-icon icon="sync" /></span>
-            <span>Reload</span>
-          </button>
-        </div>
-      </section>
+  <div class="cropper">
+    <PageHeader>
+      <h2 class="title">
+        <span class="icon"><font-awesome-icon icon="crop" /></span>
+        <span>Crop tool.</span>
+      </h2>
 
-      <section id="cropper-about" class="box">
-        <div class="box__header">
-          <h2 class="title">
-            <font-awesome-icon icon="crop" /> Manual crop.
-          </h2>
-        </div>
+      <h3 class="subtitle">
+        Manually select the area you want to be cropped and resized.
+        <AppTip :tooltip="tooltip" />
+      </h3>
 
-        <div class="box__content">
-          <p>
-            This tool allows you to manually select the area you want to be cropped from the photo and resized.
-          </p>
-        </div>
-      </section>
-
-      <section id="cropper-help" class="box">
-        <div class="box__header">
-          <h2 class="title">
-            <font-awesome-icon icon="mouse-pointer" /> Commands
-          </h2>
-        </div>
-
-        <div class="box__content">
-          <p>
-            - Increase or decrease the zoom with the mouse wheel.
-          </p>
-
-          <p>
-            - Click and drag somewhere in the photo to create the crop box.
-          </p>
-
-          <p>
-            - You can move the crop box by dragging it.
-          </p>
-
-          <p>
-            - You can increase or decrease the size of the cropbox by dragging any of the anchor points in the corners.
-          </p>
-        </div>
-      </section>
-
-      <section class="box">
-        <div class="box__header">
-          <h2 class="title">
-            <font-awesome-icon icon="exclamation-triangle" /> Warning.
-          </h2>
-        </div>
-
-        <div class="box__content">
-          <p>
-            This tool can dramatically decrease the quality of some photos. (blurry photos)
-          </p>
-        </div>
-      </section>
-    </div>
+      <template v-slot:right>
+        <button id="cropper-reload"
+                v-tooltip="'Get recent changes from the editor.'"
+                class="button"
+                @click.prevent="reload">
+          <span class="icon"><font-awesome-icon icon="sync" /></span>
+          <span>Reload</span>
+        </button>
+      </template>
+    </PageHeader>
 
     <div class="cropper__crop">
       <canvas ref="cropCanvas" data-private />
@@ -75,7 +32,19 @@
 import { tutorial } from '~/modules'
 
 export default {
+  layout: 'layout--wide',
+
   computed: {
+    tooltip() {
+      return `Commands:<br>
+      - Increase or decrease the zoom with the mouse wheel.<br>
+      - Click and drag somewhere in the photo to create the crop box.<br>
+      - You can move the crop box by dragging it.<br>
+      - You can increase or decrease the size of the cropbox by dragging any of the anchor points in the corners.<br><br>
+
+      Warning: This tool can dramatically decrease the quality of some photos. (blurry photos)`
+    },
+
     photo() {
       return this.$parent.photo
     },
@@ -120,41 +89,15 @@ export default {
      */
     async reload() {
       await this.photo.syncEditor()
-      this.cropper.replace(this.photo.fileInput.path)
+      this.cropper.replace(this.photo.inputFile.path)
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.nudify-cropper {
+.cropper {
   @apply flex flex-col h-full;
-}
-
-.cropper__help {
-  @apply flex overflow-y-hidden overflow-x-auto;
-  @apply mb-4;
-  height: 150px;
-
-  .button {
-    @apply mb-6 w-full;
-  }
-
-  .box {
-    @apply flex-1 mb-0 overflow-auto;
-
-    p {
-      @apply text-xs mb-4;
-    }
-
-    ul {
-      @apply ml-4 list-disc;
-
-      li {
-        @apply mb-2;
-      }
-    }
-  }
 }
 
 .cropper__crop {

@@ -1,7 +1,6 @@
 <template>
-  <div id="queuebar"
-       class="queue">
-    <div class="queue__section queue__section--running">
+  <div id="queuebar" class="queue">
+    <section class="queue__section queue__section--running">
       <div class="queue__header">
         <p class="title">
           <span class="icon"><font-awesome-icon icon="running" /></span>
@@ -18,7 +17,7 @@
           :photo="photo"
           data-private />
       </div>
-    </div>
+    </section>
 
     <div class="queue__section queue__section--pending">
       <div class="queue__header">
@@ -69,7 +68,7 @@ export default {
 <style lang="scss" scoped>
 .queue {
   @apply flex flex-col;
-  @apply bg-dark-500;
+  @apply bg-menus border-l border-menus-light relative;
   grid-area: queue;
 }
 
@@ -103,12 +102,8 @@ export default {
 }
 
 .queue__content {
-  @apply flex-1;
-  @apply overflow-hidden overflow-x-auto whitespace-no-wrap;
-
-  .photo {
-    @apply inline-block;
-  }
+  @apply flex-1 grid grid-cols-2 grid-rows-2;
+  @apply overflow-y-auto whitespace-no-wrap;
 }
 
 /*
