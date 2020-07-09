@@ -9,11 +9,13 @@
 //
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2020.
 
-import { isNil } from 'lodash'
-import introJs from 'intro.js'
+// import { isNil } from 'lodash'
+// import introJs from 'intro.js'
 
 export const tutorial = {
   upload() {
+
+    /*
     const seen = localStorage.getItem('tutorial.upload')
 
     if (!isNil(seen)) {
@@ -69,9 +71,12 @@ export const tutorial = {
     intro.start()
 
     localStorage.setItem('tutorial.upload', 'true')
+    */
   },
 
   photo() {
+
+    /*
     const seen = localStorage.getItem('tutorial.photo')
 
     if (!isNil(seen)) {
@@ -118,9 +123,12 @@ export const tutorial = {
     intro.start()
 
     localStorage.setItem('tutorial.photo', 'true')
+    */
   },
 
   badtime() {
+
+    /*
     const seen = localStorage.getItem('tutorial.badtime')
 
     if (!isNil(seen)) {
@@ -142,9 +150,12 @@ export const tutorial = {
     intro.start()
 
     localStorage.setItem('tutorial.badtime', 'true')
+    */
   },
 
   preferences() {
+
+    /*
     const seen = localStorage.getItem('tutorial.preferences')
 
     if (!isNil(seen)) {
@@ -185,9 +196,12 @@ export const tutorial = {
     intro.start()
 
     localStorage.setItem('tutorial.preferences', 'true')
+    */
   },
 
   editor() {
+
+    /*
     const seen = localStorage.getItem('tutorial.editor')
 
     if (!isNil(seen)) {
@@ -213,9 +227,12 @@ export const tutorial = {
     intro.start()
 
     localStorage.setItem('tutorial.editor', 'true')
+    */
   },
 
   cropper() {
+
+    /*
     const seen = localStorage.getItem('tutorial.cropper')
 
     if (!isNil(seen)) {
@@ -248,5 +265,6 @@ export const tutorial = {
     intro.start()
 
     localStorage.setItem('tutorial.cropper', 'true')
+    */
   },
 }

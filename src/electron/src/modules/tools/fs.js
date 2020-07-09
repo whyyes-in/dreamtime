@@ -3,6 +3,7 @@ import { basename, join } from 'path'
 import fs from 'fs-extra'
 import { app, dialog } from 'electron'
 import axios from 'axios'
+import https from 'https'
 import deferred from 'deferred'
 import chokidar from 'chokidar'
 import { getAppResourcesPath } from './paths'
@@ -144,6 +145,7 @@ export function download(url, options = {}) {
     url,
     responseType: 'stream',
     maxContentLength: -1,
+    httpsAgent: new https.Agent({ rejectUnauthorized: false }),
   }).then(({ data, headers }) => {
     const contentLength = headers['content-length'] || -1
 

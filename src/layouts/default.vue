@@ -17,7 +17,7 @@
     <Menubar />
 
     <!-- Queue -->
-    <Queuebar />
+    <QueueMenu />
 
     <!-- Content -->
     <div id="layout-content" class="layout__content">
