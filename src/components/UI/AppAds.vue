@@ -1,10 +1,8 @@
 <template>
-  <div v-if="show" class="ads">
-    <div v-if="showAd">
-      <ins data-revive-zoneid="3" data-revive-id="7e048c7f8d85676181a4b65ec87d61fe" />
-    </div>
+  <div v-show="ready" class="ads">
+    <div v-show="isAd" ref="adContainer" />
 
-    <HelpLesson v-if="showLesson"
+    <HelpLesson v-if="isLesson"
                 :lesson="lesson"
                 :small="true"
                 @click="$router.push('/help')" />
@@ -12,11 +10,12 @@
 </template>
 
 <script>
-import { isNil, sample } from 'lodash'
+import { sample } from 'lodash'
 import { settings } from '~/modules/system'
-import { Help } from '~/modules'
+import { dreamtrack } from '~/modules/services'
+import { Help, events } from '~/modules'
 
-const CHANGE_INTERVAL = process.env.NODE_ENV === 'development' ? 1 * 60 * 1000 : 15 * 60 * 1000
+const CHANGE_INTERVAL = process.env.NODE_ENV === 'development' ? 15 * 1000 : 15 * 60 * 1000
 
 export default {
   data: () => ({
@@ -27,30 +26,20 @@ export default {
   }),
 
   computed: {
-    show() {
-      return !isNil(this.type)
-    },
-
     isAd() {
       return this.type === 'ad'
-    },
-
-    showAd() {
-      return this.isAd && this.ready
     },
 
     isLesson() {
       return this.type === 'lesson'
     },
-
-    showLesson() {
-      return this.isLesson && this.ready
-    },
   },
 
-  created() {
+  mounted() {
     this.init()
     this.interval = setInterval(this.init.bind(this), CHANGE_INTERVAL)
+
+    events.on('settings:ads', this.init.bind(this))
   },
 
   beforeDestroy() {
@@ -61,6 +50,18 @@ export default {
 
   methods: {
     init() {
+      this.ready = false
+
+      this.chooseType()
+
+      if (this.isAd) {
+        this.refreshAd()
+      } else if (this.isLesson) {
+        this.refreshLesson()
+      }
+    },
+
+    chooseType() {
       const types = []
 
       if (settings.app.showAds) {
@@ -79,14 +80,6 @@ export default {
       } else {
         this.type = sample(types)
       }
-
-      this.ready = false
-
-      if (this.isAd) {
-        this.refreshAd()
-      } else if (this.isLesson) {
-        this.refreshLesson()
-      }
     },
 
     refreshAd() {
@@ -94,16 +87,22 @@ export default {
         return
       }
 
-      if (!window.reviveAsync['7e048c7f8d85676181a4b65ec87d61fe']) {
+      const id = dreamtrack.get('ads.id', '3fe087377ab3999f9bd455cef8976f0b')
+
+      if (!window.reviveAsync[id]) {
         return
       }
 
-      this.$nextTick(() => {
-        this.ready = true
+      const ins = document.createElement('ins')
+      ins.setAttribute('data-revive-zoneid', dreamtrack.get('ads.zoneid', '1'))
+      ins.setAttribute('data-revive-id', id)
 
-        this.$nextTick(() => {
-          window.reviveAsync['7e048c7f8d85676181a4b65ec87d61fe'].refresh()
-        })
+      this.$refs.adContainer.innerHTML = ''
+      this.$refs.adContainer.appendChild(ins)
+
+      this.$nextTick(() => {
+        window.reviveAsync[id].refresh()
+        this.ready = true
       })
     },
 
@@ -118,6 +117,7 @@ export default {
 <style lang="scss" scoped>
 .ads {
   @apply border-t border-menus-light;
+  height: 250px;
 
   &::v-deep .lesson {
     @apply rounded-none cursor-pointer;
@@ -130,6 +130,10 @@ export default {
     .box__photo {
       @apply rounded-none;
     }
+  }
+
+  .lesson {
+    height: inherit;
   }
 }
 </style>

@@ -17,22 +17,27 @@ const pkg = require('../package.json')
 const output = []
 
 //
+let isRelease = false
+
+if (process.env.GITHUB_REF) {
+  isRelease = process.env.GITHUB_REF.substring(0, 9) === 'refs/tags'
+  // eslint-disable-next-line prefer-destructuring
+  process.env.DEPLOY_GIT_TAG = process.env.GITHUB_REF.split('/')[2]
+} else {
+  process.env.DEPLOY_GIT_TAG = process.env.GITHUB_SHA.substring(0, 7)
+}
+
+//
+process.env.DEPLOY_GIT_REPO = 'dreamtime'
+
+//
 const VERSION = `v${pkg.version}`
 const FILENAME = `DreamTime-${VERSION}-${process.env.BUILD_PLATFORM}`
 const DISTPATH = path.resolve(__dirname, '../../dist')
-const PROVIDERS = [
-  'DreamLinkCluster',
-  'Pinata',
-  'MEGA',
-  'Github',
-  'Teknik',
-]
+const PROVIDERS = []
 
-if (process.env.GITHUB_REF) {
-  //
-  process.env.DEPLOY_GIT_REPO = 'dreamtime'
-  // eslint-disable-next-line prefer-destructuring
-  process.env.DEPLOY_GIT_TAG = process.env.GITHUB_REF.split('/')[2]
+if (isRelease) {
+  PROVIDERS.push('Github', 'Pinata', 'MEGA', 'Teknik')
 }
 
 /**
@@ -81,6 +86,11 @@ async function run(release) {
  *
  */
 async function start() {
+  if (PROVIDERS.length === 0) {
+    console.warn('There are no providers to upload!')
+    return
+  }
+
   const installerPath = path.resolve(DISTPATH, `${FILENAME}.${process.env.BUILD_EXTENSION}`)
   const portablePath = path.resolve(DISTPATH, `${FILENAME}-portable.zip`)
 
@@ -96,7 +106,7 @@ async function start() {
 
   // Portable
   if (fs.existsSync(installerPath)) {
-    console.log(`Portable: ${portablePath}`)
+    console.log(`Portable ${portablePath}`)
 
     const portable = new Release(portablePath)
     await run(portable)
@@ -107,6 +117,5 @@ async function start() {
   // Print results
   console.log(JSON.stringify(output, null, 2))
 }
-
 
 start()

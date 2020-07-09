@@ -14,12 +14,11 @@
         <QueuePhoto
           v-for="(photo, index) of $nudify.waiting"
           :key="index"
-          :photo="photo"
-          data-private />
+          :photo="photo" />
       </div>
     </section>
 
-    <div class="queue__section queue__section--pending">
+    <section class="queue__section queue__section--pending">
       <div class="queue__header">
         <p class="title">
           <span class="icon"><font-awesome-icon icon="clipboard-list" /></span>
@@ -36,9 +35,9 @@
           :photo="photo"
           data-private />
       </div>
-    </div>
+    </section>
 
-    <div class="queue__section queue__section--finished">
+    <section class="queue__section queue__section--finished">
       <div class="queue__header">
         <p class="title">
           <span class="icon"><font-awesome-icon icon="clipboard-check" /></span>
@@ -55,7 +54,7 @@
           :photo="photo"
           data-private />
       </div>
-    </div>
+    </section>
   </div>
 </template>
 
@@ -67,13 +66,12 @@ export default {
 
 <style lang="scss" scoped>
 .queue {
-  @apply flex flex-col;
-  @apply bg-menus border-l border-menus-light relative;
-  grid-area: queue;
+  @apply bg-menus relative;
 }
 
 .queue__section {
-  @apply flex-1 flex flex-col;
+  @apply flex flex-col;
+  height: calc((100vh - 80px) / 3);
 
   &.queue__section--running {
   }
@@ -102,8 +100,14 @@ export default {
 }
 
 .queue__content {
-  @apply flex-1 grid grid-cols-2 grid-rows-2;
+  @apply flex-1;
+  @apply flex flex-wrap;
   @apply overflow-y-auto whitespace-no-wrap;
+
+  .photo {
+    @apply w-1/2;
+    height: 200px;
+  }
 }
 
 /*

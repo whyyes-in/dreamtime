@@ -205,8 +205,8 @@ class DreamApp {
       const { default: installExtension, VUEJS_DEVTOOLS } = require('electron-devtools-installer')
 
       installExtension(VUEJS_DEVTOOLS)
-        .then((extension) => console.log(`Added Extension:  ${extension.name}`))
-        .catch((err) => console.log('An error occurred: ', err))
+        .then((extension) => logger.debug(`Added Extension:  ${extension.name}`))
+        .catch((err) => logger.debug('An error occurred: ', err))
     }
 
     const contextMenu = require('electron-context-menu')
@@ -236,6 +236,8 @@ class DreamApp {
   static createWindow() {
     logger.info('Creating window...')
 
+    const iconPath = resolve(config.rootDir, 'dist', 'icon.ico')
+
     // browser window.
     this.window = new BrowserWindow({
       width: 1200,
@@ -245,7 +247,7 @@ class DreamApp {
       frame: false,
       show: false,
       backgroundColor: '#060709',
-      icon: resolve(config.rootDir, 'dist', 'icon.ico'),
+      icon: fs.existsSync(iconPath) ? iconPath : undefined,
 
       webPreferences: {
         nodeIntegration: true,
@@ -258,6 +260,12 @@ class DreamApp {
     // disable menu
     this.window.setMenu(null)
 
+    //
+    this.window.webContents.once('dom-ready', () => {
+      this.window.show()
+      this.window.maximize()
+    })
+
     // ui location
     this.interfaceURL = this.getInterfaceURL()
 
@@ -269,17 +277,8 @@ class DreamApp {
 
     if (process.env.DEVTOOLS) {
       this.window.webContents.once('dom-ready', () => {
-        console.log('dom-ready')
-
-        this.window.show()
-        this.window.maximize()
-
         // DevTools
         this.window.webContents.openDevTools()
-      })
-
-      this.window.once('ready-to-show', () => {
-        console.log('ready-to-show')
       })
     }
   }

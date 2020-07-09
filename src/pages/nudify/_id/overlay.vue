@@ -29,7 +29,6 @@
 </template>
 
 <script>
-import { round } from 'lodash'
 import { tutorial } from '~/modules'
 
 export default {
@@ -49,7 +48,7 @@ export default {
       - You can move the crop box by dragging it.<br>
       - You can increase or decrease the size of the cropbox by dragging any of the anchor points in the corners.<br><br>
 
-      Warning: This tool can dramatically decrease the quality of some photos. (blurry photos)`
+      <strong>Warning:</strong> This tool can dramatically decrease the quality of some photos.`
     },
 
     photo() {
@@ -77,19 +76,15 @@ export default {
         wheelZoomRatio: 0.05,
         ready: () => {
           const { cropper } = this
-          cropper.setCropBoxData(this.photo.cropData)
+
+          this.photo.geometry.crop = cropper.getData()
+          this.photo.geometry.image = cropper.getImageData()
+
+          cropper.setCropBoxData(this.photo.geometry.cropBox)
 
           canvas.addEventListener('crop', () => {
-            const data = cropper.getData()
-
-            this.photo.cropData = cropper.getCropBoxData()
-
-            this.photo.overlay = {
-              startX: round(data.x),
-              startY: round(data.y),
-              endX: round(data.x) + round(data.width),
-              endY: round(data.y) + round(data.height),
-            }
+            this.photo.geometry.cropBox = cropper.getCropBoxData()
+            this.photo.geometry.crop = cropper.getData()
           })
         },
       })

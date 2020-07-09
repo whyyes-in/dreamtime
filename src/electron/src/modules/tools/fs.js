@@ -4,6 +4,7 @@ import fs from 'fs-extra'
 import { app, dialog } from 'electron'
 import axios from 'axios'
 import deferred from 'deferred'
+import chokidar from 'chokidar'
 import { getAppResourcesPath } from './paths'
 import { AppError } from '../app-error'
 
@@ -203,7 +204,6 @@ export function download(url, options = {}) {
     bus.emit('error', null, err)
   })
 
-
   /*
   axios.request({
     url,
@@ -296,3 +296,5 @@ export function downloadAsync(url, options = {}) {
     })
   })
 }
+
+export { chokidar }

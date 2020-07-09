@@ -2,26 +2,32 @@ name: CI/CD
 
 on:
   push:
+    paths:
+      - src/**
+      - .github/**
+    branches:
+      - release/*
+      - hotfix/*
+      - canary
     tags:
       - v*
 
   pull_request:
+    paths:
+      - src/**
     branches:
       - canary
-    paths:
-      - .github/workflows/*
-      - src/*
 
 jobs:
   build:
-    name: Build (${{ matrix.platform }})
+    name: ${{ matrix.platform }}
     runs-on: ${{ matrix.os }}
 
     # Strategy
     # (variables for multiple platforms)
     # https://help.github.com/en/articles/workflow-syntax-for-github-actions#jobsjob_idstrategy
     strategy:
-      fail-fast: false
+      fail-fast: true
       max-parallel: 1
       matrix:
         os:
@@ -61,18 +67,23 @@ jobs:
         working-directory: src/
         run: yarn run lint
 
-      - name: Build (Installer)
+      - name: Build Installer
         working-directory: src/
         env:
           GITHUB_SHA: ${{ github.sha }}
         run: yarn run build
 
-      - name: Build (Portable)
+      - name: Build Portable
         working-directory: src/
         env:
           GITHUB_SHA: ${{ github.sha }}
           BUILD_PORTABLE: true
         run: yarn run build
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: dreamtime-${{ matrix.platform }}
+          path: dist/[abc]-unpacked/
 
       - name: Deploy
         working-directory: src/
@@ -83,15 +94,13 @@ jobs:
           GITHUB_REF: ${{ github.ref }}
           BUILD_PLATFORM: ${{ matrix.platform }}
           BUILD_EXTENSION: ${{ matrix.extension }}
-          DEPLOY_ENCRYPT_KEY: ${{ secrets.SECRET_KEY }}
-          DEPLOY_GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          DEPLOY_ENCRYPT_KEY: ${{ secrets.DEPLOY_ENCRYPT_KEY }}
+          DEPLOY_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEPLOY_GITHUB_OWNER: dreamnettech
-          DEPLOY_TEKNIK_TOKEN: ${{ secrets.TEKNIK_TOKEN }}
+          DEPLOY_TEKNIK_TOKEN: ${{ secrets.DEPLOY_TEKNIK_TOKEN }}
           DEPLOY_TEKNIK_OWNER: dreamnet
-          DEPLOY_DREAMLINKCLUSTER_USERNAME: ${{ secrets.DEPLOY_DREAMLINKCLUSTER_USERNAME }}
-          DEPLOY_DREAMLINKCLUSTER_PASSWORD: ${{ secrets.DEPLOY_DREAMLINKCLUSTER_PASSWORD }}
-          DEPLOY_PINATA_KEY: ${{ secrets.PINATA_KEY }}
-          DEPLOY_PINATA_SECRET: ${{ secrets.PINATA_SECRET }}
+          DEPLOY_PINATA_KEY: ${{ secrets.DEPLOY_PINATA_KEY }}
+          DEPLOY_PINATA_SECRET: ${{ secrets.DEPLOY_PINATA_SECRET }}
           DEPLOY_MEGA_EMAIL: ${{ secrets.DEPLOY_MEGA_EMAIL }}
           DEPLOY_MEGA_PASSWORD: ${{ secrets.DEPLOY_MEGA_PASSWORD }}
           DEPLOY_MEGA_FOLDER: "/Projects/DreamTime/Releases/"

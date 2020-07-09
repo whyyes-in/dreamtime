@@ -3,10 +3,10 @@
     ref="layout"
     class="layout"
     :class="layoutClass"
-    @dragenter="onDragEnter"
-    @dragover="onDragOver"
-    @dragleave="onDragLeave"
-    @drop="onDrop">
+    @dragenter="onGlobalDragEnter"
+    @dragover="onGlobalDragOver"
+    @dragleave="onGlobalDragLeave"
+    @drop="onGlobalDrop">
     <!-- Title bar -->
     <Titlebar />
 
@@ -35,7 +35,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import { wrapGrid } from 'animate-css-grid'
 import { UploadMixin } from '~/mixins'
 
 export default {
@@ -54,15 +53,49 @@ export default {
 
     ...mapState({
       globalLayoutClass: (state) => state.app.layoutClass,
+      dragDropEnabled: (state) => state.app.dragDropEnabled,
     }),
   },
 
   mounted() {
-    // wrapGrid(this.$refs.layout)
-
-    this.$router.afterEach((to) => {
+    this.$router.afterEach(() => {
       this.$store.commit('app/clearLayoutClass')
+      this.$store.commit('app/setDragDropEnabled', true)
     })
+  },
+
+  methods: {
+    onGlobalDragEnter(event) {
+      if (!this.dragDropEnabled) {
+        return
+      }
+
+      this.onDragEnter(event)
+    },
+
+    onGlobalDragLeave() {
+      if (!this.dragDropEnabled) {
+        return
+      }
+
+      this.onDragLeave()
+    },
+
+    onGlobalDragOver(event) {
+      if (!this.dragDropEnabled) {
+        return
+      }
+
+      this.onDragOver(event)
+    },
+
+    onGlobalDrop(event) {
+      if (!this.dragDropEnabled) {
+        return
+      }
+
+      this.onDrop(event)
+    },
   },
 }
 </script>
@@ -75,6 +108,28 @@ export default {
   grid-template-areas: 'title title title' 'nav nav nav' 'menu content queue';
   grid-template-columns: 300px 1fr 300px;
   grid-template-rows: 30px 50px 1fr;
+
+  .queue {
+    grid-area: queue;
+    @apply border-l border-menus-light;
+  }
+
+  .menu {
+    grid-area: menu;
+    @apply border-r border-menus-light;
+  }
+
+  &.layout--left-queue {
+    .queue {
+      grid-area: menu;
+      @apply border-r border-menus-light;
+    }
+
+    .menu {
+      grid-area: queue;
+      @apply border-l border-menus-light;
+    }
+  }
 
   &.layout--dragging {
     .layout__dropzone {
@@ -113,10 +168,6 @@ export default {
   height: 50px;
 }
 
-.layout__jobbar {
-
-}
-
 .layout__content {
   @apply relative overflow-hidden overflow-y-auto;
   @apply py-6 px-9;
@@ -126,8 +177,8 @@ export default {
 
 .layout__dropzone {
   @apply absolute left-0 right-0 top-0 bottom-0 z-50;
+  @apply bg-menus-dark-90 items-center justify-center;
   @apply hidden opacity-0 pointer-events-none;
-  @apply bg-dark-900-70 items-center justify-center;
   backdrop-filter: blur(6px);
   transition: opacity 0.2s ease-in-out;
   will-change: opacity;

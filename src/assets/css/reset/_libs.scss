@@ -34,11 +34,10 @@
     @apply text-xs overflow-auto bg-black p-2;
     max-height: 100px;
   }
-}
 
-.swal2-container.swal2-backdrop-show {
-  //backdrop-filter: blur(6px);
-  //transition: all 0.1s;
+  code {
+    @apply bg-black px-2 text-sm rounded-sm break-words;
+  }
 }
 
 .swal2-footer {

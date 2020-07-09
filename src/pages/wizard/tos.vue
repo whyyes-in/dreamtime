@@ -1,65 +1,26 @@
 <template>
   <div class="tos">
-    <div class="layout__header">
-      <h1 class="title">
-        <font-awesome-icon icon="magic" /> Setup Wizard
-      </h1>
-
-      <h2 class="subtitle">
-        Important information.
+    <PageHeader>
+      <h2 class="title">
+        <span class="icon"><font-awesome-icon icon="magic" /></span>
+        <span>Setup Wizard</span>
       </h2>
+
+      <h3 class="subtitle">
+        Information you should know before starting.
+      </h3>
+    </PageHeader>
+
+    <div class="tos__content">
+      <AppBox v-for="(item, index) in tos"
+              :key="index"
+              :photo="item.photo"
+              :title="item.title"
+              :content="item.content" />
     </div>
 
-    <ul>
-      <li>
-        <figure><font-awesome-icon icon="user-slash" /></figure>
-        <p>
-          <strong>{{ $dream.name }} is an application for adults.</strong>
-          <span>If you are not of legal age, please close and uninstall the application.</span>
-        </p>
-      </li>
-
-      <li>
-        <figure><font-awesome-icon icon="gift" /></figure>
-        <p>
-          <strong>{{ $dream.name }} is completely free and open-source.</strong>
-          <span>Do not pay for it or download premium versions or cracks. Please do not let others fall into SCAMs or malware.</span>
-        </p>
-      </li>
-
-      <li>
-        <figure><font-awesome-icon icon="ban" /></figure>
-        <p>
-          <strong>Do not use {{ $dream.name }} to harm people.</strong>
-          <span>The application is intended exclusively for <b>private use</b>, do not share the photos you create to harm people.</span>
-          <span>Doing so damages the development of this technology that could be used for other positive purposes.</span>
-        </p>
-      </li>
-
-      <li>
-        <figure><font-awesome-icon icon="file-signature" /></figure>
-        <p>
-          <strong>DreamTime is under the GPL-3.0</strong>
-          <span>
-            TL;DR: You can modify the application code and share it,
-            but always under the same license and you must share the source code of your modifications.
-          </span>
-        </p>
-      </li>
-
-      <li>
-        <figure><font-awesome-icon icon="heart" /></figure>
-        <p>
-          <strong>If you like DreamTime consider supporting us.</strong>
-          <span>You can find our Patreon and other forms of support on our website or the "About" section when you finish preparing the application.</span>
-          <span>By supporting us, you allow us to continue improving the app and release updates sooner.</span>
-        </p>
-      </li>
-    </ul>
-
-    <div class="text-center">
-      <button class="button button--xl"
-              @click.prevent="next">
+    <div class="wizard__footer">
+      <button class="button button--xl" @click="next">
         Understood
       </button>
     </div>
@@ -67,8 +28,14 @@
 </template>
 
 <script>
+import tos from '~/modules/config/tos.yml'
+
 export default {
   layout: 'wizard',
+
+  data: () => ({
+    tos,
+  }),
 
   methods: {
     next() {
@@ -81,22 +48,38 @@ export default {
 
 <style lang="scss" scoped>
 .tos {
-  ul {
-    li {
-      @apply mb-10 flex items-center;
+  &::v-deep {
+    .box__photo {
+      height: 160px;
+    }
 
-      figure {
-        @apply text-5xl mr-6;
-      }
+    .tos--adults {
+      background-image: url('~@/assets/images/undraw/undraw_depi_wexf.svg')
+    }
 
-      strong {
-        @apply block text-3xl text-white;
-      }
+    .tos--opensource {
+      background-image: url('~@/assets/images/undraw/undraw_open_source_1qxw.svg');
+    }
 
-      span {
-        @apply block text-xl;
-      }
+    .tos--legal {
+      background-image: url('~@/assets/images/undraw/undraw_judge_katerina_limpitsouni_ny1q.svg');
+    }
+
+    .tos--share {
+      background-image: url('~@/assets/images/undraw/undraw_cancel_u1it.svg');
+    }
+
+    .tos--license {
+      background-image: url('~@/assets/images/undraw/undraw_terms_lso0.svg');
+    }
+
+    .tos--love {
+      background-image: url('~@/assets/images/undraw/undraw_Appreciation_sjc1.svg');
     }
   }
+}
+
+.tos__content {
+  @apply grid grid-cols-2 gap-6;
 }
 </style>

@@ -17,9 +17,10 @@ import { settings } from './settings'
 
 const consola = Consola.create('requirements')
 
-const { system, fs } = $provider
+const {
+  system, fs, power, waifu,
+} = $provider
 const { is } = $provider.util
-const { getVersion, isInstalled } = $provider.power
 const { getAppResourcesPath, getCheckpointsPath, getModelsPath } = $provider.paths
 
 export const requirements = {
@@ -27,6 +28,11 @@ export const requirements = {
     installed: false,
     compatible: false,
     checkpoints: false,
+  },
+
+  waifu: {
+    installed: false,
+    compatible: false,
   },
 
   windows: {
@@ -43,7 +49,7 @@ export const requirements = {
   },
 
   get values() {
-    return pick(this, 'power', 'windows', 'recommended')
+    return pick(this, 'power', 'waifu', 'windows', 'recommended')
   },
 
   /**
@@ -51,6 +57,10 @@ export const requirements = {
    */
   get canNudify() {
     return this.power.installed && this.power.compatible && this.power.checkpoints
+  },
+
+  get canUseWaifu() {
+    return this.waifu.installed && this.waifu.compatible
   },
 
   get hasAlerts() {
@@ -77,10 +87,14 @@ export const requirements = {
    *
    */
   async setup() {
-    // dreampower
-    this.power.installed = isInstalled()
+    // DreamPower
+    this.power.installed = power.isInstalled()
     this.power.compatible = await this._hasCompatiblePower()
     this.power.checkpoints = this._hasCheckpoints
+
+    // Waifu2X
+    this.waifu.installed = waifu.isInstalled()
+    this.waifu.compatible = await this._hasCompatibleWaifu()
 
     // windows
     this.windows.media = await this._hasWindowsMedia()
@@ -126,7 +140,7 @@ export const requirements = {
     let version
 
     try {
-      version = await getVersion()
+      version = await power.getVersion()
       const currentVersion = `v${process.env.npm_package_version}`
 
       const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'minimum'], 'v0.0.1')
@@ -142,7 +156,39 @@ export const requirements = {
 
       return true
     } catch (err) {
-      consola.warn(`DreamPower version verification failed. (${version}).`, err)
+      consola.warn(`DreamPower compatibility check failed. (version = ${version}).`, err)
+      return false
+    }
+  },
+
+  async _hasCompatibleWaifu() {
+    if (!this.waifu.installed) {
+      return false
+    }
+
+    const { dreamtrack } = require('../services')
+
+    const compareVersions = require('compare-versions')
+    let version
+
+    try {
+      version = await waifu.getVersion()
+      const currentVersion = `v${process.env.npm_package_version}`
+
+      const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'waifu', 'minimum'], 'v0.1.0')
+      const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'waifu', 'maximum'])
+
+      if (compareVersions.compare(version, minimum, '<')) {
+        return false
+      }
+
+      if (!isNil(maximum) && compareVersions.compare(version, maximum, '>')) {
+        return false
+      }
+
+      return true
+    } catch (err) {
+      consola.warn(`Waifu2X compatibility check failed. (version = ${version}).`, err)
       return false
     }
   },

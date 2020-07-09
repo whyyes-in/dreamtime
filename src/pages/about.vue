@@ -4,14 +4,19 @@
     <portal to="menu">
       <section class="menu__items">
         <MenuItem
-          label="DreamTime"
+          :label="$dreamtime.name"
           :icon="$dreamtime.logo"
           href="/about/dreamtime" />
 
         <MenuItem
-          label="DreamPower"
+          :label="$dreampower.name"
           :icon="$dreampower.logo"
           href="/about/dreampower" />
+
+        <MenuItem
+          :label="$waifu.name"
+          :icon="$waifu.logo"
+          href="/about/waifu" />
 
         <MenuItem
           label="DreamNet"

@@ -4,10 +4,17 @@ const dev = process.env.NODE_ENV === 'development'
 const cache = false
 
 module.exports = {
+  dev,
+
   /**
    *
    */
   mode: 'spa',
+
+  /**
+   * Deployment target
+   */
+  target: 'static',
 
   /**
    *
@@ -46,7 +53,7 @@ module.exports = {
 
     script: [
       {
-        src: '//ads.dreamnet.tech/www/delivery/asyncjs.php',
+        src: 'https://ads.dreamnet.tech/delivery/asyncjs.php',
         async: true,
       },
     ],
@@ -61,22 +68,8 @@ module.exports = {
    ** Global CSS
    */
   css: [
-    'tippy.js/dist/tippy.css',
-    'cropperjs/dist/cropper.css',
-    'vue-slider-component/theme/default.css',
-
-    'sweetalert2/src/sweetalert2.scss',
-    '@sweetalert2/theme-dark/dark.css',
-
-    'tui-image-editor/dist/tui-image-editor.css',
-    'tui-color-picker/dist/tui-color-picker.css',
-
-    'intro.js/introjs.css',
-    'intro.js/themes/introjs-modern.css',
-
-    '~/assets/css/tailwind.scss',
-    '~/assets/css/reset/all.scss',
-    '~/assets/css/components/all.scss',
+    '~/assets/css/vendor.scss',
+    '~/assets/css/app.scss',
   ],
 
   /*
@@ -101,8 +94,8 @@ module.exports = {
     '@nuxtjs/tailwindcss',
     // Doc: https://github.com/nuxt-community/style-resources-module
     '@nuxtjs/style-resources',
-    // Doc: https://github.com/nuxt/components#setup
-    '@nuxt/components',
+    // Doc: https://github,.com/Developmint/nuxt-purgecss
+    'nuxt-purgecss',
   ],
 
   /*
@@ -127,14 +120,17 @@ module.exports = {
   /**
    *
    */
+  purgeCSS: {
+    enabled: false, // FIXME: Release Candidate 2
+    mode: 'webpack',
+  },
+
+  /**
+   * Scan and auto import components.
+   */
   components: [
     '~/components/',
   ],
-
-  /**
-   *
-   */
-  dev,
 
   /*
    ** Build configuration
@@ -158,7 +154,7 @@ module.exports = {
     /**
      * Enables Common CSS Extraction using Vue Server Renderer guidelines.
      */
-    extractCSS: false,
+    extractCSS: true,
 
     /**
      *
@@ -171,7 +167,7 @@ module.exports = {
      */
     loaders: {
       imgUrl: {
-        limit: 10 * 1000,
+        limit: 80 * 1000,
       },
     },
 
@@ -237,7 +233,7 @@ module.exports = {
         use: {
           loader: 'worker-loader',
           options: {
-            name: ({ isDev }) => (isDev ? '[name].[ext]' : 'workers/[contenthash:7].[ext]'),
+            name: () => (isDev ? '[name].[ext]' : 'workers/[contenthash:7].[ext]'),
           },
         },
         exclude: /(node_modules)/,
@@ -249,7 +245,7 @@ module.exports = {
         use: {
           loader: 'file-loader',
           options: {
-            name: ({ isDev }) => (isDev ? '[name].[ext]' : 'sounds/[contenthash:7].[ext]'),
+            name: () => (isDev ? '[name].[ext]' : 'sounds/[contenthash:7].[ext]'),
           },
         },
       })

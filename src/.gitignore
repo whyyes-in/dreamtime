@@ -88,9 +88,6 @@ sw.*
 # Mac OSX
 .DS_Store
 
-# lock file
-*.lock
-
 #
 *.tgz
 

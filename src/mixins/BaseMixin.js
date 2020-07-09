@@ -1,7 +1,7 @@
 import { isString } from 'lodash'
 import tippy from 'tippy.js'
 import {
-  dreamtime, dreampower, checkpoints, community,
+  dreamtime, dreampower, checkpoints, community, waifu,
 } from '~/modules/projects'
 import {
   dreamtrack,
@@ -53,9 +53,16 @@ export default {
     $dreamtrack: dreamtrack,
     $dreamtime: dreamtime,
     $dreampower: dreampower,
+    $waifu: waifu,
     $checkpoints: checkpoints,
     $community: community,
   }),
+
+  mounted() {
+    if (this.$options.layout) {
+      this.$store.commit('app/setLayoutClass', this.$options.layout)
+    }
+  },
 
   activated() {
     if (this.$options.layout) {

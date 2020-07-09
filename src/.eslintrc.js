@@ -66,7 +66,7 @@ module.exports = {
     'nuxt/no-cjs-in-config': 'off',
     'nuxt/no-globals-in-created': 'off',
     'linebreak-style': 'error',
-    'max-len': ['warn', { code: 120 }],
+    'max-len': ['off', { code: 120 }],
     'no-await-in-loop': 'warn',
     'no-continue': 'off',
     'no-param-reassign': 'off',

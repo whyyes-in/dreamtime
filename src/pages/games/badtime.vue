@@ -16,6 +16,8 @@
 import { events, tutorial } from '~/modules'
 
 export default {
+  layout: 'layout--fullscreen',
+
   mounted() {
     this.unlock()
     tutorial.badtime()

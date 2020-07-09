@@ -1,27 +1,27 @@
 <template>
   <div class="photo" :class="photoClass">
-    <div class="photo__preview" :style="previewStyle" />
-
-    <img v-tooltip="photo.avatar.name" :src="photo.avatar.image" class="photo__badge">
+    <NudifyPhotoPreview :photo="photo" :live="true" />
 
     <div class="photo__content">
-      <span v-show="photo.running || photo.finished">{{ photo.timer.duration }}s</span>
+      <div class="photo__content__actions">
+        <span v-show="photo.running || photo.finished">{{ photo.timer.duration }}s</span>
 
-      <button v-tooltip="'Open'" @click="open">
-        <font-awesome-icon icon="external-link-square-alt" />
-      </button>
+        <button v-tooltip="'Open'" @click="open">
+          <font-awesome-icon icon="external-link-square-alt" />
+        </button>
 
-      <button v-show="photo.pending" v-tooltip="'Add to Queue'" @click="add">
-        <font-awesome-icon icon="play" />
-      </button>
+        <button v-show="photo.pending" v-tooltip="'Add to Queue'" @click="add">
+          <font-awesome-icon icon="play" />
+        </button>
 
-      <button v-show="photo.waiting" v-tooltip="'Remove from Queue'" @click="cancel">
-        <font-awesome-icon icon="sign-out-alt" />
-      </button>
+        <button v-show="photo.waiting" v-tooltip="'Remove from Queue'" @click="cancel">
+          <font-awesome-icon icon="sign-out-alt" />
+        </button>
 
-      <button v-show="photo.running" v-tooltip="'Stop'" @click="stop">
-        <font-awesome-icon icon="stop" />
-      </button>
+        <button v-show="photo.running" v-tooltip="'Stop'" @click="stop">
+          <font-awesome-icon icon="stop" />
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -36,22 +36,6 @@ export default {
   },
 
   computed: {
-    previewStyle() {
-      let photoPath = this.photo.file.path
-
-      if (this.photo.finished && this.photo.runs.length > 0) {
-        const [run] = this.photo.runs
-
-        if (run.outputFile.exists) {
-          photoPath = run.outputFile.path
-        }
-      }
-
-      return {
-        backgroundImage: `url("${photoPath}")`,
-      }
-    },
-
     photoClass() {
       return {
         'photo--running': this.photo.running,
@@ -83,15 +67,15 @@ export default {
 <style lang="scss" scoped>
 .photo {
   @apply relative border-2 border-transparent;
-  background-image: url('~@/assets/images/curls.png');
+  background-image: url('~@/assets/images/repeated-square-dark.png');
   will-change: transform;
 
   &.photo--running {
-    @apply border-primary-500;
+    @apply border-primary;
   }
 
   &.photo--failed {
-    @apply border-danger-500;
+    @apply border-danger;
   }
 
   &:hover {
@@ -101,24 +85,16 @@ export default {
   }
 }
 
-.photo__preview {
-  @apply absolute top-0 bottom-0 left-0 right-0 z-10;
-  @apply bg-contain bg-no-repeat bg-center;
-}
-
-.photo__badge {
-  @apply absolute z-20;
-  top: 5px;
-  right: 5px;
-  width: 30px;
-  height: 30px;
-}
-
 .photo__content {
   @apply absolute top-0 bottom-0 left-0 right-0 z-30;
-  @apply flex bg-dark-500-60 opacity-0;
+  @apply flex justify-center items-center bg-menus-dark-60 opacity-0;
   backdrop-filter: blur(4px);
   transition: opacity 0.1s linear;
+}
+
+.photo__content__actions {
+  @include centered();
+  @apply flex-1;
 
   span,
   button {
@@ -126,7 +102,7 @@ export default {
   }
 
   span {
-    @apply flex items-center justify-center;
+    @include centered();
     @apply text-white font-semibold;
   }
 

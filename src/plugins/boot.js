@@ -11,7 +11,7 @@
 
 import Vue from 'vue'
 import {
-  dreamtime, dreampower, checkpoints, community,
+  dreamtime, dreampower, checkpoints, community, waifu,
 } from '~/modules/projects'
 import {
   dreamtrack, logrocket, rollbar,
@@ -29,7 +29,6 @@ async function setupRemote() {
   // Analytics & Remote settings.
   await dreamtrack.setup()
 
-  // Bug/Session tracking.
   Promise.all([
     rollbar.setup(),
     logrocket.setup(),
@@ -39,6 +38,7 @@ async function setupRemote() {
   await Promise.all([
     dreamtime.init(),
     dreampower.init(),
+    waifu.init(),
     checkpoints.init(),
     community.init(),
   ]).catch(() => { })
@@ -74,6 +74,7 @@ export default async ({ app }, inject) => {
   inject('dreamtrack', dreamtrack)
   inject('dreamtime', dreamtime)
   inject('dreampower', dreampower)
+  inject('waifu', waifu)
   inject('checkpoints', checkpoints)
   inject('community', community)
 }

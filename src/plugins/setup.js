@@ -9,7 +9,7 @@
 
 import Vue from 'vue'
 import tippy from 'tippy.js'
-import { Help } from '~/modules'
+import { photos } from '~/modules'
 import { Consola } from '~/modules/consola'
 import { achievements } from '~/modules/system'
 import BaseMixin from '~/mixins/BaseMixin'
@@ -41,9 +41,6 @@ export default (ctx, inject) => {
   ctx.app.$dream = dream
   inject('dream', dream)
 
-  // Help system.
-  Help.load()
-
   // Nudification/Queue.
   Nudify.setup()
 
@@ -53,6 +50,9 @@ export default (ctx, inject) => {
 
   // Achievements.
   achievements.setup()
+
+  // Photos library.
+  photos.setup()
 
   consola.info('The front-end is ready!')
 }

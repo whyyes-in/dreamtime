@@ -14,7 +14,7 @@
         <font-awesome-icon icon="upload" />
       </nuxt-link>
 
-      <nuxt-link v-tooltip="'Photos'" to="/" class="nav__item nav__item--link">
+      <nuxt-link v-tooltip="'Photos'" to="/photos" class="nav__item nav__item--link">
         <font-awesome-icon icon="images" />
       </nuxt-link>
     </div>

@@ -10,13 +10,14 @@
 import { isNil, isString } from 'lodash'
 import { spawn } from 'child_process'
 import EventBus from 'js-event-bus'
-import deferred from 'deferred'
 import semverRegex from 'semver-regex'
 import * as fs from 'fs-extra'
 import { getPowerPath } from './paths'
 import { settings } from '../settings'
 
 const logger = require('@dreamnet/logplease').create('power')
+
+let version
 
 export function exec(args, options = {}) {
   args.push('--debug')
@@ -30,17 +31,16 @@ export function exec(args, options = {}) {
       options,
     })
 
+    // FIXME: Anaconda support.
+    /* return spawn('C:\\Users\\koles\\Anaconda3\\envs\\dreampower\\python', args, {
+      cwd: getPowerPath(),
+      ...options,
+    }) */
+
     return spawn('python', args, {
       cwd: getPowerPath(),
       ...options,
     })
-
-    /*
-    return spawn('C:\\Users\\koles\\Anaconda3\\envs\\dreampower\\python', args, {
-      cwd: getPowerPath(),
-      ...options,
-    })
-    */
   }
 
   logger.debug('Running:', args)
@@ -56,7 +56,7 @@ export function exec(args, options = {}) {
  * @param {Array} args
  * @param {EventBus} events
  */
-export function nudify(args, events, outputFile) {
+export async function nudify(args, events) {
   const process = exec(args)
   let cancelled = false
 
@@ -66,29 +66,26 @@ export function nudify(args, events, outputFile) {
   })
 
   process.stdout.on('data', (output) => {
+    logger.info(output.toString())
     const stdout = output.toString().trim().split('\n')
     events.emit('stdout', null, stdout)
   })
 
   process.stderr.on('data', (output) => {
-    logger.warn(`stderr: ${output}`)
+    logger.warn(output.toString())
     events.emit('stderr', null, output)
   })
 
-  process.on('close', (code) => {
+  process.on('close', async (code) => {
     logger.info(`DreamPower exited with code ${code}`)
     events.emit('close', null, code)
 
     if (cancelled) {
       events.emit('cancelled')
     } else if (code === 0 || isNil(code)) {
-      if (fs.existsSync(outputFile.path)) {
-        events.emit('success')
-      } else {
-        events.emit('fail', null, true)
-      }
+      events.emit('success')
     } else {
-      events.emit('fail', null, false)
+      events.emit('fail', null)
     }
   })
 
@@ -104,18 +101,56 @@ export function nudify(args, events, outputFile) {
  * @param {PhotoRun} run
  */
 export const transform = (run) => {
-  // Preferences for the photo
-  const { preferences } = run
-  const { finalFile, scaleMode, overlay } = run.photo
+  // Photo data
+  const { preferences, photo } = run
+
+  logger.debug(preferences)
 
   // input
-  const inputFilepath = finalFile.path
+  const inputFilepath = photo.finalFile.path
 
-  // output
-  const outputFilepath = run.outputFile.path
+  // Steps
+  let start = 0
+  let end = 5
 
   // CLI Args
-  const args = ['run', '--input', inputFilepath, '--output', outputFilepath]
+  const args = ['run', '--input', inputFilepath]
+
+  if (run.isMaskGeneration) {
+    //
+    switch (run.mask) {
+      case 'mask':
+        // Corrected -> Mask
+        start = 0
+        end = 1
+        break
+
+      case 'maskref':
+        start = 2
+        end = 2
+        break
+
+      case 'maskdet':
+        start = 3
+        end = 3
+        break
+
+      case 'maskfin':
+        start = 4
+        end = 4
+        break
+
+      case 'nude':
+      case 'overlay':
+      default:
+        start = 5
+        end = 5
+        break
+    }
+  } else {
+    // Output
+    args.push('--output', run.outputFile.path)
+  }
 
   // Device
   if (settings.processing.device === 'CPU') {
@@ -126,40 +161,63 @@ export const transform = (run) => {
     }
   }
 
-  // advanced preferences
-  const { useColorTransfer, transformMode } = preferences.advanced
+  const { useColorTransfer, scaleMode } = preferences.advanced
+  const { geometry } = photo
 
   if (scaleMode === 'overlay') {
-    args.push('--overlay', `${overlay.startX},${overlay.startY}:${overlay.endX},${overlay.endY}`)
-  } else if (scaleMode !== 'none' && scaleMode !== 'cropjs') {
-    args.push(`--${scaleMode}`)
-  }
+    args.push(
+      '--overlay',
+      `${geometry.overlay.startX},${geometry.overlay.startY}:${geometry.overlay.endX},${geometry.overlay.endY}`,
+    )
 
-  if (transformMode === 'export-maskfin') {
-    args.push('--export-step', 3, '--export-step-path', run.maskfinFile.path)
-  } else if (transformMode === 'import-maskfin') {
-    args.push('--steps', '5:5')
+    /*
+    end += 2
+
+    if (start > 0) {
+      start += 2
+    }
+
+    if (start === 5) {
+      end += 1
+    }
+    */
+  } else if (scaleMode !== 'none' && scaleMode !== 'cropjs' && scaleMode !== 'padding') {
+    args.push(`--${scaleMode}`)
+
+    /*
+    end += 1
+
+    if (start > 0) {
+      start += 1
+    }
+    */
   }
 
   if (useColorTransfer) {
     args.push('--color-transfer')
   }
 
-  if (transformMode !== 'import-maskfin') {
-    // body preferences
-    args.push('--bsize', preferences.body.boobs.size)
-    args.push('--asize', preferences.body.areola.size)
-    args.push('--nsize', preferences.body.nipple.size)
-    args.push('--vsize', preferences.body.vagina.size)
-    args.push('--hsize', preferences.body.pubicHair.size)
+  // Advanced preferences
+  if (start > 0) {
+    // args.push('--ignore-size')
   }
 
-  const events = (new EventBus())
+  // Custom masks.
+  if (run.isMaskGeneration) {
+    args.push('--masks-path', photo.masksPath)
+    args.push('--steps', `${start}:${end}`)
+  }
 
-  setTimeout(() => {
-    // Give time for the renderer to receive the events object.
-    nudify(args, events, run.outputFile)
-  }, 10)
+  // body preferences
+  args.push('--bsize', preferences.body.boobs.size)
+  args.push('--asize', preferences.body.areola.size)
+  args.push('--nsize', preferences.body.nipple.size)
+  args.push('--vsize', preferences.body.vagina.size)
+  args.push('--hsize', preferences.body.pubicHair.size)
+
+  const events = new EventBus()
+
+  nudify(args, events, run)
 
   return events
 }
@@ -197,41 +255,43 @@ export function isInstalled() {
 /**
  * @return {Promise}
  */
-export const getVersion = () => {
-  const def = deferred()
+export const getVersion = () => new Promise((resolve, reject) => {
+  if (version) {
+    resolve(version)
+    return
+  }
 
-  try {
-    const process = exec(['--version'])
+  const process = exec(['--version'])
 
-    let response = ''
+  let response = ''
 
-    process.on('error', (error) => {
-      logger.warn(error)
-      def.resolve()
-    })
+  process.on('error', (error) => {
+    logger.warn(error)
+    reject(error)
+  })
 
-    process.stdout.on('data', (data) => {
-      response += data
-    })
+  process.stdout.on('data', (data) => {
+    response += data
+  })
 
-    process.stderr.on('data', (data) => {
-      response += data
-    })
+  process.stderr.on('data', (data) => {
+    response += data
+  })
 
-    process.on('close', () => {
+  process.on('close', (code) => {
+    if (code === 0 || isNil(code)) {
       try {
         response = semverRegex().exec(response)
         response = `v${response[0]}`
-        def.resolve(response)
+
+        version = response
+        resolve(response)
       } catch (err) {
         logger.warn(err)
-        def.resolve()
+        reject(err)
       }
-    })
-  } catch (err) {
-    logger.warn(err)
-    def.resolve()
-  }
-
-  return def.promise
-}
+    } else {
+      reject(new Error(response))
+    }
+  })
+})

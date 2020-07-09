@@ -39,8 +39,7 @@ export default {
 
 .menu {
   @apply flex flex-col;
-  @apply bg-menus relative border-r border-menus-light;
-  grid-area: menu;
+  @apply bg-menus relative;
 
   &::v-deep {
     section {
@@ -54,6 +53,14 @@ export default {
 }
 
 .menu__content {
-  @apply flex-1 p-3 h-full overflow-y-auto;
+  @apply flex-1;
+  height: calc(100vh - 80px - 250px);
+}
+
+.menu__custom {
+  @apply p-3 overflow-y-auto h-full;
+}
+
+.menu__bottom {
 }
 </style>

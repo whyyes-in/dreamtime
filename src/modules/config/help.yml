@@ -1,20 +1,20 @@
-- title: Fast upload.
+- title: Drag and Drop!
   photo: drag
   buttons:
-    - text: Guide
+    - text: Online Guide
       href: https://time.dreamnet.tech/docs/guide
   summary: |-
-    You can **drag and drop** photos and folders into the application.
+    No matter where you are, you can always drag and drop your photos and folders.
   content: |-
-    Upload instantly by **dragging and dropping** photos, folders and even web addresses to the application. It doesn't matter if you are watching another photo, changing the settings or playing, this works everywhere.
+    No matter where you are, you can always drag and drop your photos, folders and even photos from your web browser. Avoid having to return to the upload page every time.
 
 - title: What are the best photos?
   photo: tips
   buttons:
-    - text: More tips
+    - text: More information
       href: https://time.dreamnet.tech/docs/guide/photos
   summary: |-
-    Get the best results with photos that only have one person and as few clothes as possible ...
+    Not all photos provide good results, click here to know the characteristics of a good photo.
   content: |-
     - Only one person in the photo.
     - Less clothing as possible. Bikinis work better.
@@ -28,8 +28,70 @@
     - text: Go to settings
       href: /settings
   summary: |-
-    DreamTime is widely customizable, visit the settings to find all the options.
+    Customize the behavior of DreamTime to your liking and make it a professional application to create fake nudes.
   content: |-
-    One of the advantages of DreamTime is its wide variety of options and customization that you can set for your convenience.
+    Customize the behavior of DreamTime to your liking and make it a professional application to create fake nudes.
 
-    Some of these options are important for good results, do not stay with the same options always!
+    - Optimize application and algorithm performance.
+    - Change the behavior of the photo upload or the location of the queue bar.
+    - Set nudification alerts.
+    - Change the folder where the photos or algorithms are located.
+    - More!
+
+- title: Photo preferences.
+  photo: preferences
+  buttons:
+    - text: Go to preferences
+      href: /settings/preferences
+  summary: |-
+    Create the nude of your dreams by customizing the body, using algorithms to improve the result and more!
+  content: |-
+    Photo preferences allow you to customize the result and create the nude of your dreams:
+
+    - Change the size of the body parts to your liking.
+    - Use different scale methods or additional algorithms to improve the result.
+    - Set additional photo runs with random or progressive preferences.
+    - More!
+
+- title: Get better results.
+  photo: better-results
+  buttons:
+    - text: Go to preferences
+      href: /settings
+  summary: |-
+    Is your photo not giving good results? Changing and experimenting with the photo preferences can help a lot.
+  content: |-
+    Is your photo not giving good results? Changing and experimenting with the photo preferences can help a lot, these are the most important options:
+
+    - **Scale method:** The `Crop` and `Overlay` options usually give the best results but each photo is unique and other options can help more.
+    - **Crop position:** If you are using `Crop`, `Overlay` or `Color Padding` the position of the crop tool can be the key to a good result, even moving it a few pixels can make a difference.
+
+
+- title: Preferences Mode.
+  photo: preferences-mode
+  buttons:
+    - text: Go to settings
+      href: /settings
+  summary: |-
+    Do you think there are too many preferences? Or few? Change the preferences mode to show more or less options.
+  content: |-
+    Preferences mode allows you to increase or decrease the number of options depending on your mood or experience using the application.
+
+    - **Minimal:** Only options for body personalization. Everything will be adjusted to make the process as automatic as possible.
+    - **Simple:** Allows you to change the scale mode.
+    - **Normal:** All options available, this is the original DreamTime experience.
+    - **Advanced:** The results interface changes to work with custom masks, this mode requires time and experience doing manual editing but can provide better results.
+
+- title: Tips? Ads? You decide.
+  photo: tips-ads
+  buttons:
+    - text: Go to settings
+      href: /settings
+  summary: |-
+    In this space we can show you help tips, ads or nothing, **you are in control**.
+  content: |-
+    In this version of DreamTime you can find help tips and/or ads in the bottom right part of the application.
+
+    You can enable or disable this behavior in the settings.
+
+    - The ads displayed are controlled by DreamNet and is a way to support us and continue the development of the application.

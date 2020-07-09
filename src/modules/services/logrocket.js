@@ -7,7 +7,7 @@
 //
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
-import { isString, endsWith } from 'lodash'
+import { isString } from 'lodash'
 import LogRocket from 'logrocket'
 import { BaseService } from './base'
 import { dreamtrack } from './dreamtrack'
@@ -18,7 +18,7 @@ const { system } = $provider
 
 const consola = Consola.create('logrocket')
 
-const privateExtensions = ['.jpg', '.jpeg', '.png', '.gif']
+// const privateExtensions = ['.jpg', '.jpeg', '.png', '.gif']
 
 /**
  * https://logrocket.com/
@@ -29,14 +29,14 @@ class LogRocketService extends BaseService {
    * @type {string}
    */
   get accessToken() {
-    return process.env.LOGROCKET_ACCESS_TOKEN || dreamtrack.get('keys.logrocket')
+    return process.env.LOGROCKET_ACCESS_TOKEN || dreamtrack.get('keys.logrocket', '5iqym0/dreamtime-development')
   }
 
   /**
    * @type {boolean}
    */
   get can() {
-    return system.online && isString(this.accessToken) && settings.telemetry?.dom // && process.env.NODE_ENV === 'production'
+    return system.online && isString(this.accessToken) && settings.telemetry?.dom
   }
 
   /**
@@ -58,23 +58,10 @@ class LogRocketService extends BaseService {
       },
       network: {
         isEnabled: true,
-        requestSanitizer(request) {
-          // the user does not want to send private dom.
-          privateExtensions.forEach((extension) => {
-            if (endsWith(request.url.toLowerCase(), extension)) {
-              // scrub web address photo.
-              request.url = '[private-photo]'
-            }
-          })
-        },
-        responseSanitizer(request) {
-          // eslint-disable-next-line no-console
-          console.log(request)
-        },
       },
       dom: {
         isEnabled: true,
-        baseHref: $provider.ngrok.getAddress() || dreamtrack.get('urls.internal.cdn'),
+        baseHref: process.env.PUBLIC_URL || dreamtrack.get('urls.internal.cdn'),
       },
     }
   }

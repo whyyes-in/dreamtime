@@ -73,7 +73,6 @@ module.exports = {
           dark: '#161717',
         },
 
-
         menus: {
           light: '#2b2e33',
           default: '#14171c',

@@ -1,9 +1,11 @@
 <template>
-  <div class="photo-run"
-       :class="previewClass"
-       data-private>
-    <div class="run__preview"
-         :style="previewStyle" />
+  <div class="box run" :class="previewClass">
+    <div class="box__photo run__photo" data-private>
+      <div v-if="file.exists"
+           class="run__photo__preview"
+           :style="{ backgroundImage: `url('${file.url}')` }"
+           @click="openPreview" />
+    </div>
 
     <div
       v-if="run.preferences.body.randomize || run.preferences.body.progressive.enabled"
@@ -34,150 +36,77 @@
       </div>
     </div>
 
-    <div class="run__content">
-      <div v-if="run.running"
-           class="content__item">
-        <p class="text-white">
-          <span>
-            <font-awesome-icon icon="running" />
-          </span>
-          <span>{{ run.timer.duration }}s</span>
-        </p>
+    <div class="box__footer buttons">
+      <div v-if="run.running" class="button button--sm">
+        <span class="icon">
+          <font-awesome-icon icon="running" />
+        </span>
+        <span>{{ run.timer.duration }}s</span>
       </div>
 
-      <div v-else-if="run.failed"
-           class="content__item">
-        <p class="text-danger-500">
-          <span>
-            <font-awesome-icon icon="exclamation-circle" />
-          </span>
-          <span>Error!</span>
-        </p>
+      <div v-else-if="run.failed" class="button button--danger button--sm">
+        <span class="icon">
+          <font-awesome-icon icon="exclamation-circle" />
+        </span>
+        <span>Error!</span>
       </div>
 
-      <div v-else-if="run.finished"
-           class="content__item">
-        <p class="text-white">
-          <span>
-            <font-awesome-icon icon="heart" />
-          </span>
-          <span>{{ run.timer.duration }}s</span>
-        </p>
+      <div v-else-if="run.finished" class="button button--sm">
+        <span class="icon">
+          <font-awesome-icon icon="heart" />
+        </span>
+        <span>{{ run.timer.duration }}s</span>
       </div>
 
-      <div v-else
-           class="content__item">
-        <p class="text-white">
-          <span>
-            <font-awesome-icon icon="clock" />
-          </span>
-        </p>
+      <div v-else class="button button--sm">
+        <span>
+          <font-awesome-icon icon="clock" />
+        </span>
       </div>
 
-      <div v-show="run.finished && run.outputFile.exists"
-           class="content__item">
-        <button
-          v-tooltip="'Open photo'"
-          class="button button--info button--sm"
-          @click.prevent="open">
-          <font-awesome-icon icon="image" />
-        </button>
-      </div>
+      <button
+        v-tooltip="'View terminal'"
+        class="button button--sm"
+        @click.prevent="$refs.terminalDialog.showModal()">
+        <font-awesome-icon icon="terminal" />
+      </button>
 
-      <div v-show="run.finished && run.outputFile.exists"
-           class="content__item">
-        <button
-          v-tooltip="'Save photo'"
-          class="button button--info button--sm"
-          @click.prevent="save">
+      <!--
+      <button
+        v-if="run.finished && run.outputFile.exists"
+        v-tooltip="'Open photo'"
+        class="button button--info button--sm"
+        @click.prevent="open">
+        <font-awesome-icon icon="image" />
+      </button>
+      -->
+
+      <button
+        v-if="run.finished && run.outputFile.exists"
+        class="button button--success button--sm"
+        @click.prevent="save">
+        <span class="icon">
           <font-awesome-icon icon="save" />
-        </button>
-      </div>
+        </span>
+        <span>Save</span>
+      </button>
 
-      <div v-show="run.finished"
-           class="content__item">
-        <button v-tooltip="'Rerun'"
-                class="button button--success button--sm"
-                @click.prevent="rerun">
-          <font-awesome-icon icon="undo" />
-        </button>
-      </div>
+      <button v-if="run.finished"
+              class="button button--info button--sm"
+              @click.prevent="rerun">
+        <span class="icon">
+          <font-awesome-icon icon="retweet" />
+        </span>
+        <span>Rerun</span>
+      </button>
 
-      <div v-show="run.running"
-           class="content__item">
-        <button v-tooltip="'Stop'"
-                class="button button--danger button--sm"
-                @click.prevent="cancel">
-          <font-awesome-icon icon="stop" />
-        </button>
-      </div>
-
-      <div v-show="hasMaskfin"
-           class="content__item">
-        <button
-          v-tooltip="'View Maskfin'"
-          class="button button--sm"
-          @click.prevent="$refs.maskfinDialog.showModal()">
-          <font-awesome-icon icon="mask" />
-        </button>
-      </div>
-
-      <div class="content__item">
-        <button
-          v-tooltip="'View terminal'"
-          class="button button--sm"
-          @click.prevent="$refs.terminalDialog.showModal()">
-          <font-awesome-icon icon="terminal" />
-        </button>
-      </div>
+      <button v-if="run.running"
+              v-tooltip="'Stop'"
+              class="button button--danger button--sm"
+              @click.prevent="cancel">
+        <font-awesome-icon icon="stop" />
+      </button>
     </div>
-
-    <!-- Maskfin Dialog -->
-    <dialog v-if="hasMaskfin"
-            ref="maskfinDialog">
-      <div class="dialog__content dialog__maskfin">
-        <div class="maskfin__preview">
-          <img :src="run.maskfinFile.path">
-        </div>
-
-        <div class="maskfin__description">
-          <p>
-            This is the Maskfin,
-            a mask that represents in layers the areas that the algorithm will replace with the fake nude.
-          </p>
-
-          <p>
-            Click on the "Add to queue" button to add it as an additional photo,
-            edit the layers with the editor and continue with the nudification.
-            You can also save it to your computer,
-            edit it with an external program and continue the nudification manually.
-          </p>
-
-          <p>
-            For more information please consult the
-            <a :href="manualURL"
-               target="_blank">guide</a>.
-          </p>
-        </div>
-
-        <div class="dialog__buttons">
-          <button class="button"
-                  @click.prevent="addMaskToQueue">
-            Add to queue
-          </button>
-
-          <button class="button button--success"
-                  @click.prevent="saveMask">
-            Save
-          </button>
-
-          <button class="button button--danger"
-                  @click.prevent="$refs.maskfinDialog.close()">
-            Close
-          </button>
-        </div>
-      </div>
-    </dialog>
 
     <!-- Terminal Dialog -->
     <dialog ref="terminalDialog">
@@ -192,8 +121,7 @@
         </div>
 
         <div class="dialog__buttons">
-          <button class="button button--danger"
-                  @click.prevent="$refs.terminalDialog.close()">
+          <button class="button button--danger" @click="$refs.terminalDialog.close()">
             Close
           </button>
         </div>
@@ -225,6 +153,10 @@ export default {
   },
 
   computed: {
+    file() {
+      return this.run.outputFile
+    },
+
     previewStyle() {
       if (!this.run.finished) {
         return {}
@@ -243,10 +175,6 @@ export default {
       }
     },
 
-    hasMaskfin() {
-      return this.run.maskfinFile.exists
-    },
-
     manualURL() {
       return dreamtrack.get(
         'urls.docs.manual',
@@ -260,7 +188,7 @@ export default {
       this.run.outputFile.save(this.run.outputName)
     },
 
-    open() {
+    openPreview() {
       this.run.outputFile.openItem()
     },
 
@@ -284,9 +212,85 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.run {
+  @apply mb-0 relative border border-transparent;
+
+  &.run--running {
+    @apply border-primary;
+  }
+
+  &.run--failed {
+    @apply border-danger;
+  }
+
+  &:hover {
+    .run__preferences {
+      @apply opacity-100;
+    }
+  }
+}
+
+.run__photo {
+  background-image: url('~@/assets/images/repeated-square-dark.png');
+  will-change: transform;
+  height: 500px;
+}
+
+.run__photo__preview {
+  @apply absolute top-0 bottom-0 left-0 right-0 z-10;
+  @apply bg-contain bg-no-repeat bg-center;
+  cursor: zoom-in;
+}
+
+.run__preferences {
+  @apply absolute top-0 z-20;
+  @apply flex opacity-0 bg-menus-default-80 w-full;
+  backdrop-filter: blur(6px);
+  transition: opacity 0.1s linear;
+  height: 80px;
+
+  .preference {
+    @apply flex flex-col flex-1 items-center justify-center;
+
+    span {
+      &:first-child {
+        @apply text-xs;
+      }
+
+      &:last-child {
+        @apply text-sm text-white font-bold;
+      }
+    }
+  }
+}
+
+.buttons {
+  @apply justify-end;
+
+  .button {
+    max-width: 100px;
+  }
+}
+
+.terminal {
+  @apply p-2 bg-black overflow-auto rounded;
+  height: 400px;
+
+  li {
+    @apply font-mono text-xs text-generic-100 mb-3 block;
+
+    &.text-danger {
+      @apply text-danger-500;
+    }
+  }
+}
+</style>
+
+<style lang="scss" scoped>
+/*
 .photo-run {
   @apply relative border-2 border-dark-500;
-  background-image: url('~@/assets/images/curls.png'); /* Background pattern from Toptal Subtle Patterns */
+  background-image: url('~@/assets/images/curls.png');
   min-height: 512px;
   transition: border-color 0.2s linear;
 
@@ -326,25 +330,6 @@ export default {
   @apply flex opacity-0 bg-dark-800-80 w-full;
   backdrop-filter: blur(6px);
   transition: opacity 0.1s linear;
-}
-
-.run__preferences {
-  @apply flex top-0;
-  height: 80px;
-
-  .preference {
-    @apply flex flex-col flex-1 items-center justify-center;
-
-    span {
-      &:first-child {
-        @apply text-xs;
-      }
-
-      &:last-child {
-        @apply text-sm text-white font-bold;
-      }
-    }
-  }
 }
 
 .run__content {
@@ -408,17 +393,5 @@ export default {
     }
   }
 }
-
-.terminal {
-  @apply p-2 mb-2 bg-black overflow-auto rounded;
-  height: 400px;
-
-  li {
-    @apply font-mono text-xs text-generic-100 mb-2 block;
-
-    &.text-danger {
-      @apply text-danger-500;
-    }
-  }
-}
+*/
 </style>

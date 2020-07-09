@@ -1,6 +1,5 @@
 <template>
-  <div ref="intro"
-       class="welcome">
+  <div ref="intro" class="welcome">
     <h1 class="welcome__title">
       Welcome to {{ $dream.name }}!
     </h1>
@@ -13,9 +12,8 @@
       We will take a few minutes of your time to prepare the dream machine.<br>It will be worth it, we promise.
     </h2>
 
-    <button class="button button--xl"
-            @click.prevent="next">
-      Continue
+    <button class="button button--xl" @click="next">
+      Continue!
     </button>
   </div>
 </template>
@@ -58,7 +56,7 @@ export default {
 }
 
 .welcome__subtitle {
-  @apply text-4xl font-semibold;
+  @apply text-4xl text-white font-semibold;
 }
 
 .welcome__message {

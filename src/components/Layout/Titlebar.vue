@@ -4,12 +4,12 @@
     <div class="titlebar__left">
       <div class="logo">
         <span>{{ $dream.name }}</span>
-        <span class="ml-2">{{ $dream.version }}</span>
+        <span class="ml-1">{{ $dream.version }}</span>
       </div>
 
       <div class="logo__greetings">
         <span v-if="!isBadTime">{{ greetings }}</span>
-        <span v-else><img src="~/assets/images/games/sans.png"> i don't like what you are doing.</span>
+        <span v-else class="badtime"><img src="~/assets/images/games/sans.png"> i don't like what you are doing.</span>
       </div>
     </div>
 
@@ -168,7 +168,15 @@ export default {
   @apply text-white text-sm font-light px-3 select-none;
 
   img {
-    height: 30px;
+    height: 20px;
+  }
+
+  .badtime {
+    @apply flex items-center;
+
+    img {
+      @apply mr-1;
+    }
   }
 }
 

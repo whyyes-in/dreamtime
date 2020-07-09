@@ -55,6 +55,11 @@ export default {
       default: null,
     },
 
+    optionsField: {
+      type: String,
+      default: 'options',
+    },
+
     attrs: {
       type: Object,
       default: null,
@@ -77,7 +82,7 @@ export default {
         return this.options
       }
 
-      return this.field.options
+      return this.field[this.optionsField]
     },
 
     valueLabel() {
@@ -132,6 +137,8 @@ export default {
       } else {
         this.$settings.set(this.field.id, value)
       }
+
+      this.$emit('change')
     },
   },
 

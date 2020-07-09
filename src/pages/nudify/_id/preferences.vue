@@ -12,7 +12,7 @@
       </h3>
     </PageHeader>
 
-    <SettingsPreferences v-model="photo.preferences" />
+    <SettingsPreferences v-model="photo.preferences" :animated="!photo.canModify" />
   </div>
 </template>
 

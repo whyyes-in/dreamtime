@@ -13,6 +13,8 @@
 
     <section class="box">
       <div class="box__content">
+        <SettingsField v-model="value$" field-id="user" readonly />
+
         <SettingsField v-model="value$" field-id="telemetry.bugs" />
 
         <SettingsField v-model="value$" field-id="telemetry.dom" />

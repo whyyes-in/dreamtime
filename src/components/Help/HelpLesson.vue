@@ -1,19 +1,14 @@
 <template>
-  <div class="box lesson"
-       :class="{ 'lesson--small': small }"
-       @click="$emit('click')">
-    <div class="box__photo"
-         :class="[`photo--${lesson.photo}`]" />
+  <div class="box lesson" :class="{ 'lesson--small': small }" @click="$emit('click')">
+    <div class="box__photo" :class="[`photo--${lesson.photo}`]" />
 
     <div class="box__header">
       <span class="title">{{ lesson.title }}</span>
     </div>
 
-    <div class="box__content"
-         v-html="content" />
+    <div class="box__content" v-html="content" />
 
-    <div v-if="!small"
-         class="box__footer text-center">
+    <div v-if="!small" class="box__footer text-center">
       <a v-for="(button,key) in lesson.buttons"
          :key="key"
          :href="button.href"
@@ -73,40 +68,53 @@ export default {
 
 .lesson--small {
   .title {
-    @apply text-sm;
+    @apply text-base;
   }
 
-  .box__content {
-    &::v-deep p {
-      @apply text-xs #{!important};
-    }
-  }
-
-  .box__photo {
-    min-height: 80px !important;
+  &::v-deep .box__content {
+    @apply text-xs #{!important};
   }
 }
 
+/* purgecss start ignore */
 .box__photo {
   @apply bg-contain;
 
+  &.photo--drag {
+    @apply bg-menus-dark;
+    //background-color: #593C48;
+    background-image: url('~assets/images/undraw/undraw_throw_down_ub2l.svg')
+  }
+
   &.photo--tips {
-    background-color: #e0719e;
+    background-color: #C27091;
     background-image: url('~assets/images/undraw/undraw_depi_wexf.svg')
   }
 
-  &.photo--drag {
-    background-color: #778BB0;
-    background-image: url('~assets/images/undraw/undraw_logic_4ocy.svg')
-  }
-
   &.photo--settings {
-    background-color: #46766B;
+    background-color: #C27091;
     background-image: url('~assets/images/undraw/undraw_personal_settings_kihd.svg')
   }
-}
 
-.box__content {
-  @apply text-sm;
+  &.photo--preferences {
+    background-color: #607AA9;
+    background-image: url('~assets/images/undraw/undraw_making_art_759c.svg')
+  }
+
+  &.photo--better-results {
+    background-color: #607AA9;
+    background-image: url('~assets/images/undraw/undraw_blank_canvas_3rbb.svg')
+  }
+
+  &.photo--tips-ads {
+    background-color: #506896;
+    background-image: url('~assets/images/undraw/undraw_elements_cipa.svg')
+  }
+
+  &.photo--preferences-mode {
+    background-color: #D9B6C4;
+    background-image: url('~assets/images/undraw/undraw_selected_options_42hx.svg')
+  }
 }
+/* purgecss end ignore */
 </style>

@@ -3,9 +3,12 @@
     <!-- Basics -->
     <section id="preferences-basics" class="box">
       <div class="box__content">
-        <SettingsField v-model="value$" field-id="preferences.mode" />
+        <SettingsField v-model="value$" field-id="preferences.mode" :options-field="optionsField" />
 
-        <SettingsField v-if="value$.mode > 0" v-model="value$" field-id="preferences.advanced.scaleMode" />
+        <SettingsField v-if="value$.mode > 0"
+                       v-model="value$"
+                       field-id="preferences.advanced.scaleMode"
+                       :options-field="optionsField" />
       </div>
     </section>
 
@@ -52,7 +55,9 @@
 
         <SettingsField v-model="value$" field-id="preferences.body.randomize" />
 
-        <SettingsField v-model="value$" field-id="preferences.body.progressive.enabled" :description="`Body preferences will increase ${value$.body.progressive.rate} at each run.`" />
+        <SettingsField v-model="value$"
+                       field-id="preferences.body.progressive.enabled"
+                       :description="`Body preferences will increase ${value$.body.progressive.rate} at each run.`" />
 
         <SettingsField v-if="!value$.body.randomize && value$.body.progressive.enabled"
                        v-model="value$"
@@ -73,9 +78,38 @@
       </div>
 
       <div class="box__content">
-        <SettingsField v-model="value$" field-id="preferences.advanced.useColorTransfer" />
+        <SettingsField v-show="value$.advanced.scaleMode === 'padding'" v-model="value$" field-id="preferences.advanced.useColorPaddingStrip" />
 
-        <SettingsField v-model="value$" field-id="preferences.advanced.useWaifu" />
+        <SettingsField v-model="value$" field-id="preferences.advanced.useColorTransfer" />
+      </div>
+    </section>
+
+    <!-- Waifu2X -->
+    <section v-if="value$.mode > 1 && !animated" class="box">
+      <div class="box__header">
+        <h2 class="title">
+          Waifu2X.
+        </h2>
+        <h3 class="subtitle">
+          Settings for the upscale and denoise algorithm.
+        </h3>
+      </div>
+
+      <div v-if="requirements.canUseWaifu" class="box__content">
+        <SettingsField v-model="value$" field-id="preferences.advanced.waifu.enabled" />
+
+        <div v-if="value$.advanced.waifu.enabled">
+          <SettingsField v-model="value$" field-id="preferences.advanced.waifu.scale" />
+          <SettingsField v-model="value$" field-id="preferences.advanced.waifu.denoise" />
+          <SettingsField v-model="value$" field-id="preferences.advanced.waifu.tta" />
+          <SettingsField v-model="value$" field-id="preferences.advanced.waifu.arch" />
+        </div>
+      </div>
+
+      <div v-else class="box__content">
+        <nuxt-link to="/wizard/waifu" class="underline">
+          Install Waifu2X to use this feature.
+        </nuxt-link>
       </div>
     </section>
   </div>
@@ -83,10 +117,28 @@
 
 <script>
 import { tutorial } from '~/modules'
+import { requirements } from '~/modules/system'
 import { VModel } from '~/mixins'
 
 export default {
   mixins: [VModel],
+
+  props: {
+    animated: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
+  data: () => ({
+    requirements,
+  }),
+
+  computed: {
+    optionsField() {
+      return this.animated ? 'animated-options' : 'options'
+    },
+  },
 
   mounted() {
     tutorial.preferences()

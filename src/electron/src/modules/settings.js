@@ -9,7 +9,7 @@
 
 import fs from 'fs-extra'
 import {
-  round, cloneDeep, isNil, isEmpty, isPlainObject, get, set,
+  round, cloneDeep, isNil, isEmpty, isPlainObject, get, set, merge,
 } from 'lodash'
 import { AppError } from './app-error'
 import { paths, system } from './tools'
@@ -137,7 +137,7 @@ class Settings {
     const cores = round(system.cpu?.cores / 2) || 1
 
     this.payload = {
-      version: 7,
+      version: 8,
       user: uuid(),
 
       wizard: {
@@ -145,6 +145,7 @@ class Settings {
         tos: false,
         user: false,
         telemetry: false,
+        waifu: false,
       },
 
       achievements: {
@@ -155,6 +156,9 @@ class Settings {
         disableHardwareAcceleration: false,
         uploadMode: 'none',
         queuePosition: 'right',
+        duplicates: false,
+        showAds: true,
+        showTips: true,
       },
 
       notifications: {
@@ -166,8 +170,8 @@ class Settings {
       folders: {
         cropped: paths.getPath('temp'),
         models: paths.getPath('userData', 'Pictures'),
-        masks: paths.getPath('temp'),
         cli: paths.getPath('userData', 'dreampower'),
+        waifu: paths.getPath('userData', 'waifu2x'),
       },
 
       telemetry: {
@@ -243,8 +247,17 @@ class Settings {
           scaleMode: 'overlay',
           transformMode: 'normal',
           useColorTransfer: false,
-          useWaifu: false,
+          useColorPaddingStrip: true,
+          waifu: {
+            enabled: false,
+            scale: 2,
+            denoise: 1,
+            tta: 0,
+            arch: 0,
+          },
         },
+
+        mode: 2,
       },
     }
 
@@ -416,6 +429,40 @@ class Settings {
     if (this.payload?.version === 6 && this._default.version >= 7) {
       this.payload.version = 7
       this.payload.app.queuePosition = 'right'
+    }
+
+    // 7 -> 8
+    if (this.payload?.version === 7 && this._default.version >= 8) {
+      this.payload = merge(this.payload, {
+        version: 8,
+        wizard: {
+          waifu: false,
+        },
+        app: {
+          duplicates: false,
+          showAds: true,
+          showTips: true,
+        },
+        folders: {
+          waifu: paths.getPath('userData', 'waifu2x'),
+        },
+        preferences: {
+          advanced: {
+            useColorPaddingStrip: true,
+            waifu: {
+              enabled: false,
+              scale: 2,
+              denoise: 1,
+              tta: 0,
+              arch: 0,
+            },
+          },
+          mode: 2,
+        },
+      })
+
+      delete this.payload.advanced.useWaifu
+      delete this.payload.folders.masks
     }
 
     this.save()

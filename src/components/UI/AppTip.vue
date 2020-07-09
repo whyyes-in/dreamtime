@@ -9,7 +9,7 @@ export default {
   props: {
     icon: {
       type: [String, Object],
-      default: 'info-circle',
+      default: 'question-circle',
     },
     tooltip: {
       type: [String, Object],

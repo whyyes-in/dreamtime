@@ -1,12 +1,11 @@
 <template>
   <div class="layout">
-    <!-- Window Buttons -->
-    <LayoutTopbar />
+    <!-- Title bar -->
+    <Titlebar />
 
     <!-- Content -->
-    <div id="layout-content"
-         class="layout__content">
-      <div class="container">
+    <div id="layout-content" class="layout__content">
+      <div class="container h-full">
         <nuxt />
       </div>
     </div>
@@ -24,40 +23,15 @@ export default {
   @apply h-full;
 
   display: grid;
-  grid-template-areas: 'topbar' 'content';
+  grid-template-areas: 'title' 'content';
   grid-template-columns: 100%;
   grid-template-rows: 30px 1fr;
 
-  .layout__topbar {
-    grid-area: topbar;
-  }
-
   .layout__content {
     @apply relative overflow-hidden overflow-y-auto;
-    @apply border-t border-dark-500;
+    @apply py-6 px-9;
     grid-area: content;
     height: calc(100vh - 30px);
-
-    .container {
-      @apply h-full m-auto;
-    }
-  }
-}
-</style>
-
-<style lang="scss">
-.layout__header {
-  @apply flex flex-col justify-center items-center;
-  @apply font-semibold mb-8;
-  @apply border-b border-dark-500;
-  height: 90px;
-
-  .title {
-    @apply text-xl text-white;
-  }
-
-  .subtitle {
-    @apply text-lg;
   }
 }
 </style>

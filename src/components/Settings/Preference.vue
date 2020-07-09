@@ -58,7 +58,9 @@
     :label="label"
     action-class="preference__list">
     <span class="font-bold">{{ value$.size }}</span>
-    <span v-if="value$.randomize.enabled === true">Randomized ({{ value$.randomize.min }} - {{ value$.randomize.max }})</span>
+    <span v-if="value$.randomize.enabled === true">
+      Randomized ({{ value$.randomize.min }} - {{ value$.randomize.max }})
+    </span>
     <span v-else-if="value$.progressive === true">Progresive</span>
   </MenuItem>
 </template>

@@ -7,7 +7,7 @@
       </h2>
 
       <h3 class="subtitle">
-        Have you found the best photo preferences? Share them!
+        Share your photo preferences with the world.
       </h3>
     </PageHeader>
 
@@ -91,7 +91,7 @@
       <section v-if="importPreferences" class="box">
         <div class="box__header">
           <h2 class="title">
-            Import review
+            Preferences review
           </h2>
           <h3 class="subtitle">
             Are you sure you want to import these preferences?
@@ -102,6 +102,18 @@
           <SettingsField v-model="importPreferences" field-id="preferences.mode" readonly />
 
           <SettingsField v-model="importPreferences" field-id="preferences.advanced.scaleMode" readonly />
+
+          <SettingsField v-model="importPreferences" field-id="preferences.advanced.useColorPaddingStrip" readonly />
+
+          <SettingsField v-model="importPreferences" field-id="preferences.advanced.useColorTransfer" readonly />
+
+          <SettingsField v-model="importPreferences" field-id="preferences.advanced.waifu.scale" readonly />
+
+          <SettingsField v-model="importPreferences" field-id="preferences.advanced.waifu.denoise" readonly />
+
+          <SettingsField v-model="importPreferences" field-id="preferences.advanced.waifu.tta" readonly />
+
+          <SettingsField v-model="importPreferences" field-id="preferences.advanced.waifu.arch" readonly />
 
           <SettingsField v-model="importPreferences" field-id="preferences.body.executions" readonly />
 
@@ -236,7 +248,7 @@ export default {
     onImport(preferences) {
       if (!preferences) {
         Swal.fire({
-          title: 'Invalid Friendly ID',
+          title: 'Invalid Preferences ID',
           text: 'Please make sure you have written it correctly.',
           icon: 'error',
         })
@@ -258,13 +270,15 @@ export default {
         allowEscapeKey: false,
       })
 
+      delete this.preferences.advanced.waifu.enabled
+
       this.$dreamtrack.channel.emit('preferencesExport', this.preferences)
     },
 
     review() {
       if (this.importFriendlyID.length === 0) {
         Swal.fire({
-          title: 'Invalid Friendly ID',
+          title: 'Invalid Preferences ID',
           text: 'Please make sure you have written it correctly.',
           icon: 'error',
         })
@@ -284,11 +298,11 @@ export default {
     },
 
     reviewImport() {
-      this.value$.preferences = merge(this.importPreferences, this.value$.preferences)
+      this.value$.preferences = merge(this.value$.preferences, this.importPreferences)
 
       Swal.fire({
-        title: 'Successful import.',
-        text: 'Your preferences have been successfully changed.',
+        title: 'Success.',
+        text: 'Preferences have been imported.',
         icon: 'success',
       })
 

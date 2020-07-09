@@ -10,7 +10,7 @@
 import {
   isNil, map, isArray,
 } from 'lodash'
-
+import { DragDropMixin } from './DragDropMixin'
 import { Consola } from '~/modules/consola'
 import { Nudify } from '~/modules/nudify'
 
@@ -19,16 +19,7 @@ const consola = Consola.create('upload')
 const { dialog } = $provider.api
 
 export const UploadMixin = {
-  data: () => ({
-    isDragging: false,
-    dragCounter: 0,
-  }),
-
-  mounted() {
-    this.$router.afterEach(() => {
-      this.dragCounter = 0
-    })
-  },
+  mixins: [DragDropMixin],
 
   methods: {
     /**
@@ -66,60 +57,15 @@ export const UploadMixin = {
       this.addFiles(paths)
     },
 
-    /**
-     *
-     */
-    onDragEnter(event) {
-      event.preventDefault()
-      event.dataTransfer.dropEffect = 'copy'
-
-      this.dragCounter += 1
-
-      this.isDragging = true
+    onURL(url) {
+      Nudify.addUrl(url)
+      consola.track('DROP_URL')
     },
 
-    /**
-     *
-     */
-    onDragLeave() {
-      this.dragCounter -= 1
-
-      if (this.dragCounter === 0) {
-        this.isDragging = false
-      }
-    },
-
-    /**
-     *
-     */
-    onDragOver(event) {
-      event.preventDefault()
-      event.stopPropagation()
-
-      event.dataTransfer.dropEffect = 'copy'
-      this.isDragging = true
-    },
-
-    /**
-     *
-     */
-    onDrop(event) {
-      event.preventDefault()
-      event.stopPropagation()
-
-      this.isDragging = false
-
-      const { files } = event.dataTransfer
-      const url = event.dataTransfer.getData('url')
-
-      if (url.length > 0) {
-        Nudify.addUrl(url)
-        consola.track('DROP_URL')
-      } else if (files.length > 0) {
-        const paths = map(files, 'path')
-        this.addFiles(paths)
-        consola.track('DROP_FILE')
-      }
+    onFiles(files) {
+      const paths = map(files, 'path')
+      this.addFiles(paths)
+      consola.track('DROP_FILE')
     },
   },
 }

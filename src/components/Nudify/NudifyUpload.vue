@@ -1,6 +1,5 @@
 <template>
-  <div id="uploader"
-       class="uploader">
+  <div id="uploader" class="uploader">
     <!-- Uploader Selection -->
     <div class="uploader__selection">
       <div class="selection__content" />
@@ -99,7 +98,7 @@ export default {
       } catch (error) {
         throw new Warning(
           'Upload failed.',
-          'Unable to download the photo, please verify that the address is correct and that you are connected to the Internet.',
+          'Unable to download the photo, please verify that the address is valid.',
           error,
         )
       }

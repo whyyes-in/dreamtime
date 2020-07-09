@@ -17,7 +17,6 @@ import { settings } from '../settings'
 import { AppError } from '../app-error'
 import { getModelsPath, getMasksPath } from './paths'
 
-
 const logger = require('@dreamnet/logplease').create('system')
 
 class System {
@@ -70,7 +69,6 @@ class System {
    */
   online
 
-
   /**
    *
    *
@@ -84,11 +82,15 @@ class System {
    *
    */
   async setup() {
+    await this.collect()
+
+    /*
     if (this.hasToCollect) {
       await this.collect()
     } else {
       this.collect()
     }
+    */
 
     this.createRequiredFolders()
   }

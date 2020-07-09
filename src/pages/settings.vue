@@ -14,7 +14,7 @@
           href="/settings/processing" />
 
         <MenuItem
-          label="Preferences"
+          label="Photo Preferences"
           icon="sliders-h"
           href="/settings/preferences" />
 

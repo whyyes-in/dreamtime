@@ -333,6 +333,5 @@ export default {
     @apply mb-3;
   }
 
-
 }
 </style>

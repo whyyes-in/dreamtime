@@ -3,6 +3,7 @@ import { isString } from 'lodash'
 
 export const state = () => ({
   isBadTime: false,
+  dragDropEnabled: true,
   layoutClass: {},
 })
 
@@ -28,5 +29,9 @@ export const mutations = {
 
   clearLayoutClass(state) {
     state.layoutClass = {}
+  },
+
+  setDragDropEnabled(state, value) {
+    state.dragDropEnabled = value
   },
 }

@@ -57,6 +57,18 @@ export const getPowerPath = (...args) => {
   return join(folder, ...args)
 }
 
+export const getWaifuPath = (...args) => {
+  let folder
+
+  if (process.env.BUILD_PORTABLE) {
+    folder = getAppPath('AppData', 'waifu2x')
+  } else {
+    folder = settings.folders.waifu
+  }
+
+  return join(folder, ...args)
+}
+
 export const getCheckpointsPath = (...args) => getPowerPath('checkpoints', ...args)
 
 export const getCropPath = (...args) => {

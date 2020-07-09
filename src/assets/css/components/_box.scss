@@ -20,7 +20,8 @@
   .box__photo {
     @apply relative;
     @apply bg-cover bg-center bg-no-repeat;
-    min-height: 120px;
+    background-image: url('~@/assets/images/repeated-square-dark.png');
+    min-height: 130px;
 
     &:first-child {
       @apply rounded-t-lg;
@@ -29,6 +30,11 @@
     .box__photo__content {
       @apply absolute w-full h-full;
       @apply bg-black-70;
+    }
+
+    .box__photo__preview {
+      @apply absolute top-0 bottom-0 left-0 right-0 z-10;
+      @apply bg-contain bg-no-repeat bg-center m-6;
     }
   }
 
@@ -40,19 +46,19 @@
     }
 
     .title {
-      @apply font-serif font-semibold text-lg text-common-light;
+      @apply font-bold text-lg text-white;
     }
 
     .subtitle {
-      @apply text-sm font-light mb-2;
+      @apply text-sm font-semibold mb-2;
     }
   }
 
   .box__content {
-    @apply flex-1 p-6;
+    @apply flex-1 px-6 py-3 text-sm;
 
     p {
-      @apply text-sm mb-3;
+      @apply mb-3;
     }
   }
 

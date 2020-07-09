@@ -1,6 +1,7 @@
-import { isString, attempt, isNil } from 'lodash'
+import { merge, attempt, isNil } from 'lodash'
 import path from 'path'
 import slash from 'slash'
+import EventEmitter from 'eventemitter3'
 import { Consola } from './consola'
 import { getMetadata } from '~/workers/fs'
 
@@ -12,7 +13,7 @@ const { getPath } = $provider.paths
 /**
  * Represents a local file.
  */
-export class File {
+export class File extends EventEmitter {
   /**
    * File name without extension.
    * @type {string}
@@ -45,6 +46,12 @@ export class File {
 
   /**
    * @type {string}
+   *
+   */
+  dataURL
+
+  /**
+   * @type {string}
    */
   mimetype
 
@@ -61,32 +68,54 @@ export class File {
   /**
    * Hash MD5.
    * @type {string}
-   */
+  */
   md5
+
+  birthtime
+
+  /**
+   *
+   *
+   */
+  options = {
+    deleteIfExists: false,
+    asyncLoad: false,
+    storeDataURL: false,
+    watch: true,
+  }
+
+  /**
+   *
+   * @type {string}
+   * @readonly
+   */
+  get url() {
+    return this.dataURL || this.path
+  }
 
   /**
    * Open a local file.
    * @param {string} filepath
    */
-  static fromPath(filepath) {
-    const file = new this()
-    return file.open(filepath)
+  static fromPath(filepath, options = {}) {
+    const file = new this(filepath, options)
+    return file.load()
   }
 
   /**
    * Open a file from the Internet.
    * @param {string} url
    */
-  static async fromUrl(url) {
-    consola.debug(`Downloading ${url}`)
+  static async fromUrl(url, options = {}) {
+    consola.debug(`Downloading: ${url}`)
 
     // Download the file in the temporary folder.
     const filepath = await fs.downloadAsync(url, {
       directory: getPath('temp'),
     })
 
-    const file = new this()
-    await file.open(filepath)
+    const file = new this(filepath, options)
+    await file.load()
 
     return file
   }
@@ -95,41 +124,87 @@ export class File {
    * Open a file using the metadata.
    * @param {Object} metadata
    */
-  static fromMetadata(metadata) {
-    const file = new this()
-    return file.setMetadata(metadata)
+  static fromMetadata(metadata, options = {}) {
+    const file = new this(null, options)
+
+    file.setMetadata(metadata)
+    file.setup()
+
+    return file
   }
 
   /**
    *
    * @param {string} filepath
-   * @param {boolean} create
+   * @param {boolean} deleteIfExists
    */
-  constructor(filepath, create = false) {
-    if (isString(filepath)) {
-      if (create) {
-        attempt(() => {
-          fs.unlinkSync(filepath)
-          consola.debug(`Deleted: ${filepath}`)
-        })
-      }
+  constructor(filepath, options = {}) {
+    super()
 
-      this.open(filepath)
+    this.options = merge(this.options, options)
+
+    this.path = filepath
+
+    this.setup()
+  }
+
+  setup() {
+    if (!this.path) {
+      return this
     }
+
+    if (this.options.deleteIfExists) {
+      attempt(() => {
+        fs.unlinkSync(this.path)
+        consola.debug(`Deleted: ${this.path}`)
+      })
+    }
+
+    if (this.options.asyncLoad) {
+      this.load(this.path)
+    }
+
+    if (this.options.watch) {
+      fs.chokidar.watch(this.path, {
+        disableGlobbing: true,
+        awaitWriteFinish: true,
+      }).on('all', () => {
+        this.load()
+      })
+
+      // consola.debug(`Watching: ${this.path}`)
+    }
+
+    return this
   }
 
   /**
    * @param {string} [filepath]
+   * @deprecated
    */
-  async open(filepath) {
-    if (!isString(filepath)) {
-      // Refreshing information.
+  open(filepath) {
+    return this.load(filepath)
+  }
+
+  /**
+   *
+   *
+   * @param {string} filepath
+   */
+  async load(filepath) {
+    if (!filepath) {
       filepath = this.path
     }
 
+    this.emit('loading')
+
     const metadata = await getMetadata(filepath)
 
-    return this.setMetadata(metadata)
+    this.setMetadata(metadata)
+
+    this.emit('loaded')
+
+    return this
   }
 
   /**
@@ -137,7 +212,7 @@ export class File {
    */
   setMetadata(metadata) {
     this.name = metadata.name
-    this.extension = metadata.ext.substring(1)
+    this.extension = metadata.ext.substring(1).toLowerCase()
     this.fullname = `${this.name}.${this.extension}`
     this.directory = slash(metadata.dir)
     this.realpath = path.join(this.directory, this.fullname)
@@ -146,26 +221,64 @@ export class File {
     this.size = metadata.size
     this.exists = metadata.exists
     this.md5 = metadata.md5
+    this.birthtime = metadata.birthtime
+
+    if (this.options.storeDataURL) {
+      this.dataURL = metadata.dataURL
+    }
 
     if (this.exists) {
-      consola.debug(`Opened: ${this.path} (${this.md5})`)
+      // consola.debug(`Loaded: ${this.path} (${this.md5})`)
     } else {
-      consola.debug(`Opened: ${this.path} (does not exist)`)
+      // consola.debug(`Loaded: ${this.path} (does not exist)`)
     }
 
     return this
   }
 
+  getPath(ext) {
+    return slash(path.join(this.directory, `${this.name}.${ext}`))
+  }
+
+  isSamePath(filepath) {
+    return slash(filepath) === this.path
+  }
+
+  validateAsPhoto() {
+    const { exists, mimetype, path: filePath } = this
+
+    if (!exists) {
+      throw new Warning('Invalid photo.', `"${filePath}" does not exists.`)
+    }
+
+    if (mimetype !== 'image/jpeg' && mimetype !== 'image/png' && mimetype !== 'image/gif') {
+      throw new Warning('Invalid photo.', `<code>${filePath}</code> is not a valid photo. Only jpeg, png or gif.`)
+    }
+  }
+
+  validateAs(mtype) {
+    const { exists, mimetype, path: filePath } = this
+
+    if (!exists) {
+      throw new Warning('Invalid file.', `"${filePath}" does not exists.`)
+    }
+
+    if (mimetype !== mtype) {
+      throw new Warning('Invalid file.', `<code>${filePath}</code> is not a valid file. Only ${mtype}.`)
+    }
+  }
+
   /**
    * Delete the file.
    */
-  async unlink() {
+  unlink() {
     if (!this.exists) {
       return this
     }
 
     fs.unlinkSync(this.path)
-    await this.open()
+
+    this.emit('deleted')
 
     consola.debug(`Deleted: ${this.fullname}`)
 
@@ -176,9 +289,31 @@ export class File {
    * Write the dataURL as file content.
    * @param {string} data
    */
-  async writeDataURL(data) {
+  writeDataURL(data) {
     fs.writeDataURL(this.path, data)
-    await this.open()
+
+    this.emit('writed')
+
+    return this
+  }
+
+  /**
+   *
+   *
+   * @param {File} file
+   */
+  writeFile(file) {
+    fs.copySync(file.path, this.path)
+
+    this.emit('writed')
+
+    return this
+  }
+
+  write(data) {
+    fs.writeFileSync(this.path, data)
+
+    this.emit('writed')
 
     return this
   }
@@ -186,13 +321,17 @@ export class File {
   /**
    * @param {string} destination
    */
-  copy(destination) {
-    if (!fs.existsSync(this.path)) {
+  async copy(destination) {
+    if (!this.exists) {
       return this
     }
 
     fs.copySync(this.path, destination)
+
+    this.emit('copied')
+
     consola.debug(`Copied: ${this.path} -> ${destination}`)
+
     return this
   }
 
@@ -233,6 +372,6 @@ export class File {
       )
     }
 
-    shell.openItem(this.path)
+    shell.openPath(this.path)
   }
 }

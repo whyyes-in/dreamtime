@@ -2,65 +2,9 @@
   <div v-if="photo" class="nudify">
     <!-- Menu -->
     <portal to="menu">
-      <section class="nudify__buttons">
-        <!-- Nudify -->
-        <button
-          v-show="!photo.running && !photo.waiting"
-          id="nudify-nudify"
-          v-tooltip="{content: 'Add the photo to the queue to be nudified as soon as it is turn.', placement: 'right', boundary: 'viewport'}"
-          class="button button--lg button--success"
-          @click.prevent="add">
-          <span class="icon"><font-awesome-icon icon="play" /></span>
-          <span>Nudify</span>
-        </button>
-
-        <!-- Save all -->
-        <button
-          v-show="photo.finished && photo.executions > 1"
-          v-tooltip="{content: 'Save all the photos generated in the location you select.', placement: 'right', boundary: 'viewport'}"
-          class="button button--info"
-          @click.prevent="saveAll">
-          <span class="icon"><font-awesome-icon icon="save" /></span>
-          <span>Save all</span>
-        </button>
-
-        <!-- Remove from queue-->
-        <button
-          v-show="photo.waiting"
-          class="button button--danger"
-          @click.prevent="cancel">
-          <span>Remove from queue</span>
-        </button>
-
-        <!-- Stop -->
-        <button
-          v-show="photo.running"
-          class="button button--danger"
-          @click.prevent="stop">
-          <span class="icon"><font-awesome-icon icon="stop" /></span>
-          <span>Stop</span>
-        </button>
-
-        <!-- Forget -->
-        <button
-          id="nudify-forget"
-          v-tooltip="{
-            content: 'Free memory by removing the photo from the application. (Nudified photos will not be deleted)',
-            placement: 'right',
-            boundary: 'viewport'}"
-          class="button button--danger"
-          @click.prevent="forget">
-          <span class="icon"><font-awesome-icon icon="trash-alt" /></span>
-          <span>Forget</span>
-        </button>
-      </section>
-
       <!-- Original Preview -->
       <section class="nudify__photo">
-        <div class="nudify__photo__preview"
-             :style="{ backgroundImage: `url('${photo.file.path}')` }" />
-
-        <img v-tooltip="photo.avatar.name" :src="photo.avatar.image" class="nudify__photo__badge">
+        <NudifyPhotoPreview :photo="photo" />
       </section>
 
       <!-- Menu -->
@@ -89,16 +33,80 @@
           :href="`/nudify/${photo.id}/overlay`" />
 
         <MenuItem
-          v-show="!photo.isCustomMasks"
+          v-show="photo.canShowPaddingTool"
+          label="Color Padding"
+          icon="compress-arrows-alt"
+          :href="`/nudify/${photo.id}/padding`" />
+
+        <MenuItem
+          v-show="!photo.withCustomMasks"
           label="Results"
           icon="heart"
           :href="`/nudify/${photo.id}/results`" />
 
         <MenuItem
-          v-show="photo.isCustomMasks"
-          label="Masks & Results"
+          v-show="photo.withCustomMasks"
+          label="Masks"
           icon="mask"
           :href="`/nudify/${photo.id}/results`" />
+      </section>
+
+      <!-- Buttons -->
+      <section class="nudify__buttons">
+        <!-- Nudify -->
+        <button
+          v-if="!photo.running && !photo.waiting && !photo.withCustomMasks"
+          id="nudify-nudify"
+          key="nudify"
+          v-tooltip="{content: 'Add the photo to the queue.', placement: 'right'}"
+          class="button button--lg button--success"
+          @click.prevent="add">
+          <span class="icon"><font-awesome-icon icon="play" /></span>
+          <span>Nudify</span>
+        </button>
+
+        <!-- Save all -->
+        <button
+          v-if="photo.finished && photo.runsCount > 1"
+          key="save-all"
+          v-tooltip="{content: 'Save all the nudes.', placement: 'right'}"
+          class="button button--info"
+          @click.prevent="saveAll">
+          <span class="icon"><font-awesome-icon icon="save" /></span>
+          <span>Save all</span>
+        </button>
+
+        <!-- Remove from queue-->
+        <button
+          v-if="photo.waiting"
+          key="cancel"
+          class="button button--danger"
+          @click.prevent="cancel">
+          <span>Cancel</span>
+        </button>
+
+        <!-- Stop -->
+        <button
+          v-if="photo.running"
+          key="stop"
+          class="button button--danger"
+          @click.prevent="stop">
+          <span class="icon"><font-awesome-icon icon="stop" /></span>
+          <span>Stop</span>
+        </button>
+
+        <!-- Forget -->
+        <button
+          id="nudify-forget"
+          v-tooltip="{
+            content: 'Free memory by removing the photo from the application. (Nudified photos will not be deleted)',
+            placement: 'right',
+            boundary: 'viewport'}"
+          class="button"
+          @click.prevent="forget">
+          <span class="icon"><font-awesome-icon icon="trash-alt" /></span>
+          <span>Forget</span>
+        </button>
       </section>
     </portal>
 
@@ -186,7 +194,7 @@ export default {
 
 .nudify__photo {
   @apply relative rounded;
-  background-image: url('~@/assets/images/curls.png');
+  background-image: url('~@/assets/images/repeated-square-dark.png');
   will-change: transform;
   height: 250px;
 }
@@ -205,18 +213,8 @@ export default {
 }
 
 .nudify__buttons {
-  @apply flex;
-
   .button {
-    @apply w-full rounded-none;
-
-    &:first-child {
-      @apply rounded-tl rounded-bl;
-    }
-
-    &:last-child {
-      @apply rounded-tr rounded-br;
-    }
+    @apply w-full mb-3;
   }
 }
 </style>

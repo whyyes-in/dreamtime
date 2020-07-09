@@ -267,7 +267,7 @@ export class Log {
       return this
     }
 
-    let html = he.encode(toString(this.message))
+    let html = toString(this.message)
 
     if (isError(this.error)) {
       const stack = he.encode(toString(this.error.stack))

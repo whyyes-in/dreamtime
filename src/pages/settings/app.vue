@@ -9,6 +9,14 @@
       <h3 class="subtitle">
         Settings that affect the behavior of the application.
       </h3>
+
+      <template v-slot:right>
+        <button class="button"
+                @click.prevent="openDevTools">
+          <span class="icon"><font-awesome-icon icon="code" /></span>
+          <span>DevTools</span>
+        </button>
+      </template>
     </PageHeader>
 
     <section class="box">
@@ -34,9 +42,9 @@
       <div class="box__content">
         <SettingsField field-id="app.queuePosition" />
 
-        <SettingsField field-id="app.showAds" />
+        <SettingsField field-id="app.showAds" @change="onChangeAds" />
 
-        <SettingsField field-id="app.showTips" />
+        <SettingsField field-id="app.showTips" @change="onChangeAds" />
       </div>
     </section>
   </div>
@@ -44,8 +52,20 @@
 
 <script>
 import { VModel } from '~/mixins'
+import { events } from '~/modules'
 
 export default {
   mixins: [VModel],
+
+  methods: {
+    openDevTools() {
+      const mainWindow = require('electron').remote.BrowserWindow.getAllWindows()[0]
+      mainWindow.webContents.openDevTools()
+    },
+
+    onChangeAds() {
+      events.emit('settings:ads')
+    },
+  },
 }
 </script>

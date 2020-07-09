@@ -27,7 +27,6 @@
           <input
             v-if="!$dream.isPortable"
             v-model="value$.folders.cli"
-            :disabled="$dream.isPortable"
             readonly
             class="input"
             title="Change"
@@ -38,6 +37,23 @@
             disabled
             readonly
             :value="paths.getPowerPath()"
+            class="input">
+        </SettingsField>
+
+        <SettingsField v-model="value$" field-id="folders.waifu">
+          <input
+            v-if="!$dream.isPortable"
+            v-model="value$.folders.waifu"
+            readonly
+            class="input"
+            title="Change"
+            @click.prevent="changeWaifu">
+
+          <input
+            v-else
+            disabled
+            readonly
+            :value="paths.getWaifuPath()"
             class="input">
         </SettingsField>
 
@@ -74,24 +90,6 @@
             disabled
             readonly
             :value="paths.getCropPath()"
-            class="input">
-        </SettingsField>
-
-        <SettingsField v-model="value$" field-id="folders.masks">
-          <input
-            v-if="!$dream.isPortable"
-            v-model="value$.folders.masks"
-            :disabled="$dream.isPortable"
-            class="input"
-            readonly
-            title="Change"
-            @click.prevent="changeMasks">
-
-          <input
-            v-else
-            disabled
-            readonly
-            :value="paths.getMasksPath()"
             class="input">
         </SettingsField>
       </div>
@@ -151,15 +149,6 @@ export default {
       this.value$.folders.cropped = dir
     },
 
-    changeMasks() {
-      if (this.$dream.isPortable) {
-        return
-      }
-
-      const dir = this.showOpenDialog(this.value$.folders.masks)
-      this.value$.folders.masks = dir
-    },
-
     changePower() {
       if (this.$dream.isPortable) {
         return
@@ -167,6 +156,15 @@ export default {
 
       const dir = this.showOpenDialog(this.value$.folders.cli)
       this.value$.folders.cli = dir
+    },
+
+    changeWaifu() {
+      if (this.$dream.isPortable) {
+        return
+      }
+
+      const dir = this.showOpenDialog(this.value$.folders.waifu)
+      this.value$.folders.waifu = dir
     },
   },
 }

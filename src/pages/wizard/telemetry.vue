@@ -1,74 +1,45 @@
 <template>
   <div class="wizard-user">
-    <div class="layout__header">
-      <h1 class="title">
-        <font-awesome-icon icon="magic" /> Setup Wizard
-      </h1>
-
-      <h2 class="subtitle">
-        Telemetry
+    <PageHeader>
+      <h2 class="title">
+        <span class="icon"><font-awesome-icon icon="magic" /></span>
+        <span>Setup Wizard</span>
       </h2>
-    </div>
+
+      <h3 class="subtitle">
+        Telemetry
+      </h3>
+    </PageHeader>
 
     <div class="user__content">
-      <section class="mb-10">
+      <section class="telemetry__notice">
         <p>
-          DreamNet respects the privacy of its users,
-          <strong>the photos you nudify using DreamTime do not abandon your computer in any way</strong>,
-          we only collect anonymous information with the exclusive objective of improving the application.
+          DreamNet respects your privacy, <strong>the photos you generate with DreamTime will not leave your computer in any way</strong>, the only information we send to our servers is to generate anonymous statistics or error reports to improve the application.
         </p>
 
         <p>
-          Below you can get more information about what we collect:
+          Below you can change the telemetry settings:
         </p>
       </section>
 
-      <section class="user__section">
-        <div class="left">
-          <h2 class="title">
-            Analytics
-          </h2>
+      <div class="wizard__footer">
+        <button class="button button--xl" @click="next">
+          Continue
+        </button>
+      </div>
 
-          <p>
-            Information that helps us generate anonymous statistics.
-          </p>
-
+      <div class="telemetry__boxes">
+        <AppBox title="Analytics." subtitle="Information to generate anonymous statistics.">
           <ul>
             <li>Operating system.</li>
             <li>Country.</li>
             <li>Important events.</li>
           </ul>
-        </div>
 
-        <div class="right">
-          <div class="box box--items">
-            <div class="box__content">
-              <box-item
-                label="User."
-                description="Anonymous username used to identify your session. It can be especially useful for technical support.">
-                <input v-model="$settings.user"
-                       disabled
-                       class="input">
-              </box-item>
-            </div>
-          </div>
-        </div>
-      </section>
+          <SettingsField field-id="user" readonly />
+        </AppBox>
 
-      <section class="user__section">
-        <div class="left">
-          <h2 class="title">
-            Bug report.
-          </h2>
-
-          <p>
-            Detailed information of the exact moment an error occurred.
-          </p>
-
-          <p>
-            This helps us solve errors faster.
-          </p>
-
+        <AppBox title="Bug report." subtitle="Detailed information when a error occurs.">
           <ul>
             <li>Operating system.</li>
             <li>CPU, RAM and GPU.</li>
@@ -76,83 +47,46 @@
             <li>Console log.</li>
           </ul>
 
-          <a href="https://i.gyazo.com/30972dbc8c2396b58928b5100a016e2d.png"
-             target="_blank"
-             class="button button--info">Example</a>
-        </div>
+          <SettingsField field-id="telemetry.bugs" />
 
-        <div class="right">
-          <div class="box box--items">
-            <div class="box__content">
-              <box-item
-                label="Bug report."
-                description="Allow to report errors automatically.">
-                <select v-model="$settings.telemetry.bugs"
-                        class="input">
-                  <option :value="true">
-                    Enabled
-                  </option>
-                  <option :value="false">
-                    Disabled
-                  </option>
-                </select>
-              </box-item>
+          <template v-slot:footer>
+            <div class="box__footer">
+              <a href="https://i.gyazo.com/30972dbc8c2396b58928b5100a016e2d.png"
+                 target="_blank"
+                 class="button button--info">Example</a>
             </div>
-          </div>
-        </div>
-      </section>
+          </template>
+        </AppBox>
 
-      <section class="user__section">
-        <div class="left">
-          <h2 class="title">
-            Session tracking.
-          </h2>
-
+        <AppBox title="Session tracking." subtitle="Detailed information on how you use the application.">
           <p>
-            Detailed information on how you use the application.
-          </p>
-
-          <p>
-            This helps us know how we can make the application more accessible, also provides additional data to solve errors.
+            This helps us know how we can make the application more accessible, also provides additional data to fix errors.
           </p>
 
           <ul>
             <li>Operating system.</li>
-            <li>Actions you have taken.</li>
+            <li>Actions.</li>
             <li>Mouse movement inside the application. (Photos and sensitive information are censored.)</li>
             <li>Console log.</li>
           </ul>
 
-          <a href="https://link.dreamnet.tech/ipfs/QmQd5LKLVs73et1CvchHkq1J99PssoWfa5zRZD4ayqTrML"
-             target="_blank"
-             class="button button--info">Example</a>
-        </div>
+          <SettingsField field-id="telemetry.dom" />
 
-        <div class="right">
-          <div class="box box--items">
-            <div class="box__content">
-              <box-item
-                label="Session tracking."
-                description="Allow to send detailed information about how you use the application.">
-                <select v-model="$settings.telemetry.dom"
-                        class="input">
-                  <option :value="true">
-                    Enabled
-                  </option>
-                  <option :value="false">
-                    Disabled
-                  </option>
-                </select>
-              </box-item>
+          <template v-slot:footer>
+            <div class="box__footer">
+              <a href="https://link.dreamnet.tech/ipfs/QmQd5LKLVs73et1CvchHkq1J99PssoWfa5zRZD4ayqTrML"
+                 target="_blank"
+                 class="button button--info">Example</a>
             </div>
-          </div>
-        </div>
-      </section>
+          </template>
+        </AppBox>
+      </div>
 
-      <button class="button button--xl"
-              @click.prevent="next">
-        Continue
-      </button>
+      <div class="wizard__footer">
+        <button class="button button--xl" @click="next">
+          Continue
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -180,6 +114,10 @@ export default {
 
 <style lang="scss" scoped>
 .wizard-user {
+
+}
+
+.telemetry__notice {
   p {
     @apply text-lg;
 
@@ -189,24 +127,13 @@ export default {
   }
 }
 
-.user__section {
-  @apply flex;
-  @apply mb-6 pb-6 border-b border-dark-500;
-
-  .left {
-    @apply flex-1 mr-8;
-  }
-
-  .right {
-    @apply flex-1;
-  }
-
-  .title {
-    @apply text-xl text-white font-semibold;
-  }
-
+.telemetry__boxes {
   ul {
-    @apply list-disc ml-6 mb-4;
+    @apply list-disc ml-6;
+  }
+
+  .item {
+    @apply mt-6;
   }
 }
 </style>

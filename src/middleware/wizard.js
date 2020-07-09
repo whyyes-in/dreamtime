@@ -46,6 +46,16 @@ export default function ({ route, redirect }) {
     return
   }
 
+  if (
+    (!wizard.waifu && !requirements.waifu.installed)
+    || (requirements.waifu.installed && !requirements.waifu.compatible)) {
+    if (route.path !== '/wizard/waifu') {
+      redirect('/wizard/waifu')
+    }
+
+    return
+  }
+
   if (!wizard.telemetry) {
     if (route.path !== '/wizard/telemetry') {
       redirect('/wizard/telemetry')

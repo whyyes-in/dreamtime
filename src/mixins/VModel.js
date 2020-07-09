@@ -38,7 +38,7 @@ export default {
           return
         }
 
-        console.log(`value$ -> v-model - ${value}`)
+        // console.log(`value$ -> v-model - ${value}`)
 
         this.$emit('input', value)
       },
@@ -53,7 +53,7 @@ export default {
         return
       }
 
-      console.log(`v-model -> value$ - ${value}`)
+      // console.log(`v-model -> value$ - ${value}`)
 
       this.value$ = value
     },

@@ -3,11 +3,11 @@
     <PageHeader>
       <h2 class="title">
         <span class="icon"><font-awesome-icon icon="sliders-h" /></span>
-        <span>Preferences</span>
+        <span>Photo Preferences</span>
       </h2>
 
       <h3 class="subtitle">
-        Default settings for all photos.
+        Default preferences for new photos.
         <AppTip tooltip="You can change these options individually in each photo." />
       </h3>
     </PageHeader>

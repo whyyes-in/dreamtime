@@ -45,7 +45,6 @@ export class DreamTrackService extends BaseService {
    * @type {string}
    */
   get host() {
-    console.log(process.env.DREAMTRACK_HOST)
     const host = process.env.DREAMTRACK_HOST || 'localhost:3000'
     const protocol = host === 'track.dreamnet.tech' ? 'wss' : 'ws'
 
@@ -64,7 +63,7 @@ export class DreamTrackService extends BaseService {
    */
   get config() {
     return {
-      reconnectionAttempts: 20,
+      reconnectionAttempts: process.env.NODE_ENV === 'development' ? 1 : 20,
       reconnectionDelay: 500,
     }
   }

@@ -10,19 +10,18 @@ module.exports = {
   },
   "development": {
     "NODE_ENV": "development",
+    "PUBLIC_URL": "http://45bbcde32f40.ngrok.io",
     "ROLLBAR_ACCESS_TOKEN": "e62c909ec771492fa7f371dc61eea092",
-    "LOGROCKET_ACCESS_TOKEN": "of2lox/dreamtime",
+    "LOGROCKET_ACCESS_TOKEN": "5iqym0/dreamtime-development",
     "DREAMTRACK_HOST": "localhost:3333",
     ...development
   },
   "production": {
     "NODE_ENV": "production",
-    "LOG": "info",
     "DREAMTRACK_HOST": "track.dreamnet.tech"
   },
   "test": {
     "NODE_ENV": "test",
-    "LOG": "debug"
   },
   "preview": {
     ...development

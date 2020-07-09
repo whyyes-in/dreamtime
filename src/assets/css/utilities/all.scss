@@ -3,3 +3,7 @@
   transition-duration: $duration;
   transition-timing-function: $timing;
 }
+
+@mixin centered() {
+  @apply flex items-center justify-center;
+}

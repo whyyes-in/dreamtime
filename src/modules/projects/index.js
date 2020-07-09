@@ -1,4 +1,5 @@
 export { dreamtime } from './dreamtime'
 export { dreampower } from './dreampower'
+export { waifu } from './waifu'
 export { checkpoints } from './checkpoints'
 export { community } from './community'

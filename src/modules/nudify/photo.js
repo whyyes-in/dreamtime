@@ -8,16 +8,16 @@
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
 import {
-  cloneDeep, isNil, merge, isError, random,
+  cloneDeep, isNil, merge, isError, random, round,
 } from 'lodash'
 import path from 'path'
 import { Queue } from '@dreamnet/queue'
 import EventBus from 'js-event-bus'
 import randomcolor from 'randomcolor'
-import Avatars from '@dicebear/avatars'
-import sprites from '@dicebear/avatars-bottts-sprites'
 import { uniqueNamesGenerator, names } from 'unique-names-generator'
+import { ImageMagick } from '../imagemagick'
 import { settings, PMODE } from '../system/settings'
+import { requirements } from '../system'
 import { Consola, handleError } from '../consola'
 import { NudifyQueue } from './queue'
 import { Nudify } from './nudify'
@@ -31,7 +31,7 @@ const { getCurrentWindow } = require('electron').remote
 
 const { getModelsPath, getTempPath } = $provider.paths
 const { fs } = $provider
-const { shell, dialog } = $provider.api
+const { dialog } = $provider.api
 
 /**
  * @typedef {object} PhotoFiles
@@ -46,6 +46,10 @@ const { shell, dialog } = $provider.api
  * @property {PhotoMask} PhotoMask.maskref
  * @property {PhotoMask} PhotoMask.maskdet
  * @property {PhotoMask} PhotoMask.maskfin
+ * @property {PhotoMask} PhotoMask.nude
+ * @property {PhotoMask} PhotoMask.overlay
+ * @property {PhotoMask} PhotoMask.padding
+ * @property {PhotoMask} PhotoMask.scale
 */
 
 export class Photo {
@@ -54,18 +58,28 @@ export class Photo {
    */
   id
 
+  /**
+   * Visual identification.
+   * With this we can identify duplicate photos.
+   */
   avatar = {
     name: 'Amanari',
     color: '#000',
-    image: '',
   }
 
   /**
+   * @type {number}
+   */
+  time
+
+  /**
+   * Original photo.
    * @type {File}
    */
   file
 
   /**
+   * Additional photos.
    * @type {PhotoFiles}
    */
   files = {
@@ -73,7 +87,18 @@ export class Photo {
     crop: null,
   }
 
+  get fileToUpscale() {
+    if (this.scaleMode === 'overlay') {
+      return this.masks.overlay.file
+    } if (this.useColorPaddingRemoval) {
+      return this.masks.padding.file
+    }
+
+    return this.masks.nude.file
+  }
+
   /**
+   * Masks.
    * @type {PhotoMasks}
    */
   masks = {
@@ -82,6 +107,10 @@ export class Photo {
     maskref: null, // 2 = mask -> maskref
     maskdet: null, // 3 = maskref -> maskdet
     maskfin: null, // 4 = maskdet -> maskfin
+    nude: null, // 5 = maskfin -> nude
+    overlay: null, // Image to overlay
+    padding: null, // Color padding removal
+    scale: null, // Waifu2X
   }
 
   /**
@@ -139,85 +168,227 @@ export class Photo {
   editor
 
   /**
-   * @type {Object}
-   * @property {number} startX
-   * @property {number} startY
-   * @property {number} endX
-   * @property {number} endY
+   * @typedef {object} CropBoxData
+   * @property {number} CropBoxData.left
+   * @property {number} CropBoxData.top
+   * @property {number} CropBoxData.width
+   * @property {number} CropBoxData.height
+  */
+  /**
+   * @typedef {object} CropData
+   * @property {number} CropData.x
+   * @property {number} CropData.y
+   * @property {number} CropData.width
+   * @property {number} CropData.height
+  */
+  /**
+   * @typedef {object} ImageData
+   * @property {number} ImageData.left
+   * @property {number} ImageData.top
+   * @property {number} ImageData.width
+   * @property {number} ImageData.height
+   * @property {number} ImageData.naturalWidth
+   * @property {number} ImageData.naturalHeight
+  */
+  /**
+   * @typedef {object} Geometry
+   * @property {CropBoxData} Geometry.cropBox
+   * @property {CropData} Geometry.crop
+   * @property {ImageData} Geometry.image
+  */
+  /**
+   *
+   * @type {Geometry}
    */
-  overlay
+  geometry = {
+    cropBox: null,
+    crop: null,
+    image: null,
+    get overlay() {
+      if (!this.crop) {
+        return null
+      }
+
+      return {
+        startX: round(this.crop.x),
+        startY: round(this.crop.y),
+        endX: round(this.crop.x) + round(this.crop.width),
+        endY: round(this.crop.y) + round(this.crop.height),
+      }
+    },
+  }
 
   /**
    * @type {Consola}
    */
   consola
 
+  /**
+   * Mode.
+   * Complexity of options for the photo.
+   *
+   * @readonly
+   */
   get mode() {
     return this.preferences.mode
   }
 
+  /**
+   *
+   * @type {string}
+   * @readonly
+   */
   get folderName() {
     // TODO: Implement models
     return 'Uncategorized'
   }
 
+  /**
+   *
+   * @type {boolean}
+   * @readonly
+   */
   get running() {
     return this.status === 'running'
   }
 
+  /**
+   *
+   * @type {boolean}
+   * @readonly
+   */
   get finished() {
     return this.status === 'finished'
   }
 
+  /**
+   *
+   * @type {boolean}
+   * @readonly
+   */
   get pending() {
     return this.status === 'pending'
   }
 
+  /**
+   *
+   * @type {boolean}
+   * @readonly
+   */
   get waiting() {
     return this.status === 'waiting'
   }
 
+  /**
+   *
+   * @type {boolean}
+   * @readonly
+   */
   get started() {
     return this.running || this.finished
   }
 
+  /**
+   * Number of runs to execute.
+   *
+   * @type {number}
+   * @readonly
+   */
   get runsCount() {
-    return this.preferences.mode === PMODE.ADVANCED ? 1 : this.preferences.body.executions
+    return this.mode === PMODE.ADVANCED ? 1 : this.preferences.body.executions
   }
 
+  /**
+   * Indicates if the photo can be modified
+   * with the crop/editor/etc tools.
+   *
+   * @type {boolean}
+   * @readonly
+   */
   get canModify() {
     return this.file.mimetype !== 'image/gif'
   }
 
+  /**
+   *
+   * @type {boolean}
+   * @readonly
+   */
   get canShowEditor() {
-    return this.canModify && this.preferences.mode >= PMODE.NORMAL
+    return this.canModify && this.mode >= PMODE.NORMAL
   }
 
+  /**
+   *
+   * @type {boolean}
+   * @readonly
+   */
   get canShowCropTool() {
-    return this.canModify && this.preferences.mode >= PMODE.SIMPLE && this.preferences.advanced.scaleMode === 'cropjs'
+    return this.canModify && this.mode >= PMODE.SIMPLE && this.preferences.advanced.scaleMode === 'cropjs'
   }
 
+  /**
+   *
+   * @type {boolean}
+   * @readonly
+   */
   get canShowOverlayTool() {
-    return this.canModify && this.preferences.mode >= PMODE.SIMPLE && this.preferences.advanced.scaleMode === 'overlay'
+    return this.canModify && this.mode >= PMODE.SIMPLE && this.preferences.advanced.scaleMode === 'overlay'
   }
 
-  get isCustomMasks() {
-    return this.preferences.mode === PMODE.ADVANCED
+  /**
+   *
+   * @type {boolean}
+   * @readonly
+   */
+  get canShowPaddingTool() {
+    return this.canModify && this.mode >= PMODE.SIMPLE && this.preferences.advanced.scaleMode === 'padding'
   }
 
-  get isCustomMasksValid() {
-    return this.masks.correct.exists
-      && this.masks.mask.exists
-      && this.masks.maskref.exists
-      && this.masks.maskdet.exists
-      && this.masks.maskfin.exists
+  /**
+   *
+   * @type {boolean}
+   * @readonly
+   */
+  get withCustomMasks() {
+    return this.mode === PMODE.ADVANCED
   }
 
+  /**
+   *
+   *
+   * @readonly
+   */
+  get useUpscaling() {
+    return this.preferences.advanced.waifu.enabled && requirements.canUseWaifu
+  }
+
+  /**
+   *
+   * @type {boolean}
+   * @readonly
+   */
+  get useColorPaddingRemoval() {
+    return this.scaleMode === 'padding' && this.preferences.advanced.useColorPaddingStrip
+  }
+
+  /**
+   * Indicates if the scale mode is different from the one selected by the user.
+   *
+   * @type {boolean}
+   * @readonly
+   */
   get isScaleModeCorrected() {
     const { scaleMode } = this.preferences.advanced
     return scaleMode !== this.scaleMode
   }
 
+  /**
+   * Returns the final scale mode after validations.
+   *
+   * @type {string}
+   * @readonly
+   */
   get scaleMode() {
     const { mode } = this.preferences
     const { scaleMode } = this.preferences.advanced
@@ -226,7 +397,7 @@ export class Photo {
       return 'auto-rescale'
     }
 
-    if (scaleMode === 'cropjs') {
+    if (scaleMode === 'cropjs' || scaleMode === 'padding') {
       if (!this.canModify) {
         return 'auto-rescale'
       }
@@ -242,7 +413,7 @@ export class Photo {
         return 'auto-rescale'
       }
 
-      if (isNil(this.overlay)) {
+      if (isNil(this.geometry.overlay)) {
         // Overlay tool has not been used.
         return 'auto-rescale'
       }
@@ -257,7 +428,7 @@ export class Photo {
    * @type {File}
    */
   get finalFile() {
-    if (this.scaleMode === 'cropjs') {
+    if (this.scaleMode === 'cropjs' || this.scaleMode === 'padding') {
       return this.files.crop
     }
 
@@ -284,20 +455,28 @@ export class Photo {
   /**
    *
    * @param {File} file
-   * @param {*} [model]
    */
-  // eslint-disable-next-line no-unused-vars
-  constructor(file, { model = null } = {}) {
+  constructor(file) {
+    this.time = Date.now() + random(1, 10)
+
     if (settings.app.duplicates) {
-      const now = Date.now() + random(1, 100)
-      this.id = `${file.md5}-${now}`
+      this.id = `${file.md5}-${this.time}`
     } else {
       this.id = file.md5
     }
 
     this.file = file
 
-    fs.ensureDirSync(getTempPath(this.id))
+    this.consola = Consola.create(file.fullname)
+
+    this.setup()
+  }
+
+  /**
+   *
+   */
+  setup() {
+    fs.ensureDirSync(this.getFilesPath())
 
     this.files = {
       editor: this.createFile('Editor'),
@@ -310,68 +489,35 @@ export class Photo {
       maskref: new PhotoMask(STEP.MASKREF, this),
       maskdet: new PhotoMask(STEP.MASKDET, this),
       maskfin: new PhotoMask(STEP.MASKFIN, this),
+      nude: new PhotoMask(STEP.NUDE, this),
+      overlay: new PhotoMask(STEP.OVERLAY, this),
+      padding: new PhotoMask(STEP.PADDING, this),
+      scale: new PhotoMask(STEP.SCALE, this),
     }
 
-    this.consola = Consola.create(file.fullname)
+    this.validate()
 
-    this.setup()
+    this.setupAvatar()
+
+    this.setupPreferences()
+
+    this.setupQueue()
   }
 
   /**
    *
    * @returns {File}
    */
-  createFile(name) {
-    return new File(getTempPath(this.id, `${name}.${this.file.extension}`), true)
+  createFile(name, options = { deleteIfExists: true }) {
+    return new File(this.getFilesPath(`${name}.png`), options)
   }
 
   /**
    *
+   * @param  {...any} args
    */
-  async syncEditor() {
-    if (isNil(this.editor)) {
-      return
-    }
-
-    const dataURL = this.editor.toDataURL({
-      format: this.file.extension,
-      quality: 1,
-      multiplier: 1,
-    })
-
-    await this.files.editor.writeDataURL(dataURL)
-
-    this.consola.debug('Saved editor changes.')
-  }
-
-  /**
-   *
-   */
-  async syncCrop() {
-    if (isNil(this.cropper)) {
-      return
-    }
-
-    const canvas = this.cropper.getCroppedCanvas({
-      width: 512,
-      height: 512,
-      minWidth: 512,
-      minHeight: 512,
-      maxWidth: 512,
-      maxHeight: 512,
-      fillColor: 'white',
-      imageSmoothingEnabled: true,
-      imageSmoothingQuality: 'high',
-    })
-
-    if (!canvas) {
-      throw new Warning('The cropper has failed.', 'There was a problem executing the cropper, please open the tool and try again.')
-    }
-
-    const dataURL = canvas.toDataURL(this.files.crop.mimetype, 1)
-    await this.files.crop.writeDataURL(dataURL)
-
-    this.consola.debug('Saved crop changes.')
+  getFilesPath(...args) {
+    return getTempPath(this.file.md5, this.time.toString(), ...args)
   }
 
   /**
@@ -385,30 +531,8 @@ export class Photo {
   /**
    *
    */
-  setup() {
-    this.validate()
-
-    this.setupAvatar()
-
-    this.setupPreferences()
-
-    this.setupQueue()
-  }
-
-  /**
-   *
-   */
   validate() {
-    // eslint-disable-next-line no-shadow
-    const { exists, mimetype, path } = this.file
-
-    if (!exists) {
-      throw new Warning('Upload failed.', `The file "${path}" does not exists.`)
-    }
-
-    if (mimetype !== 'image/jpeg' && mimetype !== 'image/png' && mimetype !== 'image/gif') {
-      throw new Warning('Upload failed.', `The file "${path}" is not a valid photo. Only jpeg, png or gif.`)
-    }
+    this.file.validateAsPhoto()
   }
 
   /**
@@ -419,14 +543,6 @@ export class Photo {
     this.avatar.name = uniqueNamesGenerator({ dictionaries: [names], length: 1 })
 
     this.avatar.color = randomcolor()
-
-    const avatars = new Avatars(sprites, {
-      base64: true,
-      radius: 100,
-      background: this.avatar.color,
-    })
-
-    this.avatar.image = avatars.create()
   }
 
   /**
@@ -442,7 +558,14 @@ export class Photo {
       forced = {
         advanced: {
           scaleMode: this.scaleMode,
+          waifu: {
+            enabled: false,
+          },
         },
+      }
+
+      if (this.preferences.mode === PMODE.ADVANCED) {
+        this.preferences.mode = PMODE.NORMAL
       }
     }
 
@@ -504,11 +627,160 @@ export class Photo {
   }
 
   /**
-   *
+   * Synchronize and create all necessary files before nudification.
+   */
+  async sync() {
+    await this.syncEditor()
+
+    if (this.preferences.advanced.scaleMode === 'padding') {
+      await this.syncColorPadding()
+    } else {
+      try {
+        // ImageMagick Crop
+        await this.syncCrop()
+      } catch (error) {
+        this.consola.warn(error)
+
+        // HTMLCanvas Crop (Poor quality)
+        await this.syncLegacyCrop()
+      }
+    }
+  }
+
+  /**
+   * Create the photo with the editor changes.
+   */
+  async syncEditor() {
+    if (isNil(this.editor)) {
+      return
+    }
+
+    const dataURL = this.editor.toDataURL({
+      format: this.file.extension,
+      quality: 1,
+      multiplier: 1,
+    })
+
+    await this.files.editor.writeDataURL(dataURL)
+    await this.files.editor.load()
+
+    this.consola.debug('Saved editor changes.')
+  }
+
+  /**
+   * Create the cropped photo using ImageMagick.
+   */
+  async syncImageMagickCrop() {
+    if (!this.geometry.crop) {
+      return
+    }
+
+    const image = new ImageMagick(this.inputFile)
+
+    await image.crop(this.geometry.crop)
+
+    await image.resize(512, 512)
+
+    await image.write(this.files.crop)
+
+    await this.files.crop.load()
+
+    this.consola.debug('Saved crop changes.')
+  }
+
+  /**
+   * Create the cropped photo using HTMLCanvas.
+   * This method can produce poor quality results.
+   */
+  async syncCrop() {
+    if (!this.cropper) {
+      return
+    }
+
+    const canvas = this.cropper.getCroppedCanvas({
+      width: 512,
+      height: 512,
+      minWidth: 512,
+      minHeight: 512,
+      maxWidth: 512,
+      maxHeight: 512,
+      fillColor: 'white',
+      imageSmoothingEnabled: true,
+      imageSmoothingQuality: 'high',
+    })
+
+    if (!canvas) {
+      throw new Warning('The cropper has failed.', 'There was a problem with the cropper, please open the tool and try again.')
+    }
+
+    const dataURL = canvas.toDataURL(this.file.mimetype, 1)
+
+    await this.files.crop.writeDataURL(dataURL)
+
+    await this.files.crop.load()
+
+    this.consola.debug('Saved legacy crop changes.')
+  }
+
+  /**
+   * Create the photo with the color padding mask.
+   */
+  async syncColorPadding() {
+    if (!this.geometry.image || !this.geometry.crop) {
+      return
+    }
+
+    const PaddingMask = require('~/assets/images/masks/1.jpg')
+
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')
+
+    const mask = new Image()
+    const image = new Image()
+
+    const { image: imageData, crop: cropData } = this.geometry
+
+    canvas.width = imageData.naturalWidth
+    canvas.height = imageData.naturalHeight
+
+    context.imageSmoothingEnabled = true
+    context.imageSmoothingQuality = 'high'
+
+    await Promise.all([
+      new Promise((resolve) => {
+        image.onload = () => {
+          resolve()
+        }
+
+        image.src = this.inputFile.path
+      }),
+      new Promise((resolve) => {
+        mask.onload = () => {
+          resolve()
+        }
+
+        mask.src = PaddingMask
+      }),
+    ])
+
+    context.drawImage(mask, 0, 0, canvas.width, canvas.height)
+    context.drawImage(image, cropData.x, cropData.y, cropData.width, cropData.height)
+
+    const dataURL = canvas.toDataURL(this.file.mimetype, 1)
+
+    await this.files.crop.writeDataURL(dataURL)
+    await this.files.crop.load()
+  }
+
+  /**
+   * Save the results of all runs.
    */
   saveAll() {
+    if (this.withCustomMasks) {
+      return
+    }
+
     const dir = dialog.showOpenDialogSync({
-      // defaultPath: this.getFolderPath(),
       properties: ['openDirectory'],
     })
 
@@ -595,27 +867,24 @@ export class Photo {
    * This should only be called from the [NudifyQueue].
    */
   async start() {
-    if (this.runsCount === 0) {
-      return
+    if (this.withCustomMasks) {
+      await this.generateMask(this.nextMask)
+    } else {
+      await this.generateNudes()
     }
-
-    await this.syncEditor()
-    await this.syncCrop()
-
-    if (this.isCustomMasks && !this.isCustomMasksValid) {
-      await this.generateCustomMasks()
-      return
-    }
-
-    await this.generateNudes()
   }
 
   /**
    *
    *
+   * @param {string} mask
    */
-  async generateCustomMasks() {
-    const run = new PhotoRun(it, this, true)
+  async generateMask(mask) {
+    if (mask === STEP.MASK) {
+      await this.sync()
+    }
+
+    const run = new PhotoRun(1, this, mask)
 
     this.runs.push(run)
     this.queue.add(run)
@@ -632,6 +901,12 @@ export class Photo {
    *
    */
   async generateNudes() {
+    if (this.runsCount === 0) {
+      return
+    }
+
+    await this.sync()
+
     this.track()
 
     for (let it = 1; it <= this.runsCount; it += 1) {

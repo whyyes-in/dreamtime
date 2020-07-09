@@ -86,10 +86,12 @@ export function handleError(error) {
     return true
   }
 
-  if (error.message.includes('Cannot set property') || error.message.includes('Cannot read property')) {
-    // This is wrong, but for now these are innocent library errors.
-    consola.warn(error)
-    return true
+  if (process.env.NODE_ENV === 'production') {
+    if (error.message.includes('Cannot set property') || error.message.includes('Cannot read property')) {
+      // This is wrong, but for now these are innocent library errors.
+      consola.warn(error)
+      return true
+    }
   }
 
   consola.error(error)

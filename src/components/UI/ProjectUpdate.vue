@@ -3,18 +3,17 @@
     <div class="update__info">
       <!-- Logo -->
       <figure>
-        <img :src="info.logo">
+        <img :src="data.logo">
       </figure>
 
       <h1 class="title">
-        {{ info.title }} <span v-tooltip="'New version'">{{ updater.latest.tag_name }}</span>
+        {{ data.name }} <span v-tooltip="'New version'">{{ updater.latest.tag_name }}</span>
       </h1>
 
       <h2 v-if="!updater.update.active" class="subtitle">
-        {{ info.description }}
+        {{ data.description }}
       </h2>
     </div>
-
 
     <!-- Downloading -->
     <div v-if="isDownloading && updater.update.progress >= 0" class="update__status">
@@ -45,15 +44,20 @@
       <button v-show="updater.update.active" class="button button--danger" @click.prevent="updater.cancel()">
         Cancel
       </button>
+
+      <button v-tooltip="'Show a list of links to download the update manually.'" class="button button--info" @click.prevent="$refs.mirrorsDialog.show()">
+        Mirrors
+      </button>
     </div>
 
     <!-- Project buttons -->
     <div class="update__actions__extra">
-      <a v-for="(item, index) in info.navigation" :key="index" :href="item.href" target="_blank" class="button button--sm">{{ item.label }}</a>
-
-      <button v-tooltip="'Show a list of links to download the update manually.'" class="button button--info button--sm" @click.prevent="$refs.mirrorsDialog.show()">
-        Mirrors
-      </button>
+      <a v-for="(item, index) in data.data.navigation"
+         :key="index"
+         :href="item.
+           ref"
+         target="_blank"
+         class="button button--sm">{{ item.label }}</a>
     </div>
 
     <!-- Hint -->
@@ -87,8 +91,7 @@
 
 <script>
 import { toNumber } from 'lodash'
-import { dreamtrack } from '~/modules/services'
-import * as providers from '~/modules/updater'
+import * as projects from '~/modules/projects'
 
 export default {
   filters: {
@@ -115,13 +118,16 @@ export default {
   },
 
   data: () => ({
-    updater: null,
-    info: null,
+    data: null,
   }),
 
   computed: {
+    updater() {
+      return this.data.updater
+    },
+
     isReady() {
-      return this.updater && this.info
+      return this.updater
     },
 
     currentVersion() {
@@ -139,9 +145,7 @@ export default {
 
   created() {
     // eslint-disable-next-line import/namespace
-    this.updater = providers[this.project]
-
-    this.info = dreamtrack.get(['projects', this.project, 'about'], {})
+    this.data = projects[this.project]
   },
 
   beforeDestroy() {
