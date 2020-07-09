@@ -28,7 +28,7 @@ jobs:
     # https://help.github.com/en/articles/workflow-syntax-for-github-actions#jobsjob_idstrategy
     strategy:
       fail-fast: true
-      max-parallel: 1
+      max-parallel: 3
       matrix:
         os:
           - ubuntu-latest
@@ -83,7 +83,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: dreamtime-${{ matrix.platform }}
-          path: dist/[abc]-unpacked/
+          path: dist/
 
       - name: Deploy
         working-directory: src/
