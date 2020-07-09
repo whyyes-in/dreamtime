@@ -83,7 +83,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: dreamtime-${{ matrix.platform }}
-          path: dist/
+          path: dist/*.zip
 
       - name: Deploy
         working-directory: src/
