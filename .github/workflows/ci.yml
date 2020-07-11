@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - src/**
-      - .github/**
+      - .github/workflows/**
     branches:
       - release/*
       - hotfix/*
@@ -87,7 +87,7 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: dreamtime-${{ matrix.platform }}
+          name: dreamtime-${{ matrix.platform }}-${{ matrix.type }}
           path: dist/*.zip
 
       - name: Deploy
