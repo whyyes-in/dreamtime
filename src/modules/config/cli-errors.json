@@ -8,6 +8,10 @@
     "message": "The NVIDIA driver installed on your system is too old! If the drivers are up to date then your GPU is not compatible."
   },
   {
+    "query": "CUDA environment is not correctly set up",
+    "message": "To use Waifu2X with GPU it is necessary to install CUDA 10.2"
+  },
+  {
     "query": "no longer supports this GPU",
     "message": "The algorithm no longer supports your GPU."
   },

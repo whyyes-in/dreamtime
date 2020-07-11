@@ -1,7 +1,15 @@
 <template>
   <div class="box run" :class="previewClass">
     <div class="box__photo run__photo" data-private>
-      <div v-if="file.exists"
+      <video v-if="file.exists && isVideo"
+             :src="file.url"
+             class="run__video__preview"
+             autoplay
+             muted
+             loop
+             @click="openPreview" />
+
+      <div v-else-if="file.exists"
            class="run__photo__preview"
            :style="{ backgroundImage: `url('${file.url}')` }"
            @click="openPreview" />
@@ -37,34 +45,35 @@
     </div>
 
     <div class="box__footer buttons">
-      <div v-if="run.running" class="button button--sm">
+      <div v-if="run.running" key="button-status" class="button button--sm">
         <span class="icon">
           <font-awesome-icon icon="running" />
         </span>
         <span>{{ run.timer.duration }}s</span>
       </div>
 
-      <div v-else-if="run.failed" class="button button--danger button--sm">
+      <div v-else-if="run.failed" key="button-status" class="button button--danger button--sm">
         <span class="icon">
           <font-awesome-icon icon="exclamation-circle" />
         </span>
         <span>Error!</span>
       </div>
 
-      <div v-else-if="run.finished" class="button button--sm">
+      <div v-else-if="run.finished" key="button-status" class="button button--sm">
         <span class="icon">
           <font-awesome-icon icon="heart" />
         </span>
         <span>{{ run.timer.duration }}s</span>
       </div>
 
-      <div v-else class="button button--sm">
+      <div v-else key="button-status" class="button button--sm">
         <span>
           <font-awesome-icon icon="clock" />
         </span>
       </div>
 
       <button
+        key="button-terminal"
         v-tooltip="'View terminal'"
         class="button button--sm"
         @click.prevent="$refs.terminalDialog.showModal()">
@@ -83,6 +92,7 @@
 
       <button
         v-if="run.finished && run.outputFile.exists"
+        key="button-save"
         class="button button--success button--sm"
         @click.prevent="save">
         <span class="icon">
@@ -92,6 +102,7 @@
       </button>
 
       <button v-if="run.finished"
+              key="button-rerun"
               class="button button--info button--sm"
               @click.prevent="rerun">
         <span class="icon">
@@ -101,6 +112,7 @@
       </button>
 
       <button v-if="run.running"
+              key="button-stop"
               v-tooltip="'Stop'"
               class="button button--danger button--sm"
               @click.prevent="cancel">
@@ -153,6 +165,10 @@ export default {
   },
 
   computed: {
+    isVideo() {
+      return this.run.photo.file.isVideo
+    },
+
     file() {
       return this.run.outputFile
     },
@@ -239,6 +255,11 @@ export default {
 .run__photo__preview {
   @apply absolute top-0 bottom-0 left-0 right-0 z-10;
   @apply bg-contain bg-no-repeat bg-center;
+  cursor: zoom-in;
+}
+
+.run__video__preview {
+  @apply h-full w-full overflow-hidden;
   cursor: zoom-in;
 }
 

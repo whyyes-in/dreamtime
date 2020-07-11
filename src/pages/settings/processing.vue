@@ -36,7 +36,7 @@
           </select>
         </SettingsField>
 
-        <SettingsField v-show="value$.processing.device === 'CPU'" field-id="processing.cores" :attrs="{ type: 'number', min: 1, max: $provider.system.cores }" />
+        <SettingsField field-id="processing.cores" :attrs="{ type: 'number', min: 1, max: $provider.system.cores }" />
 
         <SettingsField field-id="processing.usePython" />
       </div>

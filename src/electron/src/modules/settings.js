@@ -9,7 +9,7 @@
 
 import fs from 'fs-extra'
 import {
-  round, cloneDeep, isNil, isEmpty, isPlainObject, get, set, merge,
+  cloneDeep, isNil, isEmpty, isPlainObject, get, set, merge,
 } from 'lodash'
 import { AppError } from './app-error'
 import { paths, system } from './tools'
@@ -134,7 +134,6 @@ class Settings {
   _loadDefault() {
     const { v4: uuid } = require('uuid')
     const hasGPU = process.platform === 'darwin' ? false : system.graphics.length > 0
-    const cores = round(system.cpu?.cores / 2) || 1
 
     this.payload = {
       version: 8,
@@ -182,7 +181,7 @@ class Settings {
       processing: {
         device: hasGPU ? 'GPU' : 'CPU',
         gpus: [0],
-        cores,
+        cores: 1,
         usePython: false,
       },
 
@@ -437,6 +436,9 @@ class Settings {
         version: 8,
         wizard: {
           waifu: false,
+        },
+        processing: {
+          cores: 1,
         },
         app: {
           duplicates: false,

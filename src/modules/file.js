@@ -66,11 +66,21 @@ export class File extends EventEmitter {
   exists = false
 
   /**
+   * @type {boolean}
+   *
+   */
+  loading = false
+
+  /**
    * Hash MD5.
    * @type {string}
   */
   md5
 
+  /**
+   *
+   *
+   */
   birthtime
 
   /**
@@ -91,6 +101,24 @@ export class File extends EventEmitter {
    */
   get url() {
     return this.dataURL || this.path
+  }
+
+  /**
+   *
+   * @type {boolean}
+   * @readonly
+   */
+  get isAnimated() {
+    return this.mimetype === 'image/gif' || this.mimetype === 'video/mp4'
+  }
+
+  /**
+   *
+   * @type {boolean}
+   * @readonly
+   */
+  get isVideo() {
+    return this.mimetype === 'video/mp4'
   }
 
   /**
@@ -192,9 +220,15 @@ export class File extends EventEmitter {
    * @param {string} filepath
    */
   async load(filepath) {
+    if (this.loading) {
+      return this
+    }
+
     if (!filepath) {
       filepath = this.path
     }
+
+    this.loading = true
 
     this.emit('loading')
 
@@ -203,6 +237,8 @@ export class File extends EventEmitter {
     this.setMetadata(metadata)
 
     this.emit('loaded')
+
+    this.loading = false
 
     return this
   }
@@ -223,7 +259,7 @@ export class File extends EventEmitter {
     this.md5 = metadata.md5
     this.birthtime = metadata.birthtime
 
-    if (this.options.storeDataURL) {
+    if (this.options.storeDataURL && !this.isAnimated) {
       this.dataURL = metadata.dataURL
     }
 
@@ -251,7 +287,14 @@ export class File extends EventEmitter {
       throw new Warning('Invalid photo.', `"${filePath}" does not exists.`)
     }
 
-    if (mimetype !== 'image/jpeg' && mimetype !== 'image/png' && mimetype !== 'image/gif') {
+    const validMimeTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'video/mp4',
+    ]
+
+    if (!validMimeTypes.includes(mimetype)) {
       throw new Warning('Invalid photo.', `<code>${filePath}</code> is not a valid photo. Only jpeg, png or gif.`)
     }
   }
@@ -346,13 +389,26 @@ export class File extends EventEmitter {
       )
     }
 
+    let filters = [
+      { name: 'PNG', extensions: ['png'] },
+      { name: 'JPG', extensions: ['jpg'] },
+    ]
+
+    if (this.mimetype === 'image/gif') {
+      filters = [
+        { name: 'GIF', extensions: ['gif'] },
+      ]
+    }
+
+    if (this.mimetype === 'video/mp4') {
+      filters = [
+        { name: 'MP4', extensions: ['mp4'] },
+      ]
+    }
+
     const savePath = dialog.showSaveDialogSync({
       defaultPath,
-      filters: [
-        { name: 'PNG', extensions: ['png'] },
-        { name: 'JPG', extensions: ['jpg'] },
-        { name: 'GIF', extensions: ['gif'] },
-      ],
+      filters,
     })
 
     if (isNil(savePath)) {

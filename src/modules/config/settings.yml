@@ -67,7 +67,7 @@
 
 - id: processing.device
   label: Device.
-  description: Device that will be used to nudify. GPU is faster.
+  description: Device that algorithms will use. GPU is faster.
   input: select
   options:
     - label: CPU
@@ -81,7 +81,7 @@
 
 - id: processing.cores
   label: CPU Cores.
-  description: Increasing this can improve transformation speed but decrease system stability.
+  description: "Using more cores increases the nudification speed for GIFs and videos but decrease stability. Recommended: 1"
   input: input
 
 - id: processing.usePython
@@ -122,11 +122,11 @@
   options:
     - label: None
       value: none
-    - label: Fixed
+    - label: "Automatic: Fixed"
       value: auto-rescale
-    - label: Scale and Padding
+    - label: "Automatic: Padding"
       value: auto-resize
-    - label: Scale and Crop
+    - label: "Automatic: Crop"
       value: auto-resize-crop
     - label: Overlay
       value: overlay
@@ -137,11 +137,11 @@
   animated-options:
     - label: None
       value: none
-    - label: Fixed
+    - label: "Automatic: Fixed"
       value: auto-rescale
-    - label: Scale and Padding
+    - label: "Automatic: Padding"
       value: auto-resize
-    - label: Scale and Crop
+    - label: "Automatic: Crop"
       value: auto-resize-crop
 
 - id: preferences.body.executions

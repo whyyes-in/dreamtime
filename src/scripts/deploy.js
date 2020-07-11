@@ -91,27 +91,21 @@ async function start() {
     return
   }
 
-  const installerPath = path.resolve(DISTPATH, `${FILENAME}.${process.env.BUILD_EXTENSION}`)
-  const portablePath = path.resolve(DISTPATH, `${FILENAME}-portable.zip`)
+  let buildPath
 
-  // Installer
-  if (fs.existsSync(installerPath)) {
-    console.log(`Installer: ${installerPath}`)
-
-    const installer = new Release(installerPath)
-    await run(installer)
+  if (process.env.BUILD_PORTABLE) {
+    buildPath = path.resolve(DISTPATH, `${FILENAME}-portable.zip`)
   } else {
-    console.warn(`The installable version does not exist: ${installerPath}`)
+    buildPath = path.resolve(DISTPATH, `${FILENAME}.${process.env.BUILD_EXTENSION}`)
   }
 
-  // Portable
-  if (fs.existsSync(installerPath)) {
-    console.log(`Portable ${portablePath}`)
+  if (fs.existsSync(buildPath)) {
+    console.log(buildPath)
 
-    const portable = new Release(portablePath)
-    await run(portable)
+    const release = new Release(buildPath)
+    await run(release)
   } else {
-    console.warn(`The portable version does not exist: ${portablePath}`)
+    console.warn(`The file does not exist: ${buildPath}`)
   }
 
   // Print results

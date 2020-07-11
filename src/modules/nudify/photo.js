@@ -306,7 +306,7 @@ export class Photo {
    * @readonly
    */
   get canModify() {
-    return this.file.mimetype !== 'image/gif'
+    return !this.file.isAnimated
   }
 
   /**
@@ -450,6 +450,25 @@ export class Photo {
     }
 
     return this.file
+  }
+
+  /**
+   *
+   *
+   * @readonly
+   */
+  get previewFile() {
+    let file = this.inputFile
+
+    if (this.finished && this.runs.length > 0) {
+      const [run] = this.runs
+
+      if (run.outputFile && run.outputFile.exists) {
+        file = run.outputFile
+      }
+    }
+
+    return file
   }
 
   /**

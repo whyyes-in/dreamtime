@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div class="box" @click="$emit('click')">
     <!-- Photo -->
     <div v-if="showPhoto" class="box__photo">
       <slot name="photo">

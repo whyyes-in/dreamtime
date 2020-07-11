@@ -11,7 +11,8 @@
       </h3>
 
       <template v-slot:right>
-        <button class="button"
+        <button v-tooltip="'Open the developer tools. This includes the application logs.'"
+                class="button"
                 @click.prevent="openDevTools">
           <span class="icon"><font-awesome-icon icon="code" /></span>
           <span>DevTools</span>

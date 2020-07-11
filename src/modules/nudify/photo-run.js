@@ -123,6 +123,8 @@ export class PhotoRun {
 
     if (file.extension === 'gif') {
       ext = 'gif'
+    } else if (file.extension === 'mp4') {
+      ext = 'mp4'
     }
 
     return `${name}-RUN${this.id}-${now}-dreamtime.${ext}`

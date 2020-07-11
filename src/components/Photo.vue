@@ -1,7 +1,14 @@
 <template>
   <div class="box photo">
     <div class="box__photo">
-      <div class="photo__preview"
+      <video v-if="file.isVideo"
+             :src="file.url"
+             autoplay
+             muted
+             loop />
+
+      <div v-else
+           class="photo__preview"
            :style="{ backgroundImage: `url('${file.url}')` }"
            @click="openPreview" />
     </div>

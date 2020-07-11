@@ -38,14 +38,26 @@
     <!-- Actions -->
     <div class="update__actions">
       <button v-show="!updater.update.active" class="button button--success" @click.prevent="updater.start()">
+        <span class="icon"><font-awesome-icon icon="sync" /></span>
         Update
       </button>
 
+      <a v-if="project === 'waifu' && $settings.processing.device === 'GPU'"
+         v-tooltip="'Software required to use Waifu2X on GPU.'"
+         class="button button--danger"
+         href="https://developer.nvidia.com/cuda-10.2-download-archive"
+         target="_blank">
+        <span class="icon"><font-awesome-icon icon="download" /></span>
+        <span>CUDA 10.2</span>
+      </a>
+
       <button v-show="updater.update.active" class="button button--danger" @click.prevent="updater.cancel()">
+        <span class="icon"><font-awesome-icon icon="stop" /></span>
         Cancel
       </button>
 
-      <button v-tooltip="'Show a list of links to download the update manually.'" class="button button--info" @click.prevent="$refs.mirrorsDialog.show()">
+      <button v-tooltip="'List of links to download the update manually.'" class="button button--info" @click.prevent="$refs.mirrorsDialog.show()">
+        <span class="icon"><font-awesome-icon icon="link" /></span>
         Mirrors
       </button>
     </div>

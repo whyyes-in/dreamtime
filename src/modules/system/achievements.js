@@ -47,7 +47,7 @@ export const achievements = {
 
       if (dice === 22) {
         // Lucky!
-        window.$redirect('/games/badtime')
+        events.emit('achievements.badtime')
       }
     }
   },

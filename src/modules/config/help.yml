@@ -73,7 +73,7 @@
     - text: Go to settings
       href: /settings
   summary: |-
-    Do you think there are too many preferences? Or few? Change the preferences mode to show more or less options.
+    Do you think there are too many preferences? Or few? Change the preferences mode!
   content: |-
     Preferences mode allows you to increase or decrease the number of options depending on your mood or experience using the application.
 
@@ -88,10 +88,19 @@
     - text: Go to settings
       href: /settings
   summary: |-
-    In this space we can show you help tips, ads or nothing, **you are in control**.
+    Now you can find help tips and advertising in this space. You can enable or disable this behavior in the settings.
   content: |-
     In this version of DreamTime you can find help tips and/or ads in the bottom right part of the application.
 
     You can enable or disable this behavior in the settings.
 
     - The ads displayed are controlled by DreamNet and is a way to support us and continue the development of the application.
+
+- title: Create nudes of videos!
+  photo: videos
+  summary: |-
+    Don't just stay with static photos, you can also nudify gifs and mp4 videos!
+  content: |-
+    With DreamTime you can nudify gifs and mp4 videos, from the Internet or by uploading the files to the application.
+
+    Keep in mind that this process can consume more resources from your system!

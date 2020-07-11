@@ -154,12 +154,14 @@ export const transform = (run) => {
 
   // Device
   if (settings.processing.device === 'CPU') {
-    args.push('--cpu', '--n-cores', settings.processing.cores)
+    args.push('--cpu')
   } else {
     for (const id of settings.processing.gpus) {
       args.push('--gpu', id)
     }
   }
+
+  args.push('--n-cores', settings.processing.cores)
 
   const { useColorTransfer, scaleMode } = preferences.advanced
   const { geometry } = photo

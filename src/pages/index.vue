@@ -1,31 +1,5 @@
 <template>
   <div class="uploader">
-    <!-- Global alert -->
-    <div v-if="alert"
-         class="notification"
-         v-html="alert" />
-
-    <!-- DreamTime Updater -->
-    <div v-if="dreamtime.available"
-         class="notification notification--warning cursor-pointer"
-         @click="$router.push('/wizard/dreamtime')">
-      🎉 <strong>{{ $dream.name }} {{ dreamtime.latest.tag_name }}</strong> is available for download!
-    </div>
-
-    <!-- DreamPower Updater -->
-    <div v-if="dreampower.available"
-         class="notification notification--warning cursor-pointer"
-         @click="$router.push('/wizard/power')">
-      🎉 <strong>{{ dreampower.displayName }} {{ dreampower.latest.tag_name }}</strong> is available for download!
-    </div>
-
-    <!-- Checkpoints Updater -->
-    <div v-if="checkpoints.available"
-         class="notification notification--warning cursor-pointer"
-         @click="$router.push('/wizard/checkpoints')">
-      🎉 <strong>{{ checkpoints.displayName }} {{ checkpoints.latest.tag_name }}</strong> is available for download!
-    </div>
-
     <!-- Menu -->
     <portal to="menu">
       <section id="uploader-methods" class="menu__items">
@@ -59,6 +33,36 @@
       </section>
     </portal>
 
+    <!-- Global alert -->
+    <div v-if="alert" class="notification">
+      <h5>
+        <font-awesome-icon icon="exclamation-circle" />
+        NOTIFICATION
+      </h5>
+      <div v-html="alert" />
+    </div>
+
+    <!-- DreamTime Updater -->
+    <div v-if="dreamtime.available"
+         class="notification notification--warning cursor-pointer"
+         @click="$router.push('/wizard/dreamtime')">
+      🎉 <strong>{{ $dream.name }} {{ dreamtime.latest.tag_name }}</strong> is available for download!
+    </div>
+
+    <!-- DreamPower Updater -->
+    <div v-if="dreampower.available"
+         class="notification notification--warning cursor-pointer"
+         @click="$router.push('/wizard/power')">
+      🎉 <strong>{{ dreampower.displayName }} {{ dreampower.latest.tag_name }}</strong> is available for download!
+    </div>
+
+    <!-- Checkpoints Updater -->
+    <div v-if="checkpoints.available"
+         class="notification notification--warning cursor-pointer"
+         @click="$router.push('/wizard/checkpoints')">
+      🎉 <strong>{{ checkpoints.displayName }} {{ checkpoints.latest.tag_name }}</strong> is available for download!
+    </div>
+
     <div class="uploader__methods">
       <!-- Web Address -->
       <div v-show="selectionId === 0" class="methods__content">
@@ -70,7 +74,7 @@
 
           <h3 class="subtitle">
             Upload photos from the web.
-            <span v-tooltip="'Only web addresses that end in: jpg, png or gif.'" class="help">
+            <span v-tooltip="'Only web addresses that end in: jpg, png, gif or mp4.'" class="help">
               <font-awesome-icon icon="info-circle" />
             </span>
           </h3>
@@ -134,7 +138,7 @@
           v-show="false"
           ref="photo"
           type="file"
-          accept="image/jpeg, image/png, image/gif"
+          accept="image/jpeg, image/png, image/gif, video/mp4"
           multiple
           @change="openFile">
 
@@ -288,7 +292,6 @@ export default {
 
 <style lang="scss" scoped>
 .uploader {
-  @apply h-full flex;
 }
 
 .uploader__methods {

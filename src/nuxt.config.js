@@ -121,7 +121,7 @@ module.exports = {
    *
    */
   purgeCSS: {
-    enabled: false, // FIXME: Release Candidate 2
+    enabled: false, // FIXME: Final release
     mode: 'webpack',
   },
 

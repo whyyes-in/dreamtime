@@ -1,5 +1,11 @@
 <template>
   <div class="preview" :style="photoURL" data-private>
+    <video v-if="isVideo"
+           :src="file.url"
+           autoplay
+           muted
+           loop />
+
     <NudifyPhotoBadge v-if="badge" :photo="photo" />
   </div>
 </template>
@@ -24,19 +30,21 @@ export default {
   },
 
   computed: {
+    isVideo() {
+      return this.photo.file.isVideo
+    },
+
+    file() {
+      return this.live ? this.photo.previewFile : this.photo.file
+    },
+
     photoURL() {
-      let { file } = this.photo
-
-      if (this.live && this.photo.finished && this.photo.runs.length > 0) {
-        const [run] = this.photo.runs
-
-        if (run.outputFile && run.outputFile.exists) {
-          file = run.outputFile
-        }
+      if (this.isVideo) {
+        return {}
       }
 
       return {
-        backgroundImage: `url("${file.url}")`,
+        backgroundImage: `url("${this.file.url}")`,
       }
     },
   },
@@ -47,6 +55,10 @@ export default {
 .preview {
   @apply absolute top-0 bottom-0 left-0 right-0 z-10;
   @apply bg-contain bg-no-repeat bg-center;
+
+  video {
+    @apply h-full w-full overflow-hidden;
+  }
 }
 
 .badge {
