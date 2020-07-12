@@ -462,9 +462,13 @@ class Settings {
           mode: 2,
         },
       })
-
-      delete this.payload.advanced.useWaifu
-      delete this.payload.folders.masks
+      // This throws on some Windows 10 systems.
+      try {
+        delete this.payload.advanced.useWaifu
+        delete this.payload.folders.masks
+      } catch (err) {
+        console.warn(err)
+      }
     }
 
     this.save()
