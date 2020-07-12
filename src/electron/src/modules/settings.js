@@ -467,7 +467,7 @@ class Settings {
         delete this.payload.advanced.useWaifu
         delete this.payload.folders.masks
       } catch (err) {
-        console.error(err);
+        console.warn(err)
       }
     }
 
