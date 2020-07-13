@@ -5,10 +5,6 @@
   
   <h1 align="center">DreamTime</h1>
 
-  <h2 align="center">
-    🙈 Use artificial intelligence to create fake nudes.
-  </h2>
-
   <p align="center">
     Available for <strong>Windows, Linux and Mac</strong>.
   </p>
