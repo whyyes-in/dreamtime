@@ -12,7 +12,7 @@ class Checkpoints {
     },
     about: {
       title: 'Checkpoints',
-      description: 'DeepNude data models.',
+      description: 'DeepNude trained models.',
       logo: 'https://link.dreamnet.tech/ipfs/QmWkpwjEq6YQLSud4pS8ChkdED4NZrup6fKirFXXXLFe9u?filename=deepnude.png',
       navigation: [],
     },

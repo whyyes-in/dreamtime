@@ -2,7 +2,7 @@
   photo: drag
   buttons:
     - text: Online Guide
-      href: https://time.dreamnet.tech/docs/guide
+      href: https://time.dreamnet.tech/docs/guide/upload
   summary: |-
     No matter where you are, you can always drag and drop your photos and folders.
   content: |-
@@ -28,9 +28,9 @@
     - text: Go to settings
       href: /settings
   summary: |-
-    Customize the behavior of DreamTime to your liking and make it a professional application to create fake nudes.
+    Customize the behavior of DreamTime and make it a professional application to create fake nudes.
   content: |-
-    Customize the behavior of DreamTime to your liking and make it a professional application to create fake nudes.
+    Customize the behavior of DreamTime and make it a professional application to create fake nudes.
 
     - Optimize application and algorithm performance.
     - Change the behavior of the photo upload or the location of the queue bar.
@@ -61,7 +61,7 @@
   summary: |-
     Is your photo not giving good results? Changing and experimenting with the photo preferences can help a lot.
   content: |-
-    Is your photo not giving good results? Changing and experimenting with the photo preferences can help a lot, these are the most important options:
+    Is your photo not giving good results? Changing and experimenting with the photo preferences can help a lot:
 
     - **Scale method:** The `Crop` and `Overlay` options usually give the best results but each photo is unique and other options can help more.
     - **Crop position:** If you are using `Crop`, `Overlay` or `Color Padding` the position of the crop tool can be the key to a good result, even moving it a few pixels can make a difference.
@@ -73,24 +73,26 @@
     - text: Go to settings
       href: /settings
   summary: |-
-    Do you think there are too many preferences? Or few? Change the preferences mode!
+    Too many options? Or few? Adapt it to your style.
   content: |-
-    Preferences mode allows you to increase or decrease the number of options depending on your mood or experience using the application.
+    Preferences mode allows you to increase or decrease the number of options depending on your style or experience using the application.
 
-    - **Minimal:** Only options for body personalization. Everything will be adjusted to make the process as automatic as possible.
-    - **Simple:** Allows you to change the scale mode.
+    - **Minimal:** Only options for body personalization. Everything will be adjusted to make the process totally automatic.
+    - **Simple:** Same as Minimal. Allows you to change the Scale mode.
     - **Normal:** All options available, this is the original DreamTime experience.
-    - **Advanced:** The results interface changes to work with custom masks, this mode requires time and experience doing manual editing but can provide better results.
+    - **Advanced:** Mode to work with Custom masks. The results interface changes to show each mask, this mode requires time and experience making manual modifications to the photos but can improve the results dramatically.
 
 - title: Tips? Ads? You decide.
   photo: tips-ads
   buttons:
     - text: Go to settings
       href: /settings
+    - text: Report ad
+      href: https://time.dreamnet.tech/docs/support/feedback#others
   summary: |-
-    Now you can find help tips and advertising in this space. You can enable or disable this behavior in the settings.
+    Now you can find help tips and ads in this space. You can enable or disable this behavior in the settings.
   content: |-
-    In this version of DreamTime you can find help tips and/or ads in the bottom right part of the application.
+    In this version of DreamTime you can find help tips and/or ads in the bottom part of the menu.
 
     You can enable or disable this behavior in the settings.
 
@@ -99,8 +101,8 @@
 - title: Create nudes of videos!
   photo: videos
   summary: |-
-    Don't just stay with static photos, you can also nudify gifs and mp4 videos!
+    Don't just stay with static photos, you can also nudify gifs, webm and mp4 videos!
   content: |-
-    With DreamTime you can nudify gifs and mp4 videos, from the Internet or by uploading the files to the application.
+    With DreamTime you can nudify gifs, webm and mp4 videos, from the Internet or by uploading the files to the application.
 
-    Keep in mind that this process can consume more resources from your system!
+    **Be sure to use short videos, otherwise prepare to meet the RAM eating beast.**

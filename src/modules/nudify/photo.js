@@ -840,7 +840,13 @@ export class Photo {
    * Cancel the photo runs and remove it from the queue.
    */
   cancel() {
-    NudifyQueue.cancel(this)
+    if (this.withCustomMasks) {
+      // When working with custom masks the photo is not part of the queue
+      // Why? Because that's extra work :(
+      this.stop()
+    } else {
+      NudifyQueue.cancel(this)
+    }
   }
 
   /**
@@ -904,6 +910,8 @@ export class Photo {
     }
 
     const run = new PhotoRun(1, this, mask)
+
+    this.masks[mask].run = run
 
     this.runs.push(run)
     this.queue.add(run)

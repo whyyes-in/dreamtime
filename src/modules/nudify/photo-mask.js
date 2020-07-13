@@ -31,6 +31,11 @@ export class PhotoMask {
   photo
 
   /**
+   * @type {import('./photo-run').PhotoRun}
+   */
+  run
+
+  /**
    * @type {import('../file').File}
    */
   file
@@ -164,7 +169,7 @@ export class PhotoMask {
         return 'Corrected'
 
       case STEP.MASK:
-        return 'Mask'
+        return 'Maskcloth'
 
       case STEP.MASKREF:
         return 'Maskref'
@@ -195,19 +200,19 @@ export class PhotoMask {
   get description() {
     switch (this.id) {
       case STEP.CORRECT:
-        return '[OPENCV] Color correction to make it easier for the algorithm to understand.<br><br><strong>NOTE:</strong> Editor changes and scaling are applied here.'
+        return '[OPENCV] The algorithm applies color correction to the photo to understand it more easily.<br><br><strong>NOTE:</strong> Scale and editor changes are applied here.'
 
       case STEP.MASK:
         return '[GAN] The algorithm recognizes and marks the clothes to be removed.'
 
       case STEP.MASKREF:
-        return '[OPENCV] Corrections to the mask.'
+        return '[OPENCV] Correction of errors in the Maskcloth.'
 
       case STEP.MASKDET:
-        return '[GAN] The algorithm recognizes and marks the ideal position and size of the body parts.<br><br><strong>This is the most important mask.</strong>'
+        return '[GAN] The algorithm recognizes and marks the ideal position and size of the body parts.<br><br><strong>This is the most important mask!</strong>'
 
       case STEP.MASKFIN:
-        return '[OPENCV] Corrections, problem solving and body preferences are applied.<br><br><strong>NOTE:</strong> This mask needs a valid Maskref and Maskdet to generate.'
+        return '[OPENCV] Correction of errors and scale of the body parts according to the preferences.<br><br><strong>NOTE:</strong> This mask needs a valid Maskref and Maskdet to generate.'
 
       case STEP.NUDE:
         return '[GAN] The algorithm generates the fake nude.'

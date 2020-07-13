@@ -8,6 +8,22 @@
           <span class="separator">·</span>
           <span>{{ $nudify.waiting.length }}</span>
         </p>
+
+        <div v-show="$nudify.waiting.length > 0" class="queue__section__actions">
+          <button
+            v-tooltip="{placement: 'bottom', content: 'Forget waiting'}"
+            class="button button--danger button--xs"
+            @click.prevent="$nudify.forgetAll('waiting')">
+            <font-awesome-icon icon="trash-alt" />
+          </button>
+
+          <button
+            v-tooltip="{placement: 'bottom', content: 'Cancel waiting' }"
+            class="button button--xs"
+            @click.prevent="$nudify.cancelAll('waiting')">
+            <font-awesome-icon icon="stop" />
+          </button>
+        </div>
       </div>
 
       <div class="queue__content">
@@ -26,6 +42,22 @@
           <span class="separator">·</span>
           <span>{{ $nudify.pending.length }}</span>
         </p>
+
+        <div v-show="$nudify.pending.length > 0" class="queue__section__actions">
+          <button
+            v-tooltip="'Forget all'"
+            class="button button--danger button--xs"
+            @click.prevent="$nudify.forgetAll()">
+            <font-awesome-icon icon="trash-alt" />
+          </button>
+
+          <button
+            v-tooltip="'Start all'"
+            class="button button--success button--xs"
+            @click.prevent="$nudify.addAll()">
+            <font-awesome-icon icon="play" />
+          </button>
+        </div>
       </div>
 
       <div class="queue__content">
@@ -45,6 +77,22 @@
           <span class="separator">·</span>
           <span>{{ $nudify.finished.length }}</span>
         </p>
+
+        <div v-show="$nudify.finished.length > 0" class="queue_section__actions">
+          <button
+            v-tooltip="'Forget all'"
+            class="button button--danger button--xs"
+            @click.prevent="$nudify.forgetAll('finished')">
+            <font-awesome-icon icon="trash-alt" />
+          </button>
+
+          <button
+            v-tooltip="'Rerun all'"
+            class="button button--info button--xs"
+            @click.prevent="$nudify.addAll('finished')">
+            <font-awesome-icon icon="undo" />
+          </button>
+        </div>
       </div>
 
       <div class="queue__content">
@@ -84,10 +132,10 @@ export default {
 }
 
 .queue__header {
-  @apply p-3;
+  @apply flex items-center p-3;
 
   .title {
-    @apply text-sm font-bold;
+    @apply flex-1 text-sm font-bold;
   }
 
   .icon {
@@ -96,6 +144,14 @@ export default {
 
   .separator {
     @apply mx-2;
+  }
+}
+
+.queue__section__actions {
+  @apply flex justify-end ml-2 z-10;
+
+  .button {
+    @apply ml-2;
   }
 }
 

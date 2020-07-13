@@ -50,6 +50,7 @@ export class PhotoRun {
 
   /**
    * Mask that will be generated with this run.
+   * @type {import('./photo-mask').PhotoMask}
    */
   mask
 
@@ -121,15 +122,19 @@ export class PhotoRun {
 
     let ext = 'png'
 
-    if (file.extension === 'gif') {
-      ext = 'gif'
-    } else if (file.extension === 'mp4') {
-      ext = 'mp4'
+    if (file.isAnimated) {
+      ext = file.extension
     }
 
     return `${name}-RUN${this.id}-${now}-dreamtime.${ext}`
   }
 
+  /**
+   * Creates an instance of PhotoRun.
+   * @param {string} id
+   * @param {import('./photo').Photo} photo
+   * @param {string} mask
+   */
   constructor(id, photo, mask) {
     this.id = id
     this.photo = photo

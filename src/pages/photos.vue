@@ -61,5 +61,13 @@ export default {
 
 .photos__content {
   @apply grid grid-cols-4 gap-6;
+
+  @screen md {
+    @apply grid-cols-3;
+  }
+
+  @screen sm {
+    @apply grid-cols-2;
+  }
 }
 </style>

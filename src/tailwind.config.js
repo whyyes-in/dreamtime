@@ -27,6 +27,13 @@ module.exports = {
       64: '16rem',
     },
 
+    screens: {
+      xl: { max: '2000px' },
+      lg: { max: '1800px' },
+      md: { max: '1600px' },
+      sm: { max: '1400px' },
+    },
+
     extend: {
       fontFamily: {
         sans: [

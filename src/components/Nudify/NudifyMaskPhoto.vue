@@ -49,12 +49,28 @@
       <button v-if="mask.canShowSave"
               key="save"
               v-tooltip="'Save mask.'"
-              class="button button--sm button--info"
+              class="button button--sm"
               @click="mask.save()">
         <FontAwesomeIcon icon="save" />
       </button>
 
-      <button v-if="mask.canShowGenerate"
+      <button v-if="mask.canShowGenerate && mask.photo.running"
+              key="stop"
+              v-tooltip="'Stop Generation.'"
+              class="button button--danger button--sm"
+              @click="stop()">
+        <FontAwesomeIcon icon="stop" />
+      </button>
+
+      <button v-else-if="mask.canShowGenerate && mask.canShowSave"
+              key="rerun"
+              v-tooltip="'Rerun.'"
+              class="button button--info button--sm"
+              @click="generate()">
+        <FontAwesomeIcon icon="retweet" />
+      </button>
+
+      <button v-else-if="mask.canShowGenerate && !mask.photo.running"
               key="play"
               v-tooltip="'Generate.'"
               class="button button--success button--sm"
@@ -91,6 +107,9 @@ export default {
     maskClass() {
       return {
         'mask--dragging': this.isDragging,
+        'mask--failed': this.mask.run?.failed,
+        'mask--running': this.mask.run?.running,
+        'mask--finished': this.mask.run?.finished,
       }
     },
   },
@@ -130,6 +149,10 @@ export default {
       this.mask.photo.generateMask(this.mask.id)
     },
 
+    stop() {
+      this.mask.photo.cancel()
+    },
+
     openPreview() {
       this.mask.file.openItem()
     },
@@ -165,12 +188,20 @@ export default {
 
 <style lang="scss" scoped>
 .mask {
-  @apply mb-0 relative;
+  @apply mb-0 relative border-2 border-transparent;
 
   &.mask--dragging {
     .mask__dropzone {
       @apply flex opacity-100;
     }
+  }
+
+  &.mask--running {
+    @apply border-primary;
+  }
+
+  &.mask--failed {
+    @apply border-danger;
   }
 }
 

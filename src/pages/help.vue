@@ -12,11 +12,8 @@
     </PageHeader>
 
     <div class="help__content">
-      <div v-for="(lesson, index) in help.lessons"
-           :key="index"
-           class="column">
-        <HelpLesson
-          :lesson="lesson" />
+      <div v-for="(lesson, index) in help.lessons" :id="lesson.photo" :key="index">
+        <HelpLesson :lesson="lesson" />
       </div>
     </div>
   </div>
@@ -34,7 +31,11 @@ export default {
 
 <style lang="scss" scoped>
 .help__content {
-  @apply flex flex-wrap;
+  @apply grid grid-cols-2 gap-6;
+
+  @screen sm {
+    @apply grid-cols-1;
+  }
 
   .column {
     @apply w-1/2 px-3 mb-6;

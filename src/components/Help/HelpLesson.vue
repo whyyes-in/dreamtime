@@ -124,10 +124,13 @@ export default {
   }
 }
 
-/* purgecss start ignore */
 .box__photo {
   @apply bg-contain;
 }
 
-/* purgecss end ignore */
+.box__footer {
+  .button {
+    @apply mr-2;
+  }
+}
 </style>

@@ -131,15 +131,19 @@ export default {
 }
 
 .results__masks {
-  @apply grid grid-cols-6 gap-6;
+  @apply grid grid-cols-3 gap-6;
 
-  .mask {
-    @apply col-span-2;
+  @screen sm {
+    @apply grid-cols-2;
   }
 }
 
 .results__runs {
   @apply grid grid-cols-2 gap-6;
+
+  @screen sm {
+    @apply grid-cols-1;
+  }
 
   .run {
     @media (min-height: 1280px) {

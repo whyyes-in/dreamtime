@@ -84,6 +84,14 @@ export class ImageMagick {
     return this
   }
 
+  async blur(radius, sigma) {
+    await this.init()
+
+    this.image.blur(radius, sigma)
+
+    return this
+  }
+
   /**
    *
    *
@@ -111,6 +119,17 @@ export class ImageMagick {
       this.image.write((data) => {
         destFile.write(data)
         resolve()
+      }, MagickFormat.Png)
+    })
+  }
+
+  async getDataURL() {
+    await this.init()
+
+    return new Promise((resolve) => {
+      this.image.write((data) => {
+        const b64encoded = Buffer.from(data).toString('base64')
+        resolve(b64encoded)
       }, MagickFormat.Png)
     })
   }

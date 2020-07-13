@@ -109,7 +109,7 @@ export class File extends EventEmitter {
    * @readonly
    */
   get isAnimated() {
-    return this.mimetype === 'image/gif' || this.mimetype === 'video/mp4'
+    return this.mimetype === 'image/gif' || this.mimetype === 'video/mp4' || this.mimetype === 'video/webm'
   }
 
   /**
@@ -118,7 +118,7 @@ export class File extends EventEmitter {
    * @readonly
    */
   get isVideo() {
-    return this.mimetype === 'video/mp4'
+    return this.mimetype === 'video/mp4' || this.mimetype === 'video/webm'
   }
 
   /**
@@ -292,6 +292,7 @@ export class File extends EventEmitter {
       'image/png',
       'image/gif',
       'video/mp4',
+      'video/webm',
     ]
 
     if (!validMimeTypes.includes(mimetype)) {
@@ -403,6 +404,12 @@ export class File extends EventEmitter {
     if (this.mimetype === 'video/mp4') {
       filters = [
         { name: 'MP4', extensions: ['mp4'] },
+      ]
+    }
+
+    if (this.mimetype === 'video/webm') {
+      filters = [
+        { name: 'WEBM', extensions: ['webm'] },
       ]
     }
 

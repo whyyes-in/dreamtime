@@ -117,7 +117,7 @@ export default {
     .cropper-view-box,
     .cropper-face {
       @apply bg-black bg-no-repeat opacity-100;
-      background-image: var(--photo-image, url('~assets/images/d1hpv9d-e1c2c577-d272-41b0-bd73-a89209108efd.jpg'));
+      background-image: var(--photo-image, url('~assets/images/etc/MvlZgXx.jpg'));
       background-size: 100% 100%;
     }
   }

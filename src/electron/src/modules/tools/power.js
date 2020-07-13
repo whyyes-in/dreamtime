@@ -32,10 +32,12 @@ export function exec(args, options = {}) {
     })
 
     // FIXME: Anaconda support.
-    /* return spawn('C:\\Users\\koles\\Anaconda3\\envs\\dreampower\\python', args, {
+    /*
+    return spawn('C:\\Users\\koles\\Anaconda3\\envs\\dreampower\\python', args, {
       cwd: getPowerPath(),
       ...options,
-    }) */
+    })
+    */
 
     return spawn('python', args, {
       cwd: getPowerPath(),
@@ -66,13 +68,13 @@ export async function nudify(args, events) {
   })
 
   process.stdout.on('data', (output) => {
-    logger.info(output.toString())
+    // logger.info(output.toString())
     const stdout = output.toString().trim().split('\n')
     events.emit('stdout', null, stdout)
   })
 
   process.stderr.on('data', (output) => {
-    logger.warn(output.toString())
+    // logger.warn(output.toString())
     events.emit('stderr', null, output)
   })
 

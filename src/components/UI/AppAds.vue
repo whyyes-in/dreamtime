@@ -5,7 +5,7 @@
     <HelpLesson v-if="isLesson"
                 :lesson="lesson"
                 :small="true"
-                @click="$router.push('/help')" />
+                @click="$router.push({ path: '/help', hash: lesson.photo })" />
   </div>
 </template>
 

@@ -117,16 +117,16 @@
 
 - id: preferences.advanced.scaleMode
   label: Scale method.
-  description: Indicates how the photo will be scaled.
+  description: Indicates how the photo will be scaled to 512x512.
   input: select
   options:
     - label: None
       value: none
-    - label: "Automatic: Fixed"
+    - label: "Automatic Resize"
       value: auto-rescale
-    - label: "Automatic: Padding"
+    - label: "Automatic Padding"
       value: auto-resize
-    - label: "Automatic: Crop"
+    - label: "Automatic Crop"
       value: auto-resize-crop
     - label: Overlay
       value: overlay
@@ -137,11 +137,11 @@
   animated-options:
     - label: None
       value: none
-    - label: "Automatic: Fixed"
+    - label: "Automatic Resize"
       value: auto-rescale
-    - label: "Automatic: Padding"
+    - label: "Automatic Padding"
       value: auto-resize
-    - label: "Automatic: Crop"
+    - label: "Automatic Crop"
       value: auto-resize-crop
 
 - id: preferences.body.executions

@@ -73,8 +73,8 @@
           </h2>
 
           <h3 class="subtitle">
-            Upload photos from the web.
-            <span v-tooltip="'Only web addresses that end in: jpg, png, gif or mp4.'" class="help">
+            Upload photos and videos from the web.
+            <span v-tooltip="'Only web addresses that end in: jpg, png, gif, webm or mp4.'" class="help">
               <font-awesome-icon icon="info-circle" />
             </span>
           </h3>
@@ -102,7 +102,7 @@
           </h2>
 
           <h3 class="subtitle">
-            Upload photos from any public Instagram profile.
+            Upload photos and videos from any public Instagram profile.
           </h3>
         </PageHeader>
 
@@ -121,8 +121,7 @@
       </div>
 
       <!-- File -->
-      <div v-show="selectionId === 2"
-           class="methods__content">
+      <div v-show="selectionId === 2" class="methods__content">
         <PageHeader>
           <h2 class="title">
             <span class="icon"><font-awesome-icon icon="file" /></span>
@@ -138,7 +137,7 @@
           v-show="false"
           ref="photo"
           type="file"
-          accept="image/jpeg, image/png, image/gif, video/mp4"
+          accept="image/jpeg, image/png, image/gif, video/mp4, video/webm"
           multiple
           @change="openFile">
 
@@ -151,8 +150,7 @@
       </div>
 
       <!-- Folder -->
-      <div v-show="selectionId === 3"
-           class="methods__content">
+      <div v-show="selectionId === 3" class="methods__content">
         <PageHeader>
           <h2 class="title">
             <span class="icon"><font-awesome-icon icon="folder" /></span>
@@ -160,7 +158,7 @@
           </h2>
 
           <h3 class="subtitle">
-            Upload all valid photos from a folder on your computer.
+            Upload all valid photos and videos from a folder on your computer.
           </h3>
         </PageHeader>
 
@@ -274,10 +272,6 @@ export default {
           'Unable to download the photo, please verify that the address is correct and that you are connected to the Internet.',
           error,
         )
-      }
-
-      if (post.isVideo) {
-        throw new Warning('Upload failed.', 'Videos are not supported yet.')
       }
 
       Nudify.addUrl(post.downloadUrl)

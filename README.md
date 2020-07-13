@@ -3,19 +3,19 @@
     <img src="assets/dreamtime.png" alt="DreamTime">
   </a>
   
-  <p align="center" style="font-size: 2.0em;">DreamTime</p>
+  <h1 align="center">DreamTime</h1>
 
-  <p align="center" style="font-size: 1.6em;">
+  <h2 align="center">
     🙈 Use artificial intelligence to create fake nudes.
-  </p>
+  </h2>
 
   <p align="center">
-    Available for Windows, Linux and Mac.
+    Available for <strong>Windows, Linux and Mac</strong>.
   </p>
 </div>
 
 <p align="center">
-  <a href="https://github.com/dreamnettech/dreamtime/actions"><img src="https://github.com/dreamnettech/dreamtime/workflows/CI/CD/badge.svg" /></a>
+  <a href="https://github.com/dreamnettech/dreamtime/actions"><img src="https://github.com/dreamnettech/dreamtime/workflows/Build/badge.svg" /></a>
   <a href="https://github.com/dreamnettech/dreamtime/releases"><img src="https://img.shields.io/github/downloads/dreamnettech/dreamtime/total?logo=github&logoColor=white" /></a>
   <a target="_blank" href="https://www.codacy.com/app/kolessios/dreamtime?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=dreamnettech/dreamtime&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/0ecb8ba6eeae42e7bfd0d414d1bacee1" /></a>
   <a target="_blank" href="https://codeclimate.com/github/private-dreamnet/dreamtime/maintainability"><img src="https://api.codeclimate.com/v1/badges/8d325515768f221e235f/maintainability" /></a>
@@ -39,19 +39,21 @@ Visit the [Getting Started](https://time.dreamnet.tech/docs/development/getting-
 ## Community
 
 - [Chat](https://chat.dreamnet.tech)
-- [Forum](https://forum.dreamnet.tech)
 - [Twitter](https://twitter.com/DreamNetTechno)
 - [Facebook](https://web.facebook.com/DreamNetTechnology)
 
-## Supporting DreamTime
+## Supporting
 
 DreamTime is an open-source project that will be **free forever**. The project is kept in development thanks to the support of our incredible backers.
 
 These are the ways you can support us:
 
-- [Patreon](https://patreon.com/dreamnet)
-- [Ko-fi](https://ko-fi.com/dreamnet)
+- 🌟 [Patreon](https://patreon.com/dreamnet)
+- 🌟 [Buy Me A Coffe](https://www.buymeacoffee.com/dreamnettech)
+- [Liberapay](https://liberapay.com/dreamnet)
 - [Crypto](https://commerce.coinbase.com/checkout/24a8bcb6-22db-4166-9bea-fb24fe78f1cd)
+
+🌟 = Get rewards like early access to the latest versions.
 
 ## Sponsors
 

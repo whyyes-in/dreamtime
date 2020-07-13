@@ -87,7 +87,7 @@ export default {
 
 .photo__content {
   @apply absolute top-0 bottom-0 left-0 right-0 z-30;
-  @apply flex justify-center items-center bg-menus-dark-60 opacity-0;
+  @apply flex justify-center items-center bg-menus-dark-80 opacity-0;
   backdrop-filter: blur(4px);
   transition: opacity 0.1s linear;
 }
