@@ -26,9 +26,6 @@ localStorage.debug = 'none'
  *
  */
 async function setupRemote() {
-  // Analytics & Remote settings.
-  await dreamtrack.setup()
-
   Promise.all([
     rollbar.setup(),
     logrocket.setup(),
@@ -49,6 +46,9 @@ async function setupRemote() {
  *
  */
 async function setup() {
+  // Analytics & Remote settings.
+  await dreamtrack.setup()
+
   // Requirements check.
   await requirements.setup()
 

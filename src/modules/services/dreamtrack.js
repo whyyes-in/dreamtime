@@ -45,7 +45,7 @@ export class DreamTrackService extends BaseService {
    * @type {string}
    */
   get host() {
-    const host = process.env.DREAMTRACK_HOST || 'localhost:3000'
+    const host = process.env.DREAMTRACK_HOST || 'track.dreamnet.tech'
     const protocol = host === 'track.dreamnet.tech' ? 'wss' : 'ws'
 
     return `${protocol}://${host}`
