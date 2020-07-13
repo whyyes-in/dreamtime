@@ -91,13 +91,10 @@ async function start() {
     return
   }
 
-  let buildPath
+  const portablePath = path.resolve(DISTPATH, `${FILENAME}-portable.zip`)
+  const installerPath = path.resolve(DISTPATH, `${FILENAME}.${process.env.BUILD_EXTENSION}`)
 
-  if (process.env.BUILD_PORTABLE) {
-    buildPath = path.resolve(DISTPATH, `${FILENAME}-portable.zip`)
-  } else {
-    buildPath = path.resolve(DISTPATH, `${FILENAME}.${process.env.BUILD_EXTENSION}`)
-  }
+  const buildPath = fs.existsSync(portablePath) ? portablePath : installerPath
 
   if (fs.existsSync(buildPath)) {
     console.log(buildPath)
