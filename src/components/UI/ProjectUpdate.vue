@@ -7,14 +7,13 @@
       </figure>
 
       <h1 class="title">
-        {{ info.title }} <span v-tooltip="'New version'">{{ updater.latest.tag_name }}</span>
+        {{ info.title }} <span v-tooltip="'New version'">{{ updater.latestCompatible.tag_name }}</span>
       </h1>
 
       <h2 v-if="!updater.update.active" class="subtitle">
         {{ info.description }}
       </h2>
     </div>
-
 
     <!-- Downloading -->
     <div v-if="isDownloading && updater.update.progress >= 0" class="update__status">

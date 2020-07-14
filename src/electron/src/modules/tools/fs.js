@@ -3,6 +3,7 @@ import { basename, join } from 'path'
 import fs from 'fs-extra'
 import { app, dialog } from 'electron'
 import axios from 'axios'
+import https from 'https'
 import deferred from 'deferred'
 import { getAppResourcesPath } from './paths'
 import { AppError } from '../app-error'
@@ -143,6 +144,7 @@ export function download(url, options = {}) {
     url,
     responseType: 'stream',
     maxContentLength: -1,
+    httpsAgent: new https.Agent({ rejectUnauthorized: false }),
   }).then(({ data, headers }) => {
     const contentLength = headers['content-length'] || -1
 
@@ -202,78 +204,6 @@ export function download(url, options = {}) {
     logger.warn('Download cancelled due to an error.', err)
     bus.emit('error', null, err)
   })
-
-
-  /*
-  axios.request({
-    url,
-    responseType: 'stream',
-    maxContentLength: -1,
-  }).then((response) => {
-    const contentLength = response.data.headers['content-length'] || -1
-    const totalSize = filesize(contentLength, { exponent: 2, output: 'object' }).value
-    const output = createWriteStream(filepath)
-
-    stream = response.data
-
-    stream.on('data', (chunk) => {
-      output.write(Buffer.from(chunk))
-
-      const written = filesize(writeStream.bytesWritten, { exponent: 2, output: 'object' }).value
-
-      if (contentLength > 0) {
-        const progress = output.bytesWritten / contentLength
-
-        bus.emit('progress', null, {
-          progress,
-          written,
-          total: totalSize,
-        })
-      } else {
-        bus.emit('progress', null, {
-          progress: -1,
-          written,
-          total: -1,
-        })
-      }
-    })
-
-    stream.on('end', () => {
-      output.end()
-
-      if (!existsSync(filepath)) {
-        throw new AppError('The file was not saved correctly.', { title: 'Download failed.' })
-      }
-
-      bus.emit('end', null, filepath)
-    })
-
-    stream.on('error', (err) => {
-      throw new AppError(err, { title: 'Download failed.' })
-    })
-
-    output.on('error', (err) => {
-      throw new AppError(err, { title: 'Download failed.' })
-    })
-
-    bus.on('cancel', () => {
-      output.destroy()
-      stream.destroy()
-      deleteFile()
-
-      logger.info('Download canceled by user.')
-      bus.emit('end')
-    })
-
-    return true
-  }).catch((err) => {
-    stream.destroy(err)
-    deleteFile()
-
-    logger.warn('Download canceled due to an error.', err)
-    bus.emit('error', null, err)
-  })
-  */
 
   return bus
 }

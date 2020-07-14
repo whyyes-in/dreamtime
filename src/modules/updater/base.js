@@ -264,7 +264,7 @@ export class BaseUpdater {
     let asset
 
     try {
-      urls = dreamtrack.get(['projects', this.name, 'releases', this.latestVersion, 'urls'])
+      urls = dreamtrack.get(['projects', this.name, 'releases', this.latestCompatibleVersion, 'urls'])
     } catch (err) {
       // not the best way, but works
       urls = []
@@ -388,7 +388,7 @@ export class BaseUpdater {
 
       await this.install(filepath)
     } catch (err) {
-      throw new Exception('The installation failed.', 'There was a problem trying to install the downloaded file, please try again.', err)
+      throw new Warning('The installation failed.', 'There was a problem trying to install the downloaded file, please try again.', err)
     }
   }
 

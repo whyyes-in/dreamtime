@@ -24,9 +24,6 @@ localStorage.debug = ''
  *
  */
 async function setupDreamTrack() {
-  // Analytics & App settings.
-  await dreamtrack.setup()
-
   // Bug/Session tracking.
   Promise.all([
     rollbar.setup(),
@@ -46,6 +43,9 @@ async function setupDreamTrack() {
  *
  */
 async function setup() {
+  // Analytics & App settings.
+  await dreamtrack.setup()
+
   // Requirements check.
   await requirements.setup()
 

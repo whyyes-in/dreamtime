@@ -129,8 +129,8 @@ export const requirements = {
       version = await getVersion()
       const currentVersion = `v${process.env.npm_package_version}`
 
-      const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'minimum'], 'v0.0.1')
-      const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'maximum'])
+      const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'minimum'], 'v1.2.5')
+      const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'maximum'], 'v1.2.5')
 
       if (compareVersions.compare(version, minimum, '<')) {
         return false
