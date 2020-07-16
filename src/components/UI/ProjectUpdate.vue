@@ -7,7 +7,7 @@
       </figure>
 
       <h1 class="title">
-        {{ data.name }} <span v-tooltip="'New version'">{{ updater.latest.tag_name }}</span>
+        {{ data.name }} <span v-tooltip="'New version'">{{ updater.latestCompatible.tag_name }}</span>
       </h1>
 
       <h2 v-if="!updater.update.active" class="subtitle">

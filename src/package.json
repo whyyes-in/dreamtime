@@ -9,7 +9,7 @@
   "license": "GPL-3.0-only",
   "scripts": {
     "postinstall": "patch-package",
-    "lint": "eslint --fix --ext .js,.vue --ignore-path .gitignore .",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "test": "env-cmd -e default,test mocha",
     "clean": "shx rm -rf .nuxt/ dist/ electron/dist/",
     "optimize": "modclean --patterns default:safe --run",

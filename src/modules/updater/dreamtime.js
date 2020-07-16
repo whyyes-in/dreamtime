@@ -39,6 +39,8 @@ class DreamTimeUpdater extends BaseUpdater {
 
     if (dream.isPortable) {
       platform = `${platform}-portable`
+    } else {
+      platform = `${platform}-installer`
     }
 
     return platform

@@ -31,6 +31,9 @@ if (process.env.GITHUB_REF) {
 process.env.DEPLOY_GIT_REPO = 'dreamtime'
 
 //
+const isEarly = process.env.DEPLOY_GIT_TAG.includes('-early') || process.env.DEPLOY_GIT_TAG.includes('-rc')
+
+//
 const VERSION = `v${pkg.version}`
 const FILENAME = `DreamTime-${VERSION}-${process.env.BUILD_PLATFORM}`
 const DISTPATH = path.resolve(__dirname, '../../dist')
@@ -74,7 +77,7 @@ async function run(release) {
 
   const response = await release.run()
 
-  if (process.env.DEPLOY_GIT_TAG.includes('early')) {
+  if (isEarly) {
     output.push(release.cryptr.encrypt(JSON.stringify(response)))
   } else {
     output.push(response)
@@ -91,13 +94,10 @@ async function start() {
     return
   }
 
-  let buildPath
+  const portablePath = path.resolve(DISTPATH, `${FILENAME}-portable.zip`)
+  const installerPath = path.resolve(DISTPATH, `${FILENAME}-installer.${process.env.BUILD_EXTENSION}`)
 
-  if (process.env.BUILD_PORTABLE) {
-    buildPath = path.resolve(DISTPATH, `${FILENAME}-portable.zip`)
-  } else {
-    buildPath = path.resolve(DISTPATH, `${FILENAME}.${process.env.BUILD_EXTENSION}`)
-  }
+  const buildPath = fs.existsSync(portablePath) ? portablePath : installerPath
 
   if (fs.existsSync(buildPath)) {
     console.log(buildPath)
