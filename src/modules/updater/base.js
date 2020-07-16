@@ -231,7 +231,7 @@ export class BaseUpdater {
         dialog.showMessageBoxSync({
           type: 'error',
           title: 'Connect to Internet.',
-          message: `There was a problem getting the latest version of the components needed to use DreamTime. 
+          message: `There was a problem getting the latest version of the components needed to use DreamTime.
           Please make sure you are connected to the Internet just for this time and try again.`,
         })
 
@@ -265,7 +265,7 @@ export class BaseUpdater {
     let asset
 
     try {
-      urls = dreamtrack.get(['projects', this.name, 'releases', this.latestVersion, 'urls'])
+      urls = dreamtrack.get(['projects', this.name, 'releases', this.latestCompatibleVersion, 'urls'])
     } catch (err) {
       // not the best way, but works
       urls = []
@@ -279,10 +279,10 @@ export class BaseUpdater {
       urls = []
     }
 
-    if (this.latest.assets.length === 1) {
-      [asset] = this.latest.assets
+    if (this.latestCompatible.assets.length === 1) {
+      [asset] = this.latestCompatible.assets
     } else {
-      asset = find(this.latest.assets, (item) => item.name.includes(this.platform))
+      asset = find(this.latestCompatible.assets, (item) => item.name.includes(this.platform))
     }
 
     if (!isNil(asset)) {
@@ -389,7 +389,7 @@ export class BaseUpdater {
 
       await this.install(filepath)
     } catch (err) {
-      throw new Exception('The installation failed.', 'There was a problem trying to install the downloaded file, please try again.', err)
+      throw new Warning('The installation failed.', 'There was a problem trying to install the downloaded file, please try again.', err)
     }
   }
 

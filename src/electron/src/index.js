@@ -9,7 +9,7 @@
 
 import { startsWith } from 'lodash'
 import {
-  app, BrowserWindow, shell, protocol,
+  app, BrowserWindow, shell, protocol, nativeImage,
 } from 'electron'
 import { dirname, resolve } from 'path'
 import Logger from '@dreamnet/logplease'
@@ -236,7 +236,12 @@ class DreamApp {
   static createWindow() {
     logger.info('Creating window...')
 
-    const iconPath = resolve(config.rootDir, 'dist', 'icon.ico')
+    let icon
+    const iconPath = resolve(config.rootDir, 'dist', 'icon.png')
+
+    if (fs.existsSync(iconPath)) {
+      icon = nativeImage.createFromPath(iconPath)
+    }
 
     // browser window.
     this.window = new BrowserWindow({
@@ -247,7 +252,7 @@ class DreamApp {
       frame: false,
       show: false,
       backgroundColor: '#060709',
-      icon: fs.existsSync(iconPath) ? iconPath : undefined,
+      icon,
 
       webPreferences: {
         nodeIntegration: true,

@@ -12,7 +12,7 @@ module.exports = {
     "NODE_ENV": "development",
     "ROLLBAR_ACCESS_TOKEN": "e62c909ec771492fa7f371dc61eea092",
     "LOGROCKET_ACCESS_TOKEN": "5iqym0/dreamtime-development",
-    "DREAMTRACK_HOST": "localhost:3333",
+    //"DREAMTRACK_HOST": "localhost:3333",
     ...development
   },
   "production": {
