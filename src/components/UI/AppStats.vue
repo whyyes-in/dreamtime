@@ -1,35 +1,35 @@
 <template>
   <div v-if="$dreamtrack.enabled" class="stats">
-    <div class="box">
+    <div v-tippy
+         data-tippy-content="Users like you who are using the application right now!"
+         data-tippy-placement="bottom"
+         class="box">
       <span class="stats__value">{{ stats | stat('users.realtime') }}</span>
-      <span v-tippy
-            data-tippy-content="Users like you who are using the application right now!"
-            data-tippy-placement="bottom"
-            class="stats__label">real-time users</span>
+      <span class="stats__label">real-time users</span>
     </div>
 
-    <div class="box">
+    <div v-tippy
+         data-tippy-content="Number of different users who have used the application."
+         data-tippy-placement="bottom"
+         class="box">
       <span class="stats__value">{{ stats | stat('users.total') }}</span>
-      <span v-tippy
-            data-tippy-content="Number of different users who have used the application."
-            data-tippy-placement="bottom"
-            class="stats__label">users</span>
+      <span class="stats__label">users</span>
     </div>
 
-    <div class="box">
+    <div v-tippy
+         data-tippy-content="Number of times the application has been opened."
+         data-tippy-placement="bottom"
+         class="box">
       <span class="stats__value">{{ stats | stat('sessions.total') }}</span>
-      <span v-tippy
-            data-tippy-content="Number of times the application has been opened."
-            data-tippy-placement="bottom"
-            class="stats__label">sessions</span>
+      <span class="stats__label">sessions</span>
     </div>
 
-    <div class="box">
+    <div v-tippy
+         data-tippy-content="Number of photos that have been nudified."
+         data-tippy-placement="bottom"
+         class="box">
       <span class="stats__value">{{ stats | stat('events.total.DREAM_COMPLETED') }}</span>
-      <span v-tippy
-            data-tippy-content="Number of photos that have been nudified."
-            data-tippy-placement="bottom"
-            class="stats__label">nudifications</span>
+      <span class="stats__label">nudifications</span>
     </div>
   </div>
 </template>
@@ -90,7 +90,7 @@ export default {
 }
 
 .box {
-  @apply mb-0 items-center p-3;
+  @apply mb-0 items-center px-3 py-6;
 }
 
 .stats__value {
@@ -99,6 +99,5 @@ export default {
 
 .stats__label {
   @apply text-sm;
-  cursor: help;
 }
 </style>

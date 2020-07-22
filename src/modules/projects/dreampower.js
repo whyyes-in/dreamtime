@@ -20,15 +20,6 @@ class DreamPower {
           href: 'https://power.dreamnet.tech',
           label: 'Website',
         },
-        {
-          icon: [
-            'fab',
-            'patreon',
-          ],
-          href: 'https://www.patreon.com/dreampower',
-          label: 'Patreon',
-          description: 'Help us create a better algorithm and give better results.',
-        },
       ],
     },
   }

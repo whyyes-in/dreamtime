@@ -54,7 +54,7 @@ class WaifuUpdater extends BaseUpdater {
     const currentVersion = `v${process.env.npm_package_version}`
 
     const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'waifu', 'minimum'], 'v0.1.0')
-    const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'waifu', 'maximum'], 'v0.1.0')
+    const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'waifu', 'maximum'])
 
     if (!minimum) {
       return null
@@ -100,6 +100,10 @@ class WaifuUpdater extends BaseUpdater {
    *
    */
   sendNotification() {
+    if (!requirements.waifu.installed) {
+      return
+    }
+
     const notification = new Notification(
       {
         title: `🎉 Waifu2X ${this.latestCompatibleVersion}`,

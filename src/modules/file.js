@@ -1,4 +1,6 @@
-import { merge, attempt, isNil } from 'lodash'
+import {
+  merge, attempt, isNil,
+} from 'lodash'
 import path from 'path'
 import slash from 'slash'
 import EventEmitter from 'eventemitter3'
@@ -277,7 +279,8 @@ export class File extends EventEmitter {
   }
 
   isSamePath(filepath) {
-    return slash(filepath) === this.path
+    filepath = slash(filepath)
+    return filepath.toLowerCase() === this.path.toLowerCase()
   }
 
   validateAsPhoto() {

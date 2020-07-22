@@ -74,7 +74,7 @@ class DreamPowerUpdater extends BaseUpdater {
     const currentVersion = `v${process.env.npm_package_version}`
 
     const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'minimum'], 'v1.2.8')
-    const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'maximum'], 'v1.2.8')
+    const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'maximum'])
 
     if (!minimum) {
       return null
@@ -120,6 +120,10 @@ class DreamPowerUpdater extends BaseUpdater {
    *
    */
   sendNotification() {
+    if (!requirements.power.installed) {
+      return
+    }
+
     const notification = new Notification(
       {
         title: `🎉 DreamPower ${this.latestCompatibleVersion}`,

@@ -1,5 +1,16 @@
 <template>
   <div class="project">
+    <div class="project__buttons buttons">
+      <a v-for="(item, index) in supportButtons"
+         :key="index"
+         v-tooltip="item.label"
+         class="button"
+         :href="item.href"
+         target="_blank">
+        <span class="icon"><FontAwesomeIcon :icon="item.icon" /></span>
+      </a>
+    </div>
+
     <div class="project__content">
       <!-- Supporters -->
       <div class="box">
@@ -11,12 +22,6 @@
             <h2 class="subtitle">
               Wonderful people that without them this would not be possible.
             </h2>
-          </div>
-
-          <div class="right">
-            <a class="button" :href="supportURL" target="_blank">
-              Support us
-            </a>
           </div>
         </div>
 
@@ -77,6 +82,10 @@ export default {
       return this.$dreamtrack.get('supporters', [])
     },
 
+    supportButtons() {
+      return this.$community.data.support || []
+    },
+
     supportURL() {
       return this.$dreamtrack.get('urls.support.main', 'https://www.patreon.com/dreamnet')
     },
@@ -89,6 +98,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.project__buttons {
+  @apply mb-6;
+}
+
 .project__content {
   .title {
     @apply text-white text-2xl;

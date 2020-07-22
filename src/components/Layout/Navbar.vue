@@ -7,6 +7,15 @@
                  class="nav__item nav__item--button">
         <img src="~/assets/images/games/sans.png">
       </nuxt-link>
+
+      <!--
+      <nuxt-link
+        v-tooltip="'Bad Dream Minigame 🎮'"
+        to="/games/baddream"
+        class="nav__item nav__item--button">
+        B
+      </nuxt-link>
+      -->
     </div>
 
     <div class="nav__center">
@@ -14,7 +23,7 @@
         <font-awesome-icon icon="upload" />
       </nuxt-link>
 
-      <nuxt-link v-tooltip="'Photos'" to="/photos" class="nav__item nav__item--link">
+      <nuxt-link v-tooltip="'My Photos'" to="/photos" class="nav__item nav__item--link">
         <font-awesome-icon icon="images" />
       </nuxt-link>
     </div>

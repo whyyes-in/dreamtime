@@ -144,13 +144,7 @@ export const requirements = {
       const currentVersion = `v${process.env.npm_package_version}`
 
       const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'minimum'], 'v1.2.8')
-      const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'maximum'], 'v1.2.8')
-
-      console.log({
-        version,
-        minimum,
-        maximum,
-      })
+      const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'maximum'])
 
       if (compareVersions.compare(version, minimum, '<')) {
         return false
@@ -182,7 +176,7 @@ export const requirements = {
       const currentVersion = `v${process.env.npm_package_version}`
 
       const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'waifu', 'minimum'], 'v0.1.0')
-      const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'waifu', 'maximum'], 'v0.1.0')
+      const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'waifu', 'maximum'])
 
       if (compareVersions.compare(version, minimum, '<')) {
         return false

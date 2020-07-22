@@ -23,6 +23,34 @@ class Community {
       },
     ],
     sections: [],
+    support: [
+      {
+        icon: [
+          'fab',
+          'patreon',
+        ],
+        href: 'https://www.patreon.com/dreamnet',
+        label: 'Patreon',
+      },
+      {
+        icon: 'coffee',
+        href: 'https://www.buymeacoffee.com/dreamnettech',
+        label: 'Buy Me A Coffe',
+      },
+      {
+        icon: 'donate',
+        href: 'https://liberapay.com/dreamnet/',
+        label: 'LiberaPay',
+      },
+      {
+        icon: [
+          'fab',
+          'bitcoin',
+        ],
+        href: 'https://commerce.coinbase.com/checkout/24a8bcb6-22db-4166-9bea-fb24fe78f1cd',
+        label: 'Crypto',
+      },
+    ],
   }
 
   get name() {

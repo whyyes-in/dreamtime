@@ -230,9 +230,8 @@ export class BaseUpdater {
       if (required) {
         dialog.showMessageBoxSync({
           type: 'error',
-          title: 'Connect to Internet.',
-          message: `There was a problem getting the latest version of the components needed to use DreamTime.
-          Please make sure you are connected to the Internet just for this time and try again.`,
+          title: 'Unable to connect to Github.',
+          message: 'DreamTime requires a stable Internet connection during the first start. Please connect to the Internet or try again in a few minutes.',
         })
 
         // Close.

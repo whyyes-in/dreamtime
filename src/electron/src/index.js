@@ -30,6 +30,12 @@ if (process.env.NODE_ENV === 'production') {
   process.chdir(getPath('exe', '..'))
 }
 
+if (process.env.BUILD_PORTABLE) {
+  // Save Chromium/Electron data in the portable folder.
+  app.setPath('appData', getAppPath('AppData'))
+  app.setPath('userData', getAppPath('AppData', 'dreamtime'))
+}
+
 class DreamApp {
   /**
    * @type {BrowserWindow}
@@ -322,16 +328,35 @@ class DreamApp {
       return resolve(config.rootDir, 'dist', 'index.html')
     }
 
-    return `http://localhost:${config.server.port}`
+    return `http://${config.server.host}:${config.server.port}`
   }
 }
 
-app.on('ready', async () => {
-  try {
-    await DreamApp.start()
-  } catch (error) {
-    throw new AppError(error, { title: 'DreamTime failed to start.', level: 'error' })
-  }
-})
+const gotTheLock = app.requestSingleInstanceLock()
 
-DreamApp.boot()
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', () => {
+    const { window } = DreamApp
+
+    // Someone tried to run a second instance, we should focus our window.
+    if (window) {
+      if (window.isMinimized()) {
+        window.restore()
+      }
+
+      window.focus()
+    }
+  })
+
+  app.on('ready', async () => {
+    try {
+      await DreamApp.start()
+    } catch (error) {
+      throw new AppError(error, { title: 'DreamTime failed to start.', level: 'error' })
+    }
+  })
+
+  DreamApp.boot()
+}

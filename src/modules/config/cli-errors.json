@@ -45,7 +45,11 @@
   },
   {
     "query": "Image is not 512 x 512",
-    "message": "Your photo needs to be 512x512 to be nudified. Please use the 'Scale method' option or resize manually before uploading."
+    "message": "Image error: Your photo needs to be 512x512 to be nudified. Please use the 'Scale method' option or resize manually before uploading."
+  },
+  {
+    "query": "_mask.sameSize(*psrc1)",
+    "message": "Image error: Your photo needs to be 512x512 to be nudified. Please use the 'Scale method' option or resize manually before uploading."
   },
   {
     "query": "loading Python",
@@ -82,6 +86,10 @@
   {
     "query": "Could not find a format to read the specified file",
     "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupt."
+  },
+  {
+    "query": "PIL.Image.DecompressionBombError",
+    "message": "Image error: The photo is too big! Please decrease the photo size with external tools or try a smaller photo."
   },
   {
     "query": "not compiled with CUDA",

@@ -1,8 +1,11 @@
 import {
   find, remove, sortBy, reverse,
 } from 'lodash'
+import { Queue } from '@dreamnet/queue'
 import { File } from './file'
+import { Consola } from './consola'
 
+const consola = Consola.create('photos')
 const { fs } = $provider
 const { getModelsPath } = $provider.paths
 
@@ -12,22 +15,54 @@ class Photos {
    */
   files = []
 
+  /**
+   * @type {Queue}
+   */
+  queue
+
   get folder() {
     return getModelsPath('Uncategorized')
   }
 
   async setup() {
+    this.queue = new Queue(this.worker.bind(this), {
+      delay: 10,
+    })
+
+    this.queue.on('finished', () => {
+      this.sort()
+    })
+
     fs.chokidar.watch(this.folder, {
       disableGlobbing: true,
       awaitWriteFinish: true,
     }).on('add', (path) => {
-      this.onAdded(path)
+      this.queue.add({
+        event: 'add',
+        path,
+      })
     }).on('unlink', (path) => {
-      this.onRemoved(path)
+      this.queue.add({
+        event: 'unlink',
+        path,
+      })
+    }).on('error', (error) => {
+      // This silence errors when deleting files.
+      consola.warn(error)
     })
   }
 
-  async onAdded(path) {
+  async worker(task) {
+    const { event, path } = task
+
+    if (event === 'add') {
+      await this.add(path)
+    } else {
+      await this.unlink(path)
+    }
+  }
+
+  async add(path) {
     let file = this.getFile(path)
 
     if (file) {
@@ -36,13 +71,10 @@ class Photos {
       file = await File.fromPath(path, { watch: false })
       this.files.push(file)
     }
-
-    this.sort()
   }
 
-  onRemoved(path) {
+  unlink(path) {
     this.removeFile(path)
-    this.sort()
   }
 
   sort() {
