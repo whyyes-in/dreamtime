@@ -232,6 +232,7 @@ export class PhotoRun {
     }
 
     this.preferences.advanced.scaleMode = this.photo.scaleMode
+    this.preferences.advanced.imageSize = this.photo.imageSize
   }
 
   /**

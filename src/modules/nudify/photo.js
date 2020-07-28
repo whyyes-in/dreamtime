@@ -26,6 +26,7 @@ import { PhotoMask, STEP } from './photo-mask'
 import { File } from '../file'
 import { Timer } from '../timer'
 import { events } from '../events'
+import { closestNumber } from '../helpers'
 
 const { getCurrentWindow } = require('electron').remote
 
@@ -384,6 +385,17 @@ export class Photo {
   }
 
   /**
+   *
+   *
+   * @type {number}
+   * @readonly
+   */
+  get imageSize() {
+    const { imageSize } = this.preferences.advanced
+    return closestNumber(imageSize)
+  }
+
+  /**
    * Returns the final scale mode after validations.
    *
    * @type {string}
@@ -716,13 +728,15 @@ export class Photo {
       return
     }
 
+    const { imageSize } = this
+
     const canvas = this.cropper.getCroppedCanvas({
-      width: 512,
-      height: 512,
-      minWidth: 512,
-      minHeight: 512,
-      maxWidth: 512,
-      maxHeight: 512,
+      width: imageSize,
+      height: imageSize,
+      minWidth: imageSize,
+      minHeight: imageSize,
+      maxWidth: imageSize,
+      maxHeight: imageSize,
       fillColor: 'white',
       imageSmoothingEnabled: true,
       imageSmoothingQuality: 'high',
@@ -861,18 +875,10 @@ export class Photo {
    */
   track() {
     const { mode } = this.preferences
-    const { transformMode, useColorTransfer } = this.preferences.advanced
+    const { useColorTransfer } = this.preferences.advanced
     const { randomize, progressive } = this.preferences.body
 
     consola.track('DREAM_START', { mode })
-
-    if (transformMode === 'export-maskfin') {
-      consola.track('DREAM_EXPORT_MASKFIN')
-    }
-
-    if (transformMode === 'import-maskfin') {
-      consola.track('DREAM_IMPORT_MASKFIN')
-    }
 
     if (useColorTransfer) {
       consola.track('DREAM_COLOR_TRANSFER')

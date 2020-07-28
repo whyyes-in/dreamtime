@@ -8,9 +8,8 @@
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
 import {
-  isNil, startsWith, pick, clone, deburr,
+  isNil, pick, clone, deburr,
 } from 'lodash'
-import { remote } from 'electron'
 import emojiStrip from 'emoji-strip'
 import { Consola } from '../consola'
 import { settings } from './settings'
@@ -20,8 +19,7 @@ const consola = Consola.create('requirements')
 const {
   system, fs, power, waifu,
 } = $provider
-const { is } = $provider.util
-const { getAppResourcesPath, getCheckpointsPath, getModelsPath } = $provider.paths
+const { getCheckpointsPath, getModelsPath } = $provider.paths
 
 export const requirements = {
   power: {
@@ -33,10 +31,6 @@ export const requirements = {
   waifu: {
     installed: false,
     compatible: false,
-  },
-
-  windows: {
-    media: false,
   },
 
   recommended: {
@@ -64,15 +58,11 @@ export const requirements = {
   },
 
   get hasAlerts() {
-    if (!this.windows.media) {
-      return true
-    }
-
     if (!this.recommended.ram) {
       return true
     }
 
-    if (settings.processing.device === 'GPU' && !this.recommended.vram) {
+    if (settings.preferences.advanced.device === 'GPU' && !this.recommended.vram) {
       return true
     }
 
@@ -95,9 +85,6 @@ export const requirements = {
     // Waifu2X
     this.waifu.installed = waifu.isInstalled()
     this.waifu.compatible = await this._hasCompatibleWaifu()
-
-    // windows
-    this.windows.media = await this._hasWindowsMedia()
 
     // ram
     this.recommended.ram = system.memory.total >= 12884901888 // 12 GB
@@ -143,7 +130,7 @@ export const requirements = {
       version = await power.getVersion()
       const currentVersion = `v${process.env.npm_package_version}`
 
-      const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'minimum'], 'v1.2.8')
+      const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'minimum'], 'v1.2.10')
       const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'maximum'])
 
       if (compareVersions.compare(version, minimum, '<')) {
@@ -224,50 +211,5 @@ export const requirements = {
     }
 
     return true
-  },
-
-  /**
-   * @return {boolean}
-   */
-  async _hasWindowsMedia() {
-    if (!is.windows) {
-      return true
-    }
-
-    const version = system.os.release
-
-    if (!startsWith(version, '10')) {
-      // no windows 10.
-      return true
-    }
-
-    try {
-      const regedit = remote.require('regedit')
-
-      if (!is.development) {
-        // regedit commands
-        regedit.setExternalVBSLocation(
-          getAppResourcesPath('vbs'),
-        )
-      }
-
-      const value = await new Promise((resolve) => {
-        const regKey = 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup\\WindowsFeatures'
-
-        regedit.list(regKey, (err, result) => {
-          if (!isNil(err)) {
-            resolve(false)
-            return
-          }
-
-          resolve(result[regKey].keys.includes('WindowsMediaVersion'))
-        })
-      })
-
-      return value
-    } catch (error) {
-      consola.warn(error)
-      return false
-    }
   },
 }

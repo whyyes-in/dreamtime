@@ -99,7 +99,7 @@ export const transform = (photoPreferences, input, output) => {
     output = input
   }
 
-  const { waifu: preferences } = photoPreferences.advanced
+  const { waifu: preferences, device } = photoPreferences.advanced
 
   // CLI Args
   const args = ['--input', input, '--output', output]
@@ -126,7 +126,7 @@ export const transform = (photoPreferences, input, output) => {
   }
 
   // GPU
-  if (settings.processing.device === 'GPU') {
+  if (device === 'GPU') {
     for (const id of settings.processing.gpus) {
       args.push('--gpu', id)
     }

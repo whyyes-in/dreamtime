@@ -47,6 +47,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/* purgecss start ignore */
 .tos {
   &::v-deep {
     .box__photo {
@@ -82,4 +83,5 @@ export default {
 .tos__content {
   @apply grid grid-cols-2 gap-6;
 }
+/* purgecss end ignore */
 </style>

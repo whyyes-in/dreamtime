@@ -7,6 +7,7 @@
 //
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
+import path from 'path'
 import { isNil } from 'lodash'
 import compareVersions from 'compare-versions'
 import { BaseUpdater } from './base'
@@ -15,7 +16,7 @@ import { dreamtrack } from '../services'
 
 const { getVersion } = $provider.power
 const { getPowerPath } = $provider.paths
-const { extractSeven } = $provider.fs
+const { fs } = $provider
 const { activeWindow } = $provider.util
 const { app, Notification } = $provider.api
 
@@ -40,7 +41,7 @@ class DreamPowerUpdater extends BaseUpdater {
   get platform() {
     let platform = super.platform
 
-    if (platform === 'macos' || settings.processing.device === 'CPU') {
+    if (platform === 'macos' || settings.preferences.advanced.device === 'CPU') {
       platform = `${platform}-cpuonly`
     } else {
       platform = `${platform}-any`
@@ -57,13 +58,17 @@ class DreamPowerUpdater extends BaseUpdater {
       return 'v0.0.0'
     }
 
-    const version = await getVersion()
+    try {
+      const version = await getVersion()
 
-    if (isNil(version)) {
-      return 'v1.1.0'
+      if (isNil(version)) {
+        return 'v0.0.0'
+      }
+
+      return version
+    } catch (error) {
+      return 'v0.0.0'
     }
-
-    return version
   }
 
   /**
@@ -73,7 +78,7 @@ class DreamPowerUpdater extends BaseUpdater {
   _getLatestCompatible(releases) {
     const currentVersion = `v${process.env.npm_package_version}`
 
-    const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'minimum'], 'v1.2.8')
+    const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'minimum'], 'v1.2.10')
     const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'maximum'])
 
     if (!minimum) {
@@ -109,7 +114,25 @@ class DreamPowerUpdater extends BaseUpdater {
    * @param {string} filepath
    */
   async install(filepath) {
-    await extractSeven(filepath, getPowerPath())
+    const powerPath = getPowerPath()
+
+    try {
+      if (fs.existsSync(powerPath)) {
+        const files = await fs.readdir(powerPath)
+
+        for (const file of files) {
+          if (file.includes('checkpoints')) {
+            continue
+          }
+
+          fs.removeSync(path.join(powerPath, file))
+        }
+      }
+    } catch (error) {
+      this.consola.warn(error)
+    }
+
+    await fs.extractSeven(filepath, powerPath)
 
     // restart!
     app.relaunch()

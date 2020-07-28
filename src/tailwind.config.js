@@ -1,8 +1,5 @@
 // See default config https://github.com/tailwindcss/tailwindcss/blob/master/stubs/defaultConfig.stub.js
 module.exports = {
-  purge: {
-    enabled: false,
-  },
   theme: {
     spacing: {
       px: '1px',
@@ -213,6 +210,18 @@ module.exports = {
       },
     }),
   ],
+  purge: {
+    // https://tailwindcss.com/docs/controlling-file-size/#removing-unused-css
+    enabled: true,
+    content: [
+      'components/**/*.vue',
+      'layouts/**/*.vue',
+      'pages/**/*.vue',
+      'plugins/**/*.js',
+      'modules/**/*.js',
+      'nuxt.config.js',
+    ],
+  },
   corePlugins: {
     container: false,
   },

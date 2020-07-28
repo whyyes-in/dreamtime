@@ -37,9 +37,12 @@
       </AppBox>
 
       <AppBox title="Settings.">
-        <SettingsField v-if="!isMacOS" field-id="processing.device" @change="$dreampower.updater.refresh()" />
+        <SettingsField v-if="!isMacOS"
+                       field-id="preferences.advanced.device"
+                       ignore-hardcoded
+                       @change="$dreampower.updater.refresh()" />
 
-        <SettingsField v-else field-id="processing.device" description="Mac only supports CPU.">
+        <SettingsField v-else field-id="preferences.advanced.device" description="Mac only supports CPU.">
           <select class="input" disabled>
             <option value="CPU" selected>
               CPU

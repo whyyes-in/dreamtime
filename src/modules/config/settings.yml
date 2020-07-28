@@ -65,9 +65,9 @@
     - label: Disabled
       value: false
 
-- id: processing.device
+- id: preferences.advanced.device
   label: Device.
-  description: Device that algorithms will use. GPU is faster.
+  description: GPU is faster but depends on the device VRAM. CPU is slower but uses system RAM.
   input: select
   options:
     - label: CPU
@@ -117,7 +117,7 @@
 
 - id: preferences.advanced.scaleMode
   label: Scale method.
-  description: Indicates how the photo will be scaled to 512x512.
+  description: Indicates how the photo will be scaled.
   input: select
   options:
     - label: None
@@ -196,6 +196,36 @@
       value: true
     - label: Disabled
       value: false
+
+- id: preferences.advanced.imageSize
+  label: Image size.
+  description: Size for photo rescale. Larger sizes requires more RAM and can produce less satisfactory results.
+  input: select
+  options:
+    - label: 256x256
+      value: 256
+    - label: 512x512
+      value: 512
+    - label: 768x768
+      value: 768
+    - label: 1024x1024
+      value: 1024
+    - label: 1280x1280
+      value: 1280
+
+- id: preferences.advanced.compress
+  label: Compression level.
+  description: Compress the photo before nudification to save RAM.
+  input: select
+  options:
+    - label: Disabled
+      value: 0
+    - label: Low
+      value: 25
+    - label: Medium
+      value: 50
+    - label: High
+      value: 75
 
 - id: preferences.advanced.waifu.enabled
   label: Waifu2X.

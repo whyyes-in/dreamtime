@@ -24,13 +24,13 @@ async function getMetadata(filepath) {
   const exists = existsSync(filepath)
 
   const workload = [
-    readFile(filepath, { encoding: 'base64' }),
     Promise.resolve(mime.lookup(filepath)),
     Promise.resolve(parse(filepath)),
   ]
 
   if (exists) {
     workload.push(
+      readFile(filepath, { encoding: 'base64' }),
       stat(filepath),
       md5File(filepath),
     )
@@ -38,13 +38,14 @@ async function getMetadata(filepath) {
     workload.push(
       Promise.resolve(),
       Promise.resolve(),
+      Promise.resolve(),
     )
   }
 
   const [
-    base64,
     mimetype,
     { name, ext, dir },
+    base64,
     stats,
     md5,
   ] = await Promise.all(workload)

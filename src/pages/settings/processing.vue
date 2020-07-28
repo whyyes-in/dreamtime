@@ -13,17 +13,23 @@
 
     <section class="box">
       <div class="box__content">
-        <SettingsField v-if="!isMacOS" v-model="value$" field-id="processing.device" />
+        <SettingsField v-if="!isMacOS"
+                       v-model="value$"
+                       field-id="preferences.advanced.device"
+                       ignore-hardcoded />
 
-        <SettingsField v-else field-id="processing.device" description="Mac only supports CPU.">
-          <select v-model="value$.processing.device" class="input" disabled>
+        <SettingsField v-else
+                       field-id="preferences.advanced.device"
+                       description="Mac only supports CPU."
+                       ignore-hardcoded>
+          <select v-model="value$.preferences.advanced.device" class="input" disabled>
             <option value="CPU">
               CPU
             </option>
           </select>
         </SettingsField>
 
-        <SettingsField v-show="value$.processing.device === 'GPU'" field-id="processing.gpus">
+        <SettingsField v-show="value$.preferences.advanced.device === 'GPU'" field-id="processing.gpus">
           <select v-model="value$.processing.gpus[0]" class="input">
             <option v-for="(device, index) in $provider.system.graphics" :key="index" :value="index">
               {{ device.model }}

@@ -20,6 +20,34 @@
       </template>
     </PageHeader>
 
+    <div class="alerts">
+      <!-- Models Folder -->
+      <div v-if="!requirements.folders.models" class="notification notification--danger">
+        <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
+        <span v-if="!$dream.isPortable">
+          The <strong>Models</strong> folder has <strong>invalid characters</strong>. <nuxt-link to="/settings/folders">Please change the location of the folder.</nuxt-link>
+        </span>
+        <span v-else>
+          The place where you have extracted {{ $dream.name }} has <strong>invalid characters</strong>.
+          Please move the application to another place.
+        </span>
+      </div>
+
+      <!-- GPU -->
+      <div v-if="$settings.preferences.advanced.device === 'GPU'">
+        <div v-if="!requirements.recommended.vram" class="notification notification--warning">
+          <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
+          <span>Your NVIDIA GPU has very low VRAM! The algorithm is very likely to fail.</span>
+        </div>
+      </div>
+
+      <!-- RAM -->
+      <div v-if="!requirements.recommended.ram" class="notification notification--warning">
+        <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
+        <span>Your system has less than <strong>12 GB</strong> of RAM.</span>
+      </div>
+    </div>
+
     <section class="box">
       <div class="box__content">
         <SettingsField field-id="app.disableHardwareAcceleration" />
@@ -54,9 +82,14 @@
 <script>
 import { VModel } from '~/mixins'
 import { events } from '~/modules'
+import { requirements } from '~/modules/system'
 
 export default {
   mixins: [VModel],
+
+  data: () => ({
+    requirements,
+  }),
 
   methods: {
     openDevTools() {

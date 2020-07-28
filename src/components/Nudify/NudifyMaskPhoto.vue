@@ -54,6 +54,14 @@
         <FontAwesomeIcon icon="save" />
       </button>
 
+      <button v-if="mask.run"
+              key="button-terminal"
+              v-tooltip="'View terminal'"
+              class="button button--sm"
+              @click.prevent="$refs.terminalDialog.showModal()">
+        <font-awesome-icon icon="terminal" />
+      </button>
+
       <button v-if="mask.canShowGenerate && mask.photo.running"
               key="stop"
               v-tooltip="'Stop Generation.'"
@@ -78,6 +86,26 @@
         <FontAwesomeIcon icon="play" />
       </button>
     </div>
+
+    <!-- Terminal Dialog -->
+    <dialog v-if="mask.run" ref="terminalDialog">
+      <div class="dialog__content">
+        <div class="terminal">
+          <li
+            v-for="(item, index) in mask.run.cli.lines"
+            :key="index"
+            :class="item.css">
+            > {{ item.text }}
+          </li>
+        </div>
+
+        <div class="dialog__buttons">
+          <button class="button button--danger" @click="$refs.terminalDialog.close()">
+            Close
+          </button>
+        </div>
+      </div>
+    </dialog>
   </div>
 </template>
 
@@ -243,6 +271,19 @@ export default {
 
   .button {
     max-width: 90px;
+  }
+}
+
+.terminal {
+  @apply p-2 bg-black overflow-auto rounded;
+  height: 400px;
+
+  li {
+    @apply font-mono text-xs text-generic-100 mb-3 block;
+
+    &.text-danger {
+      @apply text-danger-500;
+    }
   }
 }
 </style>

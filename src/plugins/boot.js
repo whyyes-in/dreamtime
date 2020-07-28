@@ -29,7 +29,10 @@ async function setupRemote() {
   Promise.all([
     rollbar.setup(),
     logrocket.setup(),
-  ]).catch(() => { })
+  ]).catch((error) => {
+    // eslint-disable-next-line no-console
+    console.warn(error)
+  })
 
   // Projects.
   await Promise.all([
@@ -38,7 +41,10 @@ async function setupRemote() {
     waifu.init(),
     checkpoints.init(),
     community.init(),
-  ]).catch(() => { })
+  ]).catch((error) => {
+    // eslint-disable-next-line no-console
+    console.warn(error)
+  })
 }
 
 /**

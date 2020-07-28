@@ -29,7 +29,7 @@
   },
   {
     "query": "CUDA out of memory",
-    "message": "You have run out of VRAM on your GPU! Make sure there are no other programs using your GPU or purchase a GPU with more memory before using DreamTime."
+    "message": "Your GPU doesn't have enough VRAM! The algorithm is out of VRAM to process the photo, please buy a new GPU with more VRAM or use CPU processing."
   },
   {
     "query": "codec can't decode byte",

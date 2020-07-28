@@ -69,6 +69,11 @@ export default {
       type: Boolean,
       default: false,
     },
+
+    ignoreHardcoded: {
+      type: Boolean,
+      defalt: false,
+    },
   },
 
   data: () => ({
@@ -98,7 +103,7 @@ export default {
       let fieldId = this.field.id
 
       // FIXME: HARD CODED!
-      if (fieldId.includes('preferences.')) {
+      if (!this.ignoreHardcoded && fieldId.includes('preferences.')) {
         fieldId = fieldId.substring('preferences.'.length)
       }
 

@@ -63,6 +63,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/* purgecss start ignore */
 .lesson {
   &::v-deep ul {
     @apply list-disc;
@@ -81,51 +82,52 @@ export default {
       .box__content {
         @apply text-xs #{!important};
       }
+
+      .box__photo {
+        height: 130px;
+      }
+    }
+
+    .box__photo {
+      height: 180px;
     }
 
     .photo--drag {
-      //background-color: #593C48;
       background-image: url('~assets/images/undraw/undraw_throw_down_ub2l.svg')
     }
 
     .photo--tips {
-      //background-color: #C27091;
       background-image: url('~assets/images/undraw/undraw_depi_wexf.svg')
     }
 
     .photo--settings {
-      //background-color: #C27091;
       background-image: url('~assets/images/undraw/undraw_personal_settings_kihd.svg')
     }
 
     .photo--preferences {
-      //background-color: #607AA9;
-      background-image: url('~assets/images/undraw/undraw_making_art_759c.svg')
+      background-image: url('~assets/images/undraw/undraw_female_avatar_w3jk.svg')
     }
 
     .photo--better-results {
-      //background-color: #607AA9;
       background-image: url('~assets/images/undraw/undraw_blank_canvas_3rbb.svg')
     }
 
     .photo--tips-ads {
-      //background-color: #506896;
       background-image: url('~assets/images/undraw/undraw_elements_cipa.svg')
     }
 
     .photo--preferences-mode {
-      //background-color: #D9B6C4;
       background-image: url('~assets/images/undraw/undraw_selected_options_42hx.svg')
     }
 
     .photo--videos {
       background-image: url('~assets/images/undraw/undraw_video_files_fu10.svg')
     }
-  }
-}
 
-.box__photo {
-  @apply bg-contain;
+    .photo--masks {
+      background-image: url('~assets/images/undraw/undraw_making_art_759c.svg')
+    }
+  }
 }
 
 .box__footer {
@@ -133,4 +135,5 @@ export default {
     @apply mr-2;
   }
 }
+/* purgecss end ignore */
 </style>

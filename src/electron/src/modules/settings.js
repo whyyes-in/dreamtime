@@ -136,7 +136,7 @@ class Settings {
     const hasGPU = process.platform === 'darwin' ? false : system.graphics.length > 0
 
     this.payload = {
-      version: 8,
+      version: 9,
       user: uuid(),
 
       wizard: {
@@ -179,7 +179,6 @@ class Settings {
       },
 
       processing: {
-        device: hasGPU ? 'GPU' : 'CPU',
         gpus: [0],
         cores: 1,
         usePython: false,
@@ -243,10 +242,12 @@ class Settings {
         },
 
         advanced: {
+          device: hasGPU ? 'GPU' : 'CPU',
           scaleMode: 'overlay',
-          transformMode: 'normal',
           useColorTransfer: false,
           useColorPaddingStrip: true,
+          compress: 0,
+          imageSize: 512,
           waifu: {
             enabled: false,
             scale: 2,
@@ -366,7 +367,7 @@ class Settings {
     // 4 -> 5
     if (this.payload?.version === 4 && this._default.version >= 5) {
       this.payload.version = 5
-      this.payload.preferences.advanced.transformMode = 'normal'
+      // this.payload.preferences.advanced.transformMode = 'normal'
     }
 
     // 5 -> 6
@@ -467,6 +468,26 @@ class Settings {
       try {
         delete this.payload.advanced.useWaifu
         delete this.payload.folders.masks
+      } catch (err) {
+        logger.warn(err)
+      }
+    }
+
+    if (this.payload?.version === 8 && this._default.version >= 9) {
+      this.payload = merge(this.payload, {
+        version: 9,
+        preferences: {
+          advanced: {
+            device: this.payload.processing.device,
+            compress: 0,
+            imageSize: 512,
+          },
+        },
+      })
+
+      // This throws on some Windows 10 systems.
+      try {
+        delete this.payload.processing.device
       } catch (err) {
         logger.warn(err)
       }

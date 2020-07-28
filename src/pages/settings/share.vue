@@ -103,6 +103,10 @@
 
           <SettingsField v-model="importPreferences" field-id="preferences.advanced.scaleMode" readonly />
 
+          <SettingsField v-model="importPreferences" field-id="preferences.advanced.imageSize" readonly />
+
+          <SettingsField v-model="importPreferences" field-id="preferences.advanced.compress" readonly />
+
           <SettingsField v-model="importPreferences" field-id="preferences.advanced.useColorPaddingStrip" readonly />
 
           <SettingsField v-model="importPreferences" field-id="preferences.advanced.useColorTransfer" readonly />
@@ -270,7 +274,11 @@ export default {
         allowEscapeKey: false,
       })
 
-      delete this.preferences.advanced.waifu.enabled
+      try {
+        delete this.preferences.advanced.waifu.enabled
+        delete this.preferences.advanced.device
+      // eslint-disable-next-line no-empty
+      } catch (e) { }
 
       this.$dreamtrack.channel.emit('preferencesExport', this.preferences)
     },
@@ -298,6 +306,12 @@ export default {
     },
 
     reviewImport() {
+      try {
+        delete this.importPreferences.advanced.waifu.enabled
+        delete this.importPreferences.advanced.device
+      // eslint-disable-next-line no-empty
+      } catch (e) { }
+
       this.value$.preferences = merge(this.value$.preferences, this.importPreferences)
 
       Swal.fire({

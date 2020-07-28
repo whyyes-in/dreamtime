@@ -7,6 +7,7 @@
 //
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
+import path from 'path'
 import { isNil } from 'lodash'
 import compareVersions from 'compare-versions'
 import { BaseUpdater } from './base'
@@ -15,7 +16,7 @@ import { dreamtrack } from '../services'
 
 const { getVersion } = $provider.waifu
 const { getWaifuPath } = $provider.paths
-const { extractSeven } = $provider.fs
+const { fs } = $provider
 const { activeWindow } = $provider.util
 const { app, Notification } = $provider.api
 
@@ -42,8 +43,12 @@ class WaifuUpdater extends BaseUpdater {
       return 'v0.0.0'
     }
 
-    const version = await getVersion()
-    return version
+    try {
+      const version = await getVersion()
+      return version
+    } catch (error) {
+      return 'v0.0.0'
+    }
   }
 
   /**
@@ -89,7 +94,21 @@ class WaifuUpdater extends BaseUpdater {
    * @param {string} filepath
    */
   async install(filepath) {
-    await extractSeven(filepath, getWaifuPath())
+    const waifuPath = getWaifuPath()
+
+    try {
+      if (fs.existsSync(waifuPath)) {
+        const files = await fs.readdir(waifuPath)
+
+        for (const file of files) {
+          fs.removeSync(path.join(waifuPath, file))
+        }
+      }
+    } catch (error) {
+      this.consola.warn(error)
+    }
+
+    await fs.extractSeven(filepath, waifuPath)
 
     // restart!
     app.relaunch()

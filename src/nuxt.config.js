@@ -95,7 +95,7 @@ module.exports = {
     // Doc: https://github.com/nuxt-community/style-resources-module
     '@nuxtjs/style-resources',
     // Doc: https://github,.com/Developmint/nuxt-purgecss
-    'nuxt-purgecss',
+    // 'nuxt-purgecss',
   ],
 
   /*
@@ -121,8 +121,7 @@ module.exports = {
    *
    */
   purgeCSS: {
-    enabled: false, // FIXME: Final release
-    mode: 'webpack',
+    enabled: true,
   },
 
   /**

@@ -66,7 +66,7 @@ class DreamTime {
 
   openAppDataFolder() {
     if (this.isPortable) {
-      this.openAppFolder()
+      shell.openPath(getAppPath('AppData'))
       return
     }
 

@@ -146,7 +146,7 @@ class DreamApp {
       enforceMacOSAppLocation()
 
       // PyTorch does not have support for GPU in macOS
-      settings.processing.device = 'CPU'
+      settings.preferences.advanced.device = 'CPU'
     }
 
     // application exit.

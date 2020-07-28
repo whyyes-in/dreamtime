@@ -32,12 +32,10 @@ export function exec(args, options = {}) {
     })
 
     // FIXME: Anaconda support.
-    /*
-    return spawn('C:\\Users\\koles\\Anaconda3\\envs\\dreampower\\python', args, {
+    /* return spawn('C:\\Users\\koles\\Anaconda3\\envs\\dreampower\\python', args, {
       cwd: getPowerPath(),
       ...options,
-    })
-    */
+    }) */
 
     return spawn('python', args, {
       cwd: getPowerPath(),
@@ -68,13 +66,13 @@ export async function nudify(args, events) {
   })
 
   process.stdout.on('data', (output) => {
-    // logger.info(output.toString())
+    logger.info(output.toString())
     const stdout = output.toString().trim().split('\n')
     events.emit('stdout', null, stdout)
   })
 
   process.stderr.on('data', (output) => {
-    // logger.warn(output.toString())
+    logger.warn(output.toString())
     events.emit('stderr', null, output)
   })
 
@@ -154,8 +152,13 @@ export const transform = (run) => {
     args.push('--output', run.outputFile.path)
   }
 
+  const {
+    useColorTransfer, scaleMode, compress, imageSize, device,
+  } = preferences.advanced
+  const { geometry } = photo
+
   // Device
-  if (settings.processing.device === 'CPU') {
+  if (device === 'CPU') {
     args.push('--cpu')
   } else {
     for (const id of settings.processing.gpus) {
@@ -165,45 +168,31 @@ export const transform = (run) => {
 
   args.push('--n-cores', settings.processing.cores)
 
-  const { useColorTransfer, scaleMode } = preferences.advanced
-  const { geometry } = photo
-
   if (scaleMode === 'overlay') {
     args.push(
       '--overlay',
       `${geometry.overlay.startX},${geometry.overlay.startY}:${geometry.overlay.endX},${geometry.overlay.endY}`,
     )
-
-    /*
-    end += 2
-
-    if (start > 0) {
-      start += 2
-    }
-
-    if (start === 5) {
-      end += 1
-    }
-    */
   } else if (scaleMode !== 'none' && scaleMode !== 'cropjs' && scaleMode !== 'padding') {
     args.push(`--${scaleMode}`)
-
-    /*
-    end += 1
-
-    if (start > 0) {
-      start += 1
-    }
-    */
   }
 
+  if (scaleMode === 'none') {
+    args.push('--ignore-size')
+  } else {
+    args.push('--image-size', imageSize)
+  }
+
+  if (start === 0) {
+    // Image compression.
+    if (compress > 0) {
+      args.push('--compress', compress)
+    }
+  }
+
+  // Color transfer.
   if (useColorTransfer) {
     args.push('--color-transfer')
-  }
-
-  // Advanced preferences
-  if (start > 0) {
-    // args.push('--ignore-size')
   }
 
   // Custom masks.

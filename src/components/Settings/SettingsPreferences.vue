@@ -78,6 +78,20 @@
       </div>
 
       <div class="box__content">
+        <SettingsField v-if="!isMacOS" v-model="value$" field-id="preferences.advanced.device" />
+
+        <SettingsField v-else field-id="preferences.advanced.device" description="Mac only supports CPU.">
+          <select v-model="value$.advanced.device" class="input" disabled>
+            <option value="CPU">
+              CPU
+            </option>
+          </select>
+        </SettingsField>
+
+        <SettingsField v-show="value$.advanced.scaleMode !== 'none'" v-model="value$" field-id="preferences.advanced.imageSize" />
+
+        <SettingsField v-model="value$" field-id="preferences.advanced.compress" />
+
         <SettingsField v-show="value$.advanced.scaleMode === 'padding'" v-model="value$" field-id="preferences.advanced.useColorPaddingStrip" />
 
         <SettingsField v-model="value$" field-id="preferences.advanced.useColorTransfer" />
@@ -137,6 +151,10 @@ export default {
   computed: {
     optionsField() {
       return this.animated ? 'animated-options' : 'options'
+    },
+
+    isMacOS() {
+      return process.platform === 'darwin'
     },
   },
 

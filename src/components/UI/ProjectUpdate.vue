@@ -42,7 +42,7 @@
         Update
       </button>
 
-      <a v-if="project === 'waifu' && $settings.processing.device === 'GPU'"
+      <a v-if="project === 'waifu' && $settings.preferences.advanced.device === 'GPU'"
          v-tooltip="'Software required to use Waifu2X on GPU.'"
          class="button button--danger"
          href="https://developer.nvidia.com/cuda-10.2-download-archive"
