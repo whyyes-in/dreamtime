@@ -140,10 +140,12 @@ class DreamApp {
    */
   static async setup() {
     if (process.platform === 'darwin') {
-      const { enforceMacOSAppLocation } = require('electron-util')
+      if (!process.env.BUILD_PORTABLE && !process.env.DISABLE_ENFORCE_APP_LOCATION) {
+        const { enforceMacOSAppLocation } = require('electron-util')
 
-      // https://github.com/sindresorhus/electron-util#enforcemacosapplocation-macos
-      enforceMacOSAppLocation()
+        // https://github.com/sindresorhus/electron-util#enforcemacosapplocation-macos
+        enforceMacOSAppLocation()
+      }
 
       // PyTorch does not have support for GPU in macOS
       settings.preferences.advanced.device = 'CPU'

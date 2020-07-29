@@ -50,6 +50,15 @@
     }
   }
 
+  &.button--warning {
+    @apply bg-warning text-black;
+
+    &:hover,
+    &:active {
+      @apply bg-warning-700;
+    }
+  }
+
   &.button--danger {
     @apply bg-danger text-black;
 

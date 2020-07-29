@@ -199,7 +199,7 @@
 
 - id: preferences.advanced.imageSize
   label: Image size.
-  description: Size for photo rescale. Larger sizes requires more RAM and can produce less satisfactory results.
+  description: Photo scale size. Larger sizes requires more RAM and can produce less satisfactory results.
   input: select
   options:
     - label: 256x256
@@ -239,7 +239,7 @@
 
 - id: preferences.advanced.waifu.scale
   label: Upscale ratio.
-  description: Ratios beyond 2x can decrease the quality.
+  description:
   input: select
   options:
     - label: 2x

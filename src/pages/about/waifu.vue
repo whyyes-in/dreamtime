@@ -12,7 +12,7 @@
             </h2>
           </div>
 
-          <div class="right">
+          <div class="right buttons">
             <button v-if="requirements.canUseWaifu" class="button" @click="$waifu.openAppFolder()">
               App Folder
             </button>
@@ -20,6 +20,15 @@
             <nuxt-link v-else to="/wizard/waifu" class="button button--info">
               Install
             </nuxt-link>
+
+            <a v-if="$settings.preferences.advanced.device === 'GPU'"
+               v-tooltip="'Install this to use Waifu2X on GPU.'"
+               href="https://developer.nvidia.com/cuda-10.2-download-archive"
+               target="_blank"
+               class="button button--success">
+              <span class="icon"><font-awesome-icon icon="external-link-square-alt" /></span>
+              <span>CUDA 10.2</span>
+            </a>
           </div>
         </div>
 
@@ -70,11 +79,11 @@ export default {
   @apply grid grid-cols-4 gap-3;
 
   .left {
-    @apply col-span-3;
+    @apply col-span-2;
   }
 
   .right {
-    @apply flex justify-center items-center;
+    @apply flex justify-center items-center col-span-2;
   }
 }
 </style>

@@ -48,7 +48,8 @@ input[type="checkbox"] {
   }
 
   &[readonly] {
-    @apply text-common-light cursor-default #{!important};
+    @apply text-common-light #{!important};
+    @apply cursor-default;
   }
 
   &.input--sm {

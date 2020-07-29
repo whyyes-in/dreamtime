@@ -10,7 +10,7 @@
       <!-- Menu -->
       <section class="menu__items">
         <MenuItem
-          label="Preferences"
+          label="Photo Preferences"
           icon="sliders-h"
           :href="`/nudify/${photo.id}/preferences`" />
 

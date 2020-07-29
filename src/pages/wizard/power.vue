@@ -20,16 +20,16 @@
 
     <div class="project__content">
       <div v-if="!requirements.power.installed" class="notification notification--warning">
-        This component is required to continue using {{ $dreamtime.name }}.
+        This component needs to be installed to continue using {{ $dreamtime.name }}.
       </div>
 
       <div v-else-if="!requirements.power.compatible" class="notification notification--danger">
         <h5>ALERT</h5>
-        The installed version is not compatible with this version of {{ $dreamtime.name }}. Please update to continue.
+        This component requires an update to continue to be used in this version of {{ $dreamtime.name }}.
       </div>
 
       <div v-else class="notification">
-        Installed version: <strong>{{ $dreampower.currentVersion }}</strong>
+        Installed version: <strong>{{ $dreampower.version }}</strong>
       </div>
 
       <AppBox>
@@ -53,9 +53,10 @@
         <SettingsField v-if="!$dreamtime.isPortable" label="Location" field-id="folders.cli">
           <input
             v-model="$settings.folders.cli"
+            :title="$settings.folders.cli"
             readonly
             class="input"
-            title="Change"
+            :style="{ cursor: 'pointer' }"
             @click.prevent="changePower">
         </SettingsField>
 

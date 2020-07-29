@@ -3,7 +3,7 @@
     <PageHeader>
       <h2 class="title">
         <span class="icon"><font-awesome-icon icon="images" /></span>
-        <span>Photos</span>
+        <span>My Photos</span>
       </h2>
 
       <h3 class="subtitle">
@@ -14,7 +14,7 @@
         <button class="button"
                 @click.prevent="openFolder">
           <span class="icon"><font-awesome-icon icon="folder-open" /></span>
-          <span>Open Folder</span>
+          <span>Folder</span>
         </button>
       </template>
     </PageHeader>

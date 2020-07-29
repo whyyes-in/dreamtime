@@ -9,47 +9,39 @@
   },
   {
     "query": "CUDA environment is not correctly set up",
-    "message": "To use Waifu2X with GPU it is necessary to install CUDA 10.2"
+    "message": "Waifu2X error: Please install <a href='https://developer.nvidia.com/cuda-10.2-download-archive' target='_blank'>CUDA 10.2</a> to use Waifu2X."
   },
   {
     "query": "no longer supports this GPU",
-    "message": "The algorithm no longer supports your GPU."
+    "message": "Algorithm error: The algorithm no longer supports your GPU."
   },
   {
     "query": "Buy new RAM!",
-    "message": "You have run out of RAM on your system! Please install more RAM on your system before using DreamTime."
+    "message": "You have run out of RAM on your system! Please buy more RAM before using DreamTime."
   },
   {
     "query": "Stopped to avoid memory problems",
-    "message": "You have run out of RAM on your system! Please install more RAM on your system before using DreamTime."
+    "message": "You have run out of RAM on your system! Please buy more RAM before using DreamTime."
   },
   {
     "query": "enforce fail at CPUAllocator",
-    "message": "You have run out of RAM on your system! Please install more RAM on your system before using DreamTime."
+    "message": "You have run out of RAM on your system! Please buy more RAM before using DreamTime."
   },
   {
     "query": "CUDA out of memory",
-    "message": "Your GPU doesn't have enough VRAM! The algorithm is out of VRAM to process the photo, please buy a new GPU with more VRAM or use CPU processing."
+    "message": "Your GPU doesn't have enough VRAM! Please use CPU processing or buy a new GPU with more than 8 GB of VRAM."
   },
   {
     "query": "codec can't decode byte",
-    "message": "There was a problem saving the nudified photo. Please make sure the folders in Settings do not have special characters or spaces."
+    "message": "Save error: Please make sure you have enough disk space and the folders in settings do not have special characters or spaces."
   },
   {
     "query": "The final result is not a valid image file",
-    "message": "There was a problem saving the nudified photo. Please make sure you have enough disk space and the folders in Settings do not have special characters or spaces."
+    "message": "Save error: Please make sure you have enough disk space and the folders in settings do not have special characters or spaces."
   },
   {
     "query": "invalid device ordinal",
-    "message": "The selected GPU is not a valid device. Please make sure that the GPU option in Settings is valid."
-  },
-  {
-    "query": "Image is not 512 x 512",
-    "message": "Image error: Your photo needs to be 512x512 to be nudified. Please use the 'Scale method' option or resize manually before uploading."
-  },
-  {
-    "query": "_mask.sameSize(*psrc1)",
-    "message": "Image error: Your photo needs to be 512x512 to be nudified. Please use the 'Scale method' option or resize manually before uploading."
+    "message": "The selected GPU is not a valid device. Please make sure that the GPU option in settings is valid."
   },
   {
     "query": "loading Python",
@@ -93,7 +85,7 @@
   },
   {
     "query": "not compiled with CUDA",
-    "message": "You have installed the CPU-only version of DreamPower. Please reinstall DreamPower to get GPU support."
+    "message": "You have installed the CPU-only version of DreamPower. Please reinstall DreamPower."
   },
   {
     "query": "float division by zero",

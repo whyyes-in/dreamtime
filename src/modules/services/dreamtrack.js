@@ -9,7 +9,6 @@
 
 import { isNil } from 'lodash'
 import Ws from '@adonisjs/websocket-client/index'
-import Deferred from 'deferred'
 import { BaseService } from './base'
 import { settings } from '../system/settings'
 import { Consola } from '../consola'
@@ -95,33 +94,36 @@ export class DreamTrackService extends BaseService {
       return Promise.resolve()
     }
 
-    this.promise = Deferred()
+    return new Promise((resolve, reject) => {
+      this.promise = {
+        resolve,
+        reject,
+      }
 
-    consola.info(`Connecting to ${this.host}...`)
+      consola.info(`Connecting to ${this.host}...`)
 
-    try {
-      this.timeout = setTimeout(() => {
+      try {
+        this.timeout = setTimeout(() => {
+          this.resolve()
+        }, CONNECT_TIMEOUT)
+
+        const ws = Ws(this.host, this.config)
+
+        ws.on('open', this.onOpen.bind(this))
+
+        ws.on('close', this.onClosed.bind(this))
+
+        ws.on('reconnect', this.onReconnect.bind(this))
+
+        ws.connect()
+
+        /** @type {import('@adonisjs/websocket-client/src/Connection').default} */
+        this.service = ws
+      } catch (err) {
+        consola.warn('Setup failed!', err)
         this.resolve()
-      }, CONNECT_TIMEOUT)
-
-      const ws = Ws(this.host, this.config)
-
-      ws.on('open', this.onOpen.bind(this))
-
-      ws.on('close', this.onClosed.bind(this))
-
-      ws.on('reconnect', this.onReconnect.bind(this))
-
-      ws.connect()
-
-      /** @type {import('@adonisjs/websocket-client/src/Connection').default} */
-      this.service = ws
-    } catch (err) {
-      consola.warn('Setup failed!', err)
-      return Promise.resolve()
-    }
-
-    return this.promise.promise
+      }
+    })
   }
 
   resolve() {

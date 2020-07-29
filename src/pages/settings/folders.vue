@@ -29,7 +29,7 @@
             v-model="value$.folders.cli"
             readonly
             class="input"
-            title="Change"
+            :title="value$.folders.cli"
             @click.prevent="changePower">
 
           <input
@@ -37,6 +37,7 @@
             disabled
             readonly
             :value="paths.getPowerPath()"
+            :title="value$.folders.cli"
             class="input">
         </SettingsField>
 
@@ -46,7 +47,7 @@
             v-model="value$.folders.waifu"
             readonly
             class="input"
-            title="Change"
+            :title="value$.folders.waifu"
             @click.prevent="changeWaifu">
 
           <input
@@ -54,6 +55,7 @@
             disabled
             readonly
             :value="paths.getWaifuPath()"
+            :title="value$.folders.waifu"
             class="input">
         </SettingsField>
 
@@ -64,7 +66,7 @@
             :disabled="$dream.isPortable"
             class="input"
             readonly
-            title="Change"
+            :title="value$.folders.models"
             @click.prevent="changeModels">
 
           <input
@@ -72,6 +74,7 @@
             disabled
             readonly
             :value="paths.getModelsPath()"
+            :title="value$.folders.models"
             class="input">
         </SettingsField>
 
@@ -82,7 +85,7 @@
             :disabled="$dream.isPortable"
             class="input"
             readonly
-            title="Change"
+            :title="value$.folders.cropped"
             @click.prevent="changeCropped">
 
           <input
@@ -90,6 +93,7 @@
             disabled
             readonly
             :value="paths.getCropPath()"
+            :title="value$.folders.cropped"
             class="input">
         </SettingsField>
       </div>

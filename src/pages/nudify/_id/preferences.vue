@@ -3,7 +3,7 @@
     <PageHeader>
       <h2 class="title">
         <span class="icon"><font-awesome-icon icon="sliders-h" /></span>
-        <span>Preferences</span>
+        <span>Photo Preferences</span>
       </h2>
 
       <h3 class="subtitle">
