@@ -28,6 +28,16 @@
         Installed version: <strong>{{ $waifu.currentVersion }}</strong>
       </div>
 
+      <div v-if="isMacOS" class="notification">
+        <h5>Waifu2X on Mac OS is experimental!</h5>
+        You may need to run the command <code>brew install openblas</code> before using it.
+      </div>
+
+      <div v-if="$settings.preferences.advanced.device === 'GPU'" class="notification">
+        <h5>Waifu2X require CUDA 10.2</h5>
+        Before using Waifu2X on GPU please <a href="https://developer.nvidia.com/cuda-10.2-download-archive" target="_blank">download and install CUDA 10.2</a>
+      </div>
+
       <AppBox>
         <ProjectUpdate project="waifu" />
       </AppBox>
@@ -74,6 +84,12 @@ export default {
   data: () => ({
     requirements,
   }),
+
+  computed: {
+    isMacOS() {
+      return process.platform === 'darwin'
+    },
+  },
 
   methods: {
     showOpenDialog(path) {

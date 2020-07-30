@@ -42,15 +42,6 @@
         Update
       </button>
 
-      <a v-if="project === 'waifu' && $settings.preferences.advanced.device === 'GPU'"
-         v-tooltip="'Install this to use Waifu2X on GPU.'"
-         class="button button--success"
-         href="https://developer.nvidia.com/cuda-10.2-download-archive"
-         target="_blank">
-        <span class="icon"><font-awesome-icon icon="external-link-square-alt" /></span>
-        <span>CUDA 10.2</span>
-      </a>
-
       <button v-show="updater.update.active" class="button button--danger" @click.prevent="updater.cancel()">
         <span class="icon"><font-awesome-icon icon="stop" /></span>
         Cancel

@@ -116,6 +116,7 @@ class DreamPowerUpdater extends BaseUpdater {
   async install(filepath) {
     const powerPath = getPowerPath()
 
+    // Removing the previous installation
     try {
       if (fs.existsSync(powerPath)) {
         const files = await fs.readdir(powerPath)
@@ -132,9 +133,19 @@ class DreamPowerUpdater extends BaseUpdater {
       this.consola.warn(error)
     }
 
+    // Extraction
     await fs.extractSeven(filepath, powerPath)
 
-    // restart!
+    // Permissions for non-windows operating systems.
+    if (process.platform !== 'win32') {
+      try {
+        fs.chmodSync(getPowerPath('dreampower'), 0o775)
+      } catch (error) {
+        this.consola.warn(error)
+      }
+    }
+
+    // Restart!
     app.relaunch()
     app.quit()
   }

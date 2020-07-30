@@ -358,7 +358,7 @@ export class File extends EventEmitter {
   }
 
   write(data) {
-    fs.writeFileSync(this.path, data)
+    fs.outputFileSync(this.path, data)
 
     this.emit('writed')
 

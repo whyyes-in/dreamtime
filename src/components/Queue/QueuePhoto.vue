@@ -10,7 +10,7 @@
           <font-awesome-icon icon="external-link-square-alt" />
         </button>
 
-        <button v-show="photo.pending" v-tooltip="'Add to Queue'" @click="add">
+        <button v-show="!photo.running && !photo.waiting && !photo.withCustomMasks" v-tooltip="'Add to Queue'" @click="add">
           <font-awesome-icon icon="play" />
         </button>
 

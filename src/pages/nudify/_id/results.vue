@@ -8,17 +8,24 @@
       </h2>
 
       <h3 class="subtitle">
-        Generate and customize the masks to create the nude of your dreams.
-        <AppTip :tooltip="{ content: 'As long as you stay on this page the drag and drop functionality will be limited to masks.', placement: 'bottom' }" />
+        Manually generate and improve the algorithm masks.
+        <AppTip :tooltip="{ content: tooltip, placement: 'bottom' }" />
       </h3>
 
       <template v-slot:right>
-        <button v-tooltip="{ content: 'Open the folder where the masks are stored.<br><br>The changes you make externally in the files will be reflected in real time here.', placement: 'bottom' }"
-                class="button"
-                @click.prevent="openMasksFolder">
-          <span class="icon"><font-awesome-icon icon="folder-open" /></span>
-          <span>Masks</span>
-        </button>
+        <div class="buttons">
+          <a class="button button--info" href="https://dreamtime.tech/docs/guide/custom-masks" target="_blank">
+            <span class="icon"><font-awesome-icon icon="question-circle" /></span>
+            <span>Guide</span>
+          </a>
+
+          <button
+            class="button"
+            @click.prevent="openMasksFolder">
+            <span class="icon"><font-awesome-icon icon="folder-open" /></span>
+            <span>Masks</span>
+          </button>
+        </div>
       </template>
     </PageHeader>
 
@@ -107,10 +114,20 @@ export default {
     preferences() {
       return this.photo.preferences
     },
+
+    tooltip() {
+      return `- Generate mask by mask by clicking on the green button.<br>
+      - The changes you make externally to the masks will be captured in real time.<br>
+      - As long as you stay on this page the drag and drop functionality will be limited to the masks box.<br><br>
+
+      Read the guide to better understand this mode.`
+    },
   },
 
   mounted() {
-    this.$store.commit('app/setDragDropEnabled', false)
+    if (this.photo.withCustomMasks) {
+      this.$store.commit('app/setDragDropEnabled', false)
+    }
   },
 
   methods: {

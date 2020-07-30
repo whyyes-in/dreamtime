@@ -1,5 +1,10 @@
 <template>
   <div class="project">
+    <div v-if="isMacOS" class="notification">
+      <h5>Waifu2X on Mac OS is experimental!</h5>
+      You may need to run the command <code>brew install openblas</code> before using it.
+    </div>
+
     <div class="project__content">
       <div class="box">
         <div class="box__header">
@@ -57,6 +62,12 @@ export default {
   data: () => ({
     requirements,
   }),
+
+  computed: {
+    isMacOS() {
+      return process.platform === 'darwin'
+    },
+  },
 }
 </script>
 

@@ -224,6 +224,10 @@ export const Nudify = {
         return
       }
 
+      if (photo.withCustomMasks) {
+        return
+      }
+
       photo.add()
     })
   },

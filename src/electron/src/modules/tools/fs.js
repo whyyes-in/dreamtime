@@ -44,7 +44,7 @@ export function read(path, encoding = 'utf-8') {
  */
 export function writeDataURL(path, dataURL) {
   const data = this.getBase64Data(dataURL)
-  return fs.writeFileSync(path, data, 'base64')
+  return fs.outputFileSync(path, data, 'base64')
 }
 
 /**

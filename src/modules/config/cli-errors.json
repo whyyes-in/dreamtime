@@ -28,6 +28,10 @@
     "message": "You have run out of RAM on your system! Please buy more RAM before using DreamTime."
   },
   {
+    "query": "MemoryError : Unable to allocate",
+    "message": "You have run out of RAM on your system! Please buy more RAM before using DreamTime."
+  },
+  {
     "query": "CUDA out of memory",
     "message": "Your GPU doesn't have enough VRAM! Please use CPU processing or buy a new GPU with more than 8 GB of VRAM."
   },
@@ -53,7 +57,7 @@
   },
   {
     "query": "file is not valid image",
-    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupt."
+    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
   },
   {
     "query": "cv2.error",
@@ -61,23 +65,31 @@
   },
   {
     "query": "is not a valid file or directory or url",
-    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupt."
+    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
   },
   {
     "query": "file not a supported format",
-    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupt."
+    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
   },
   {
     "query": "invalid extension format",
-    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupt."
+    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
   },
   {
     "query": "The file might be corrupted",
-    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupt."
+    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
+  },
+  {
+    "query": "libpng error: PNG input buffer is incomplete",
+    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
+  },
+  {
+    "query": "OSError: image file is truncated",
+    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
   },
   {
     "query": "Could not find a format to read the specified file",
-    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupt."
+    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
   },
   {
     "query": "PIL.Image.DecompressionBombError",

@@ -65,14 +65,6 @@ export default {
 <style lang="scss" scoped>
 /* purgecss start ignore */
 .lesson {
-  &::v-deep ul {
-    @apply list-disc;
-
-    li {
-      @apply text-sm ml-3;
-    }
-  }
-
   &::v-deep {
     &.lesson--small {
       .title {
@@ -86,6 +78,18 @@ export default {
       .box__photo {
         height: 130px;
       }
+    }
+
+    ul {
+      @apply list-disc;
+
+      li {
+        @apply text-sm ml-3;
+      }
+    }
+
+    code {
+      @apply mx-1 p-1 bg-gray-800;
     }
 
     .box__photo {

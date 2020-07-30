@@ -11,7 +11,7 @@ import path from 'path'
 import { isNil } from 'lodash'
 import compareVersions from 'compare-versions'
 import { BaseUpdater } from './base'
-import { requirements } from '../system'
+import { requirements, settings } from '../system'
 import { dreamtrack } from '../services'
 
 const { getVersion } = $provider.waifu
@@ -33,6 +33,21 @@ class WaifuUpdater extends BaseUpdater {
    */
   get githubRepo() {
     return super.githubRepo || 'dreamnettech/waifu2x-chainer'
+  }
+
+  /**
+   * @type {string}
+   */
+  get platform() {
+    let platform = super.platform
+
+    if (platform === 'macos' || settings.preferences.advanced.device === 'CPU') {
+      platform = `${platform}-cpuonly`
+    } else {
+      platform = `${platform}-any`
+    }
+
+    return platform
   }
 
   /**
@@ -96,6 +111,7 @@ class WaifuUpdater extends BaseUpdater {
   async install(filepath) {
     const waifuPath = getWaifuPath()
 
+    // Removing the previous installation
     try {
       if (fs.existsSync(waifuPath)) {
         const files = await fs.readdir(waifuPath)
@@ -108,9 +124,19 @@ class WaifuUpdater extends BaseUpdater {
       this.consola.warn(error)
     }
 
+    // Extraction
     await fs.extractSeven(filepath, waifuPath)
 
-    // restart!
+    // Permissions for non-windows operating systems.
+    if (process.platform !== 'win32') {
+      try {
+        fs.chmodSync(getWaifuPath('waifu2x'), 0o775)
+      } catch (error) {
+        this.consola.warn(error)
+      }
+    }
+
+    // Restart!
     app.relaunch()
     app.quit()
   }

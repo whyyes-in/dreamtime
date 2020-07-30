@@ -520,10 +520,14 @@ export class PhotoRun {
       return null
     }
 
+    const terminalText = this.cli.lines.map((item) => item.text)
+
+    this.photo.consola.warn(terminalText.join('\n'))
+
     const title = 'Nudification failed!'
 
     const extra = {
-      terminal: this.cli.lines.map((item) => item.text),
+      terminal: terminalText,
     }
 
     for (const payload of cliErrors) {

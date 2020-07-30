@@ -164,13 +164,44 @@ export default {
         return
       }
 
-      const file = await File.fromPath(files[0].path, { watch: false })
+      try {
+        const file = await File.fromPath(files[0].path, { watch: false })
 
-      file.validateAs('image/png')
+        file.validateAs('image/png')
 
-      this.file.writeFile(file)
+        this.file.writeFile(file)
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.warn(error)
+      }
 
       event.target.value = ''
+    },
+
+    async onURL(url) {
+      try {
+        const file = await File.fromUrl(url, { watch: false })
+
+        file.validateAs('image/png')
+
+        this.file.writeFile(file)
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.warn(error)
+      }
+    },
+
+    async onFiles(files) {
+      try {
+        const file = await File.fromPath(files[0].path, { watch: false })
+
+        file.validateAs('image/png')
+
+        this.file.writeFile(file)
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.warn(error)
+      }
     },
 
     generate() {
@@ -193,22 +224,6 @@ export default {
       this.$nextTick(() => {
         this.renderPhoto = true
       })
-    },
-
-    async onURL(url) {
-      const file = await File.fromUrl(url, { watch: false })
-
-      file.validateAs('image/png')
-
-      this.file.writeFile(file)
-    },
-
-    async onFiles(files) {
-      const file = await File.fromPath(files[0].path, { watch: false })
-
-      file.validateAs('image/png')
-
-      this.file.writeFile(file)
     },
   },
 }

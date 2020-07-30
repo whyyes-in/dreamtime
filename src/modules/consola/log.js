@@ -164,7 +164,7 @@ export class Log {
     this.logger[this.level](this.message)
 
     if (this.error) {
-      this.logger.error('Exception:', this.error)
+      this.logger[this.level](this.error)
     }
 
     if (this.isError) {
