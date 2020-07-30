@@ -72,7 +72,7 @@
 
     <!-- Results -->
     <section v-else-if="photo.started" class="results__runs">
-      <NudifyPhotoRun v-for="(run, index) in photo.runs"
+      <NudifyPhotoRun v-for="(run, index) in validRuns"
                       :key="index"
                       :run="run" />
     </section>
@@ -121,6 +121,10 @@ export default {
       - As long as you stay on this page the drag and drop functionality will be limited to the masks box.<br><br>
 
       Read the guide to better understand this mode.`
+    },
+
+    validRuns() {
+      return this.photo.runs.filter((item) => !item.isMaskGeneration)
     },
   },
 

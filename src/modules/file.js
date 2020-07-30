@@ -198,6 +198,7 @@ export class File extends EventEmitter {
       fs.chokidar.watch(this.path, {
         disableGlobbing: true,
         awaitWriteFinish: true,
+        useFsEvents: false,
       }).on('all', () => {
         this.load()
       })
