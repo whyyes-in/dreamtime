@@ -14,7 +14,6 @@ import { BaseUpdater } from './base'
 import { requirements, settings } from '../system'
 import { dreamtrack } from '../services'
 
-const { getVersion } = $provider.power
 const { getPowerPath } = $provider.paths
 const { fs } = $provider
 const { activeWindow } = $provider.util
@@ -54,21 +53,7 @@ class DreamPowerUpdater extends BaseUpdater {
    * @return {string}
    */
   async _getCurrentVersion() {
-    if (!requirements.power.installed) {
-      return 'v0.0.0'
-    }
-
-    try {
-      const version = await getVersion()
-
-      if (isNil(version)) {
-        return 'v0.0.0'
-      }
-
-      return version
-    } catch (error) {
-      return 'v0.0.0'
-    }
+    return requirements.power.version
   }
 
   /**

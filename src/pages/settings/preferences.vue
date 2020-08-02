@@ -12,10 +12,10 @@
       </h3>
     </PageHeader>
 
-    <div v-if="value$.preferences.mode === 3" class="notification notification--info">
+    <AppNotification v-if="value$.preferences.mode === 3" name="advanced-mode" class="notification--info">
       <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
-      <span>Advanced mode is recommended only for experienced users. <a href="https://dreamtime.tech/docs/guide/custom-masks/" target="_blank">Click here to visit the guide</a>.</span>
-    </div>
+      <span>Custom masks mode is recommended only for experienced users. <a href="https://dreamtime.tech/docs/guide/custom-masks/" target="_blank">Click here to visit the guide</a>.</span>
+    </AppNotification>
 
     <SettingsPreferences v-model="value$.preferences" />
   </div>

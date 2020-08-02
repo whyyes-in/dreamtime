@@ -19,11 +19,18 @@
       </template>
     </PageHeader>
 
-    <div class="photos__content">
+    <div v-if="photos.length === 0" class="photos__empty">
+      <font-awesome-icon icon="cloud-showers-heavy" class="icon" />
+
+      <h2>
+        No dreams have been created yet...
+      </h2>
+    </div>
+
+    <div v-else class="photos__content">
       <Photo v-for="(file, index) in photos"
              :key="index"
-             :file="file"
-             data-private />
+             :file="file" />
     </div>
   </div>
 </template>
@@ -57,6 +64,19 @@ export default {
 <style lang="scss" scoped>
 .photos {
 
+}
+
+.photos__empty {
+  @apply flex flex-col justify-center items-center;
+  height: 300px;
+
+  .icon {
+    @apply text-6xl text-white mb-4;
+  }
+
+  h2 {
+    @apply text-2xl;
+  }
 }
 
 .photos__content {

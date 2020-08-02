@@ -11,6 +11,10 @@
       </h3>
     </PageHeader>
 
+    <AppNotification name="device-change">
+      The <strong>device</strong> option is now part of the preferences for each photo. If you already have photos in the queue, you should change the device in those photos too.
+    </AppNotification>
+
     <section class="box">
       <div class="box__content">
         <SettingsField v-if="!isMacOS"

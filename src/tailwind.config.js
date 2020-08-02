@@ -34,9 +34,9 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: [
-          'Inter',
           '-apple-system',
           'BlinkMacSystemFont',
+          'Inter',
           'system-ui',
           'Arial',
           'sans-serif',
@@ -68,11 +68,11 @@ module.exports = {
         common: {
           light: '#e4e4e7',
           default: '#c8c8ce',
-          dark: '#646467',
+          dark: '#8c8c90',
         },
 
         input: {
-          light: '#2f3031',
+          light: '#242525',
           default: '#18191a',
           dark: '#161717',
         },

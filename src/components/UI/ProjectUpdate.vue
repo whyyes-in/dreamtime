@@ -37,17 +37,43 @@
 
     <!-- Actions -->
     <div class="update__actions">
-      <button v-show="!updater.update.active" class="button button--success" @click.prevent="updater.start()">
+      <button v-if="!updater.enabled"
+              key="update-disabled"
+              v-tooltip="'This component cannot be updated until the problem explained above is fixed.'"
+              class="button button--success"
+              disabled>
         <span class="icon"><font-awesome-icon icon="sync" /></span>
         Update
       </button>
 
-      <button v-show="updater.update.active" class="button button--danger" @click.prevent="updater.cancel()">
+      <button v-else-if="!updater.update.active"
+              key="update-start"
+              class="button button--success"
+              @click.prevent="updater.start()">
+        <span class="icon"><font-awesome-icon icon="sync" /></span>
+        Update
+      </button>
+
+      <button v-else-if="updater.update.active"
+              key="update-cancel"
+              class="button button--danger"
+              @click.prevent="updater.cancel()">
         <span class="icon"><font-awesome-icon icon="stop" /></span>
         Cancel
       </button>
 
-      <button v-tooltip="'List of links to download the update manually.'" class="button button--info" @click.prevent="$refs.mirrorsDialog.show()">
+      <button v-if="updater.downloadUrls.length > 0"
+              v-tooltip="'List of links to download the update manually.'"
+              class="button button--info"
+              @click.prevent="$refs.mirrorsDialog.show()">
+        <span class="icon"><font-awesome-icon icon="link" /></span>
+        Mirrors
+      </button>
+
+      <button v-else
+              v-tooltip="'List of links to download the update manually.'"
+              class="button button--info"
+              disabled>
         <span class="icon"><font-awesome-icon icon="link" /></span>
         Mirrors
       </button>

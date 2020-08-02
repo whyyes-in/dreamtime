@@ -1,17 +1,19 @@
 <template>
   <div class="box run" :class="previewClass">
-    <div class="box__photo run__photo" data-private>
+    <div class="box__photo run__photo">
       <video v-if="file.exists && isVideo"
              :src="file.url"
              class="run__video__preview"
              autoplay
              muted
              loop
+             data-private
              @click="openPreview" />
 
       <div v-else-if="file.exists"
            class="run__photo__preview"
            :style="{ backgroundImage: `url('${file.url}')` }"
+           data-private
            @click="openPreview" />
     </div>
 

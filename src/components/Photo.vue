@@ -7,11 +7,13 @@
              autoplay
              muted
              loop
+             data-private
              @click="openPreview" />
 
       <div v-else
            class="photo__preview"
            :style="{ backgroundImage: `url('${file.url}')` }"
+           data-private
            @click="openPreview" />
     </div>
   </div>

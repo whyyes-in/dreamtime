@@ -135,7 +135,7 @@ export default {
 
 .item__label {
   @apply flex-1 flex flex-col justify-center;
-  @apply text-generic-500;
+  @apply text-common;
 
   &:not(:last-child) {
     @apply mr-6;
@@ -146,7 +146,7 @@ export default {
   }
 
   .item__description {
-    @apply block text-sm text-generic-700;
+    @apply block text-xs text-common-dark;
   }
 }
 

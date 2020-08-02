@@ -52,6 +52,10 @@ class DreamTime {
     return !isNil(process.env.BUILD_PORTABLE)
   }
 
+  get isDev() {
+    return process.env.NODE_ENV !== 'production'
+  }
+
   async init() {
     if (dreamtrack.enabled) {
       this.data = dreamtrack.get('projects.dreamtime', this.data)

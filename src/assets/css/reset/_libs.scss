@@ -22,6 +22,9 @@
 }
 
 .swal2-html-container {
+  padding: 0 1.8em;
+  line-height: 1.4em;
+
   details {
     @apply mt-6;
 
@@ -31,12 +34,16 @@
   }
 
   pre {
-    @apply text-xs overflow-auto bg-black p-2;
+    @apply text-xs overflow-auto bg-black p-2 break-words whitespace-pre-wrap;
     max-height: 100px;
   }
 
   code {
     @apply bg-black px-2 text-sm rounded-sm break-words;
+  }
+
+  a {
+    @apply underline text-white font-bold;
   }
 }
 

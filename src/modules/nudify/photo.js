@@ -666,15 +666,7 @@ export class Photo {
     if (this.preferences.advanced.scaleMode === 'padding') {
       await this.syncColorPadding()
     } else {
-      try {
-        // ImageMagick Crop
-        await this.syncCrop()
-      } catch (error) {
-        this.consola.warn(error)
-
-        // HTMLCanvas Crop (Poor quality)
-        await this.syncLegacyCrop()
-      }
+      await this.syncCrop()
     }
   }
 

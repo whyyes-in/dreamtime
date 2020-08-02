@@ -11,14 +11,14 @@
 
         <div v-show="$nudify.waiting.length > 0" class="queue__section__actions">
           <button
-            v-tooltip="{placement: 'bottom', content: 'Forget waiting'}"
+            v-tooltip="{placement: 'bottom', content: 'Forget those who wait'}"
             class="button button--danger button--xs"
             @click.prevent="$nudify.forgetAll('waiting')">
             <font-awesome-icon icon="trash-alt" />
           </button>
 
           <button
-            v-tooltip="{placement: 'bottom', content: 'Cancel waiting' }"
+            v-tooltip="{placement: 'bottom', content: 'Cancel those who wait' }"
             class="button button--xs"
             @click.prevent="$nudify.cancelAll('waiting')">
             <font-awesome-icon icon="stop" />
@@ -64,8 +64,7 @@
         <QueuePhoto
           v-for="(photo, index) of $nudify.pending"
           :key="index"
-          :photo="photo"
-          data-private />
+          :photo="photo" />
       </div>
     </section>
 
@@ -99,8 +98,7 @@
         <QueuePhoto
           v-for="(photo, index) of $nudify.finished"
           :key="index"
-          :photo="photo"
-          data-private />
+          :photo="photo" />
       </div>
     </section>
   </div>

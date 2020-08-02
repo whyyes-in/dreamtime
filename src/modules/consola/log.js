@@ -95,7 +95,9 @@ export class Log {
    */
   parseArgs(args) {
     args.forEach((value) => {
-      if (value instanceof Logger.Logger) {
+      if (isNil(value)) {
+        // YEP
+      } else if (value instanceof Logger.Logger) {
         this.logger = value
       } else if (isError(value)) {
         this.error = value

@@ -7,7 +7,7 @@
 //
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
-import { startsWith } from 'lodash'
+import { startsWith, debounce } from 'lodash'
 import {
   app, BrowserWindow, shell, protocol, nativeImage,
 } from 'electron'
@@ -253,8 +253,8 @@ class DreamApp {
 
     // browser window.
     this.window = new BrowserWindow({
-      width: 1200,
-      height: 700,
+      width: settings.get('app.window.width', 1200),
+      height: settings.get('app.window.height', 700),
       minWidth: 1200,
       minHeight: 700,
       frame: false,
@@ -276,8 +276,15 @@ class DreamApp {
     //
     this.window.webContents.once('dom-ready', () => {
       this.window.show()
-      this.window.maximize()
+      // this.window.maximize()
     })
+
+    // Resize
+    this.window.on('will-resize', debounce(function (data, newBounds) {
+      settings.set('app.window.width', newBounds.width)
+      settings.set('app.window.height', newBounds.height)
+      settings.save()
+    }, 1000))
 
     // ui location
     this.interfaceURL = this.getInterfaceURL()

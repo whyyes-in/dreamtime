@@ -94,8 +94,6 @@ module.exports = {
     '@nuxtjs/tailwindcss',
     // Doc: https://github.com/nuxt-community/style-resources-module
     '@nuxtjs/style-resources',
-    // Doc: https://github,.com/Developmint/nuxt-purgecss
-    // 'nuxt-purgecss',
   ],
 
   /*
@@ -115,13 +113,6 @@ module.exports = {
    */
   styleResources: {
     scss: '~/assets/css/utilities/all.scss',
-  },
-
-  /**
-   *
-   */
-  purgeCSS: {
-    enabled: true,
   },
 
   /**
@@ -153,7 +144,7 @@ module.exports = {
     /**
      * Enables Common CSS Extraction using Vue Server Renderer guidelines.
      */
-    extractCSS: true,
+    extractCSS: false,
 
     /**
      *

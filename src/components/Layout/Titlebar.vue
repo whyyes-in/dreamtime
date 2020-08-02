@@ -14,7 +14,9 @@
     </div>
 
     <!-- Drag -->
-    <div class="titlebar__drag" />
+    <div class="titlebar__drag">
+      <div class="titlebar__drag__region" />
+    </div>
 
     <!-- Window Buttons -->
     <div class="titlebar__buttons">
@@ -181,8 +183,17 @@ export default {
 }
 
 .titlebar__drag {
-  @apply flex-1;
-  -webkit-app-region: drag;
+  @apply flex-1 relative;
+
+  .titlebar__drag__region {
+    @apply block absolute;
+    top: 5px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    -webkit-app-region: drag;
+  }
 }
 
 .titlebar__buttons {

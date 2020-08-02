@@ -1,158 +1,202 @@
 [
   {
     "query": "Found no NVIDIA driver",
-    "message": "Found no NVIDIA driver on your system: Please check that you have an NVIDIA GPU and the latest drivers installed."
+    "title": "Driver Error",
+    "message": "Found no NVIDIA driver on your system: Please check that you have an NVIDIA GPU and the <a href='https://www.nvidia.com/Download/index.aspx' target='_blank'>latest drivers</a> installed."
   },
   {
     "query": "The NVIDIA driver on your system is too old",
-    "message": "The NVIDIA driver installed on your system is too old! If the drivers are up to date then your GPU is not compatible."
+    "title": "Outdated driver",
+    "message": "The NVIDIA driver installed on your system is too old! Please install the <a href='https://www.nvidia.com/Download/index.aspx' target='_blank'>latest drivers</a>. If you are already using the latest it is very possible that your GPU is not compatible and you need to change the <strong>processing device</strong> option to CPU."
   },
   {
     "query": "CUDA environment is not correctly set up",
-    "message": "Waifu2X error: Please install <a href='https://developer.nvidia.com/cuda-10.2-download-archive' target='_blank'>CUDA 10.2</a> to use Waifu2X."
+    "title": "Waifu2X Error",
+    "message": "Please install <a href='https://developer.nvidia.com/cuda-10.2-download-archive' target='_blank'>CUDA 10.2</a> to use Waifu2X."
   },
   {
     "query": "no longer supports this GPU",
-    "message": "Algorithm error: The algorithm no longer supports your GPU."
+    "title": "GPU Error",
+    "message": "The algorithm no longer supports your GPU. Please change the processing device option to CPU."
   },
   {
     "query": "Buy new RAM!",
-    "message": "You have run out of RAM on your system! Please buy more RAM before using DreamTime."
+    "title": "System out of memory",
+    "message": "Please buy more RAM before using DreamTime. Also verify that your system's RAM is in good condition."
   },
   {
     "query": "Stopped to avoid memory problems",
-    "message": "You have run out of RAM on your system! Please buy more RAM before using DreamTime."
+    "title": "System out of memory",
+    "message": "Please buy more RAM before using DreamTime. Also verify that your system's RAM is in good condition."
   },
   {
     "query": "enforce fail at CPUAllocator",
-    "message": "You have run out of RAM on your system! Please buy more RAM before using DreamTime."
+    "title": "System out of memory",
+    "message": "Please buy more RAM before using DreamTime. Also verify that your system's RAM is in good condition."
   },
   {
     "query": "MemoryError : Unable to allocate",
-    "message": "You have run out of RAM on your system! Please buy more RAM before using DreamTime."
+    "title": "System out of memory",
+    "message": "Please buy more RAM before using DreamTime. Also verify that your system's RAM is in good condition."
   },
   {
     "query": "CUDA out of memory",
-    "message": "Your GPU doesn't have enough VRAM! Please use CPU processing or buy a new GPU with more than 8 GB of VRAM."
+    "title": "GPU out of memory",
+    "message": "Please use CPU processing or buy a new GPU with more than 8 GB of VRAM."
+  },
+  {
+    "query": "CUDNN_STATUS_ALLOC_FAILED",
+    "title": "GPU Error",
+    "message": "CUDNN_STATUS_ALLOC_FAILED: Please use CPU processing or buy a new GPU with more than 8 GB of VRAM. This error may also indicate a problem with the drivers or the VRAM of your device."
+  },
+  {
+    "query": "THCudaCheck FAIL",
+    "title": "GPU Error",
+    "message": "THCudaCheck FAIL: A problem has occurred while obtaining information about your GPU, please make sure you have the latest drivers for your operating system, you may also need to compile <a href='https://github.com/dreamnettech/dreampower/' target='_blank'>DreamPower</a> for this distribution."
+  },
+  {
+    "query": "CUDNN_STATUS_INTERNAL_ERROR",
+    "title": "GPU Error",
+    "message": "CUDNN_STATUS_INTERNAL_ERROR: A problem has occurred while using your GPU, please make sure you have the latest drivers for your operating system, you may also need to compile <a href='https://github.com/dreamnettech/dreampower/' target='_blank'>DreamPower</a> for this distribution."
   },
   {
     "query": "codec can't decode byte",
-    "message": "Save error: Please make sure you have enough disk space and the folders in settings do not have special characters or spaces."
+    "title": "Storage error",
+    "message": "Please make sure you have enough disk space and the folders in settings or the photo location do not have special characters or spaces."
   },
   {
     "query": "The final result is not a valid image file",
-    "message": "Save error: Please make sure you have enough disk space and the folders in settings do not have special characters or spaces."
+    "title": "Storage error",
+    "message": "Please make sure you have enough disk space and the folders in settings or the photo location do not have special characters or spaces."
   },
   {
     "query": "invalid device ordinal",
+    "title": "GPU Error",
     "message": "The selected GPU is not a valid device. Please make sure that the GPU option in settings is valid."
   },
   {
     "query": "loading Python",
-    "message": "Algorithm error: Please reinstall DreamPower or make sure your operating system has the latest updates."
+    "title": "Python error",
+    "message": "Please reinstall DreamPower or make sure your operating system has the latest updates."
   },
   {
     "query": "DLL",
-    "message": "Algorithm error: Please reinstall DreamPower or make sure your operating system has the latest updates."
+    "title": "Python error",
+    "message": "Please reinstall DreamPower or make sure your operating system has the latest updates."
   },
   {
     "query": "file is not valid image",
-    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
+    "title": "File error",
+    "message": "The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
   },
   {
     "query": "cv2.error",
-    "message": "Image error: There was a problem trying to load the photo. Please ensure that it is a valid photo, that it has not been deleted or that the Cropper/Overlay are well positioned."
+    "title": "File error",
+    "message": "There was a problem trying to load the photo. Please ensure that it is a valid photo, that it has not been deleted or that the Cropper/Overlay are well positioned."
   },
   {
     "query": "is not a valid file or directory or url",
-    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
+    "title": "File error",
+    "message": "The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
   },
   {
     "query": "file not a supported format",
-    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
+    "title": "File error",
+    "message": "The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
   },
   {
     "query": "invalid extension format",
-    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
+    "title": "File error",
+    "message": "The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
   },
   {
     "query": "The file might be corrupted",
-    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
+    "title": "File error",
+    "message": "The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
   },
   {
     "query": "libpng error: PNG input buffer is incomplete",
-    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
+    "title": "File error",
+    "message": "The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
   },
   {
     "query": "OSError: image file is truncated",
-    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
+    "title": "File error",
+    "message": "The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
   },
   {
     "query": "Could not find a format to read the specified file",
-    "message": "Image error: The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
+    "title": "File error",
+    "message": "The photo could not be loaded correctly. Please make sure the photo is valid, has not been deleted and is not corrupted."
   },
   {
     "query": "PIL.Image.DecompressionBombError",
-    "message": "Image error: The photo is too big! Please decrease the photo size with external tools or try a smaller photo."
+    "title": "File error",
+    "message": "The photo is too big! Please compress the photo with external tools or try a smaller photo."
   },
   {
     "query": "not compiled with CUDA",
-    "message": "You have installed the CPU-only version of DreamPower. Please reinstall DreamPower."
+    "title": "DreamPower error",
+    "message": "You have installed the CPU-only version of DreamPower. Please change the processing device option to CPU or reinstall DreamPower to get GPU support."
   },
   {
     "query": "float division by zero",
-    "message": "Crop error: Please make sure you position the cropper correctly."
+    "title": "Crop error",
+    "message": "Please make sure you position the cropper correctly."
   },
   {
     "query": "could not broadcast input array from shape",
-    "message": "Overlay error: Please make sure you position the overlay correctly."
+    "title": "Overlay error",
+    "message": "Please make sure you position the overlay correctly."
   },
   {
     "query": "CUDA error",
-    "message": "GPU error: Please make sure you have the latest drivers installed or reinstall."
+    "title": "GPU error",
+    "message": "Please make sure you have the <a href='https://www.nvidia.com/Download/index.aspx' target='_blank'>latest drivers</a> installed."
   },
   {
     "query": "Python was not found",
-    "message": "DreamPower error: Python is not installed on the system. Please disable the 'Use Python' option if you are not using the algorithm source code."
+    "title": "Python error",
+    "message": "Python is not installed on the system. Please disable the <strong>Use Python</strong> option if you are not using the algorithm source code."
+  },
+  {
+    "query": "P ython was not found",
+    "title": "Python error",
+    "message": "Python is not installed on the system. Please disable the <strong>Use Python</strong> option if you are not using the algorithm source code."
   },
   {
     "query": "No module named",
-    "message": "DreamPower error: If you are using the algorithm source code please make sure you have installed the necessary modules or disable the 'Use Python' option or update your operating system."
+    "title": "Python error",
+    "message": "If you are using the algorithm source code please make sure you have installed the necessary modules or disable the 'Use Python' option or update your operating system."
   },
   {
     "query": "can't open file 'main.py'",
-    "message": "DreamPower error: If you are using the algorithm source code please make sure you have cloned and configured the repository correctly, if you are not using the source code please disable the 'Use Python' option."
+    "title": "Python error",
+    "message": "If you are using the algorithm source code please make sure you have cloned and configured the repository correctly, if you are not using the source code please disable the 'Use Python' option."
   },
   {
     "query": "invalid choice",
-    "message": "DreamPower error: The installed version of DreamPower is not compatible with this version of DreamTime, please update."
+    "title": "DreamPower error",
+    "message": "The installed version of DreamPower is not compatible with this version of DreamTime, please update."
   },
   {
     "query": "unrecognized arguments",
-    "message": "DreamPower error: The installed version of DreamPower is not compatible with this version of DreamTime, please update."
+    "title": "DreamPower error",
+    "message": "The installed version of DreamPower is not compatible with this version of DreamTime, please update."
   },
   {
     "query": "Checkpoints file not found",
-    "message": "DreamPower error: The checkpoints could not be loaded, if you have changed the location of DreamPower please be sure to restart DreamTime."
+    "title": "DreamPower error",
+    "message": "The checkpoints could not be loaded, if you have changed the location of DreamPower please be sure to restart DreamTime."
   },
   {
     "query": "No such file or directory",
-    "message": "DreamPower error: The checkpoints could not be loaded, if you have changed the location of DreamPower please be sure to restart DreamTime."
-  },
-  {
-    "query": "THCudaCheck FAIL",
-    "message": "THCudaCheck FAIL: This version of DreamPower may not be compatible with your operating system and it may be necessary to compile the project in your environment. Please visit our Chat or Forum for technical support."
-  },
-  {
-    "query": "CUDNN_STATUS_ALLOC_FAILED",
-    "message": "CUDNN_STATUS_ALLOC_FAILED: You have run out of VRAM on your GPU! Make sure there are no other programs using your GPU or purchase a GPU with more memory before using DreamTime."
-  },
-  {
-    "query": "CUDNN_STATUS_INTERNAL_ERROR",
-    "message": "CUDNN_STATUS_INTERNAL_ERROR: Please make sure you have the latest drivers installed, that you have available video memory and if you have installed CUDA or CUDNN that these are updated and configured."
+    "title": "DreamPower error",
+    "message": "The checkpoints could not be loaded, if you have changed the location of DreamPower please be sure to restart DreamTime."
   },
   {
     "query": "library load disallowed by system policy",
-    "message": "Your operating system disallowed the correct loading of the algorithm due to the system policy on third party applications. Please see <a href='https://support.apple.com/en-us/HT202491' target='_blank'>'Safely open apps on your Mac'</a> for information on how to solve this problem."
+    "title": "System policy error",
+    "message": "Your operating system disallowed the loading of the algorithm due to the system policy on third party applications. Please see <a href='https://support.apple.com/en-us/HT202491' target='_blank'>'Safely open apps on your Mac'</a> for information on how to fix this problem."
   }
 ]

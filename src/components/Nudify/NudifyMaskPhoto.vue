@@ -10,10 +10,11 @@
       <h2>Drop the {{ mask.title }} here!</h2>
     </div>
 
-    <div class="box__photo mask__photo" data-private>
+    <div class="box__photo mask__photo">
       <div v-if="file.exists"
            class="mask__photo__preview"
            :style="{ backgroundImage: `url('${file.url}')` }"
+           data-private
            @click="openPreview" />
     </div>
 

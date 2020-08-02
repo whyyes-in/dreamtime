@@ -27,7 +27,7 @@
   }
 
   &.notification--danger {
-    @apply bg-danger-500;
+    @apply bg-danger-400;
   }
 
   &.notification--success {
@@ -40,5 +40,10 @@
 
   code {
     @apply mx-1 p-1 bg-gray-300;
+  }
+
+  pre {
+    @apply text-xs overflow-auto bg-black p-2 text-white break-words whitespace-pre-wrap;
+    max-height: 100px;
   }
 }

@@ -1,12 +1,13 @@
 <template>
   <div class="nav">
     <div class="nav__left">
-      <nuxt-link v-if="isBadTimeAvailable"
-                 v-tooltip="'Bad Time Minigame 🎮'"
-                 to="/games/badtime"
-                 class="nav__item nav__item--button">
-        <img src="~/assets/images/games/sans.png">
-      </nuxt-link>
+      <button v-tooltip="'Go back'" class="nav__item nav__item--button text-2xl" @click="$router.go(-1)">
+        <font-awesome-icon icon="caret-left" />
+      </button>
+
+      <button v-tooltip="'Go forward'" class="nav__item nav__item--button text-2xl" @click="$router.go(1)">
+        <font-awesome-icon icon="caret-right" />
+      </button>
 
       <!--
       <nuxt-link
@@ -26,6 +27,13 @@
       <nuxt-link v-tooltip="'My Photos'" to="/photos" class="nav__item nav__item--link">
         <font-awesome-icon icon="images" />
       </nuxt-link>
+
+      <nuxt-link v-if="isDev"
+                 v-tooltip="'Dev Garden'"
+                 to="/garden"
+                 class="nav__item nav__item--link">
+        <font-awesome-icon icon="house-damage" />
+      </nuxt-link>
     </div>
 
     <div class="nav__right">
@@ -39,6 +47,13 @@
 
       <nuxt-link v-tooltip="'Help & Tips'" to="/help" class="nav__item nav__item--button">
         <font-awesome-icon icon="question-circle" />
+      </nuxt-link>
+
+      <nuxt-link v-if="isBadTimeAvailable"
+                 v-tooltip="'Bad Time Minigame 🎮'"
+                 to="/games/badtime"
+                 class="nav__item nav__item--button">
+        <img src="~/assets/images/games/sans.png">
       </nuxt-link>
     </div>
   </div>
@@ -159,7 +174,7 @@ export default {
 
   &.nav__item--button {
     @apply justify-center;
-    @apply rounded-full text-lg mx-2;
+    @apply rounded-full mx-2 outline-none;
     height: 40px;
     width: 40px;
 

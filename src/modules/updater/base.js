@@ -9,7 +9,7 @@
 
 import {
   isNil, isArray, isPlainObject, find,
-  startsWith, filter, isEmpty, toNumber,
+  startsWith, filter, isEmpty, toNumber, isString,
 } from 'lodash'
 import axios from 'axios'
 import compareVersions from 'compare-versions'
@@ -23,10 +23,10 @@ import { Consola } from '../consola'
 const { system } = $provider
 const { getPath } = $provider.paths
 const { existsSync, statSync, download } = $provider.fs
-const { dialog, app } = $provider.api
+const { dialog } = $provider.api
 const { platform } = $provider.util
 
-const extRegex = /(?:\.([^.]+))?$/
+const extRegex = /(?:\.(zip|7z|exe|dmg|snap))?$/
 
 /**
  * todo: don't just depend on github
@@ -39,6 +39,15 @@ export class BaseUpdater {
    * @type {boolean}
    */
   enabled = false
+
+  /**
+   * @type {Error}
+   */
+  error
+
+  get errorResponse() {
+    return this.error?.response?.data?.message
+  }
 
   /**
    * @type {Consola}
@@ -135,6 +144,10 @@ export class BaseUpdater {
       return false
     }
 
+    if (!isString(this.currentVersion)) {
+      return true
+    }
+
     return compareVersions.compare(this.latestCompatibleVersion, this.currentVersion, '>')
   }
 
@@ -188,19 +201,13 @@ export class BaseUpdater {
   /**
    *
    */
-  async setup(required = false) {
+  async setup() {
     this.enabled = false
 
-    if (!required) {
-      if (!system.online) {
-        this.consola.warn('No internet connection.')
-        return
-      }
-
-      if (!dreamtrack.enabled) {
-        this.consola.warn('No connection with DreamTrack.')
-        return
-      }
+    if (!system.online) {
+      this.error = new Warning('There is no Internet connection. Please make sure you are connected before starting.')
+      this.consola.warn(this.error)
+      return
     }
 
     if (!this.can) {
@@ -217,34 +224,24 @@ export class BaseUpdater {
       await this._fetchReleases()
       this.consola.info(`Current: ${this.currentVersion} - Latest: ${this.latestCompatibleVersion}`)
 
-      this.enabled = true
-
       this.refresh()
+
+      if (this.downloadUrls.length === 0) {
+        throw new Warning('No available download links found, please try again later.')
+      }
+
+      this.enabled = true
 
       if (this.available) {
         this.sendNotification()
       }
     } catch (err) {
-      this.consola.warn('Unable to fetch the latest version!', err)
-
-      if (required) {
-        dialog.showMessageBoxSync({
-          type: 'error',
-          title: 'Unable to connect to Github.',
-          message: 'DreamTime requires a stable Internet connection during the first start. Please connect to the Internet or try again in a few minutes.',
-        })
-
-        // Close.
-        app.quit()
-      }
+      this.error = err
+      this.consola.warn('The project information could not be obtained from Github!', err)
     }
   }
 
   refresh() {
-    if (!this.enabled) {
-      return
-    }
-
     this.downloadUrls = this._getDownloadUrls()
   }
 
@@ -264,7 +261,7 @@ export class BaseUpdater {
     let asset
 
     try {
-      urls = dreamtrack.get(['projects', this.name, 'releases', this.latestCompatibleVersion, 'urls'])
+      urls = dreamtrack.get(['projects', this.name, 'releases', this.latestCompatibleVersion, 'urls'], [])
     } catch (err) {
       // not the best way, but works
       urls = []
@@ -396,10 +393,6 @@ export class BaseUpdater {
    *
    */
   async _download() {
-    if (!system.online) {
-      throw new Warning('Update download failed.', 'You need an Internet connection to download the update.')
-    }
-
     let filepath
 
     for (const url of this.downloadUrls) {

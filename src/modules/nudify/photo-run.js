@@ -190,11 +190,13 @@ export class PhotoRun {
         advanced: {
           useColorTransfer: false,
           useColorPaddingStrip: true,
+          compress: 0,
+          imageSize: 512,
           waifu: {
             enabled: requirements.canUseWaifu,
             scale: 2,
             denoise: 0,
-            tta: 4,
+            tta: 0,
             arch: 0,
           },
         },
@@ -524,7 +526,7 @@ export class PhotoRun {
 
     this.photo.consola.warn(terminalText.join('\n'))
 
-    const title = 'Nudification failed!'
+    const title = 'Unknown error!'
 
     const extra = {
       terminal: terminalText,
@@ -532,11 +534,11 @@ export class PhotoRun {
 
     for (const payload of cliErrors) {
       if (errorMessage.toLowerCase().includes(payload.query.toLowerCase())) {
-        return new Warning(title, payload.message, new Error(errorMessage), extra)
+        return new Warning(payload.title || title, payload.message, new Error(errorMessage), extra)
       }
     }
 
-    return new Exception(title, 'The algorithm has been interrupted by an unknown problem.', new Error(errorMessage), extra)
+    return new Exception(title, 'The algorithm has been interrupted by an unknown problem. Please visit our <a href="https://chat.dreamnet.tech" target="_blank">chat</a> for support, we may ask you for the photo/video and the text below to fix the problem.', new Error(errorMessage), extra)
   }
 
   /**

@@ -23,13 +23,32 @@
         This component needs to be installed to continue using {{ $dreamtime.name }}.
       </div>
 
+      <div v-else-if="requirements.power.error" class="notification notification--danger">
+        <h5>CHECK ERROR!</h5>
+        Failed to get the installed {{ $dreampower.name }} version. Please fix this problem before continuing.
+        <br><br>
+
+        <pre>{{ requirements.power.error.stack }}</pre>
+      </div>
+
       <div v-else-if="!requirements.power.compatible" class="notification notification--danger">
-        <h5>ALERT</h5>
+        <h5>OUTDATED</h5>
         This component requires an update to continue to be used in this version of {{ $dreamtime.name }}.
       </div>
 
       <div v-else class="notification">
         Installed version: <strong>{{ $dreampower.version }}</strong>
+      </div>
+
+      <div v-if="updater.error" class="notification notification--danger">
+        <h5>CONNECTION ERROR!</h5>
+        <span>It is not possible to update this component because a problem has occurred when trying to get the information from Github, please make sure you have a stable internet connection and restart the application.</span>
+        <br><br>
+
+        <pre>
+<span v-if="updater.errorResponse">{{ updater.errorResponse }}</span>
+{{ updater.error.stack }}
+</pre>
       </div>
 
       <AppBox>
@@ -77,9 +96,11 @@ const { existsSync } = $provider.fs
 export default {
   layout: 'wizard',
 
-  middleware({ redirect }) {
-    if (requirements.power.installed && requirements.power.compatible && !dreampower.updater.available) {
-      redirect('/wizard/checkpoints')
+  middleware({ redirect, route }) {
+    if (!route.query.forced) {
+      if (requirements.power.installed && requirements.power.compatible && !dreampower.updater.available) {
+        redirect('/wizard/checkpoints')
+      }
     }
   },
 
@@ -94,6 +115,10 @@ export default {
 
     updating() {
       return this.$dreampower.updater.update.active
+    },
+
+    updater() {
+      return dreampower.updater
     },
   },
 

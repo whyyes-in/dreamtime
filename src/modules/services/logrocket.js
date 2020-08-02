@@ -13,7 +13,7 @@ import { BaseService } from './base'
 import { dreamtrack } from './dreamtrack'
 import { settings } from '../system/settings'
 import { Consola } from '../consola'
-import { requirements } from '../system'
+// import { requirements } from '../system'
 
 const { system } = $provider
 
@@ -37,7 +37,7 @@ class LogRocketService extends BaseService {
    * @type {boolean}
    */
   get can() {
-    return system.online && isString(this.accessToken) && settings.telemetry?.dom && requirements.canNudify
+    return system.online && isString(this.accessToken) && settings.telemetry?.dom
   }
 
   /**

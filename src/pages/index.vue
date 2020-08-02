@@ -43,25 +43,28 @@
     </div>
 
     <!-- DreamTime Updater -->
-    <div v-if="dreamtime.available"
-         class="notification notification--warning cursor-pointer"
-         @click="$router.push('/wizard/dreamtime')">
+    <AppNotification v-if="dreamtime.available"
+                     :name="`update-dreamtime-${dreamtime.latest.tag_name}`"
+                     class="cursor-pointer"
+                     @click="$router.push('/wizard/dreamtime')">
       🎉 <strong>{{ $dream.name }} {{ dreamtime.latest.tag_name }}</strong> is available for download!
-    </div>
+    </AppNotification>
 
     <!-- DreamPower Updater -->
-    <div v-if="dreampower.available"
-         class="notification notification--warning cursor-pointer"
-         @click="$router.push('/wizard/power')">
+    <AppNotification v-if="dreampower.available"
+                     :name="`update-dreampower-${dreampower.latest.tag_name}`"
+                     class="cursor-pointer"
+                     @click="$router.push('/wizard/power')">
       🎉 <strong>{{ dreampower.displayName }} {{ dreampower.latest.tag_name }}</strong> is available for download!
-    </div>
+    </AppNotification>
 
     <!-- Checkpoints Updater -->
-    <div v-if="checkpoints.available"
-         class="notification notification--warning cursor-pointer"
-         @click="$router.push('/wizard/checkpoints')">
+    <AppNotification v-if="checkpoints.available"
+                     class="notification notification--warning cursor-pointer"
+                     :name="`update-checkpoints-${checkpoints.latest.tag_name}`"
+                     @click="$router.push('/wizard/checkpoints')">
       🎉 <strong>{{ checkpoints.displayName }} {{ checkpoints.latest.tag_name }}</strong> is available for download!
-    </div>
+    </AppNotification>
 
     <div class="uploader__methods">
       <!-- Web Address -->

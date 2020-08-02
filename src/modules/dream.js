@@ -42,20 +42,20 @@ export default {
    *
    */
   openAppFolder() {
-    shell.openItem(getAppPath())
+    shell.openPath(getAppPath())
   },
 
   /**
    *
    */
   openAppDataFolder() {
-    shell.openItem(getPath('userData'))
+    shell.openPath(getPath('userData'))
   },
 
   /**
    *
    */
   openPowerFolder() {
-    shell.openItem(getPowerPath())
+    shell.openPath(getPowerPath())
   },
 }

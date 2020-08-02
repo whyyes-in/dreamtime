@@ -9,7 +9,7 @@
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
 import {
-  isError,
+  isError, isString,
 } from 'lodash'
 
 /**
@@ -54,6 +54,14 @@ export class LogEvent extends Error {
   constructor(...args) {
     super()
     this.args = args
+
+    args.forEach((value) => {
+      if (isString(value)) {
+        this.message = value
+      } else if (isError(value) && !this.message) {
+        this.message = value
+      }
+    })
   }
 }
 

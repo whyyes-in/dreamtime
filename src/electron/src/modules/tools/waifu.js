@@ -171,9 +171,13 @@ export function isInstalled() {
 /**
  * @return {Promise}
  */
-export const getVersion = () => new Promise((resolve, reject) => {
+export const getVersion = () => new Promise((resolve) => {
   if (version) {
-    resolve(version)
+    resolve({
+      status: true,
+      version,
+    })
+
     return
   }
 
@@ -183,7 +187,12 @@ export const getVersion = () => new Promise((resolve, reject) => {
 
   process.on('error', (error) => {
     logger.warn(error)
-    reject(error)
+
+    resolve({
+      status: false,
+      version: undefined,
+      error,
+    })
   })
 
   process.stdout.on('data', (data) => {
@@ -201,13 +210,26 @@ export const getVersion = () => new Promise((resolve, reject) => {
         response = `v${response[0]}`
 
         version = response
-        resolve(response)
-      } catch (err) {
-        logger.warn(err)
-        reject(err)
+
+        resolve({
+          status: true,
+          version,
+        })
+      } catch (error) {
+        logger.warn(error)
+
+        resolve({
+          status: false,
+          version: undefined,
+          error,
+        })
       }
     } else {
-      reject(new Error(response))
+      resolve({
+        status: false,
+        version: undefined,
+        error: new Error(response),
+      })
     }
   })
 })

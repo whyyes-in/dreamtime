@@ -19,13 +19,21 @@
     </PageHeader>
 
     <div class="project__content">
-      <div v-if="requirements.waifu.installed && !requirements.waifu.compatible" class="notification notification--danger">
-        <h5>ALERT</h5>
-        The installed version is not compatible with this version of {{ $dreamtime.name }}. Please update to continue.
+      <div v-if="requirements.waifu.error" class="notification notification--danger">
+        <h5>CHECK ERROR!</h5>
+        Failed to get the installed {{ $waifu.name }} version. Please fix this problem before continuing.
+        <br><br>
+
+        <pre>{{ requirements.waifu.error.stack }}</pre>
+      </div>
+
+      <div v-else-if="requirements.waifu.installed && !requirements.waifu.compatible" class="notification notification--danger">
+        <h5>OUTDATED</h5>
+        This component requires an update to continue to be used in this version of {{ $dreamtime.name }}.
       </div>
 
       <div v-else-if="requirements.waifu.installed" class="notification">
-        Installed version: <strong>{{ $waifu.currentVersion }}</strong>
+        Installed version: <strong>{{ $waifu.version }}</strong>
       </div>
 
       <div v-if="isMacOS" class="notification">
@@ -36,6 +44,17 @@
       <div v-if="$settings.preferences.advanced.device === 'GPU'" class="notification">
         <h5>Waifu2X require CUDA 10.2</h5>
         Before using Waifu2X on GPU please <a href="https://developer.nvidia.com/cuda-10.2-download-archive" target="_blank">download and install CUDA 10.2</a>
+      </div>
+
+      <div v-if="updater.error" class="notification notification--danger">
+        <h5>CONNECTION ERROR!</h5>
+        <span>It is not possible to update this component because a problem has occurred when trying to get the information from Github, please make sure you have a stable internet connection and restart the application.</span>
+        <br><br>
+
+        <pre>
+<span v-if="updater.errorResponse">{{ updater.errorResponse }}</span>
+{{ updater.error.stack }}
+</pre>
       </div>
 
       <AppBox>
@@ -57,7 +76,10 @@
     </div>
 
     <div class="wizard__footer">
-      <button v-tooltip="'This component is optional.'" class="button button--xl" @click="skip">
+      <button v-if="!requirements.waifu.installed"
+              v-tooltip="'This component is optional.'"
+              class="button button--xl"
+              @click="skip">
         Skip
       </button>
     </div>
@@ -75,9 +97,11 @@ const { existsSync } = $provider.fs
 export default {
   layout: 'wizard',
 
-  middleware({ redirect }) {
-    if (requirements.waifu.installed && requirements.waifu.compatible && !waifu.updater.available) {
-      redirect('/wizard/telemetry')
+  middleware({ redirect, route }) {
+    if (!route.query.forced) {
+      if (requirements.waifu.installed && requirements.waifu.compatible && !waifu.updater.available) {
+        redirect('/wizard/telemetry')
+      }
     }
   },
 
@@ -88,6 +112,10 @@ export default {
   computed: {
     isMacOS() {
       return process.platform === 'darwin'
+    },
+
+    updater() {
+      return waifu.updater
     },
   },
 

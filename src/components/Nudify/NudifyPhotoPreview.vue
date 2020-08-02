@@ -6,7 +6,7 @@
            muted
            loop />
 
-    <NudifyPhotoBadge v-if="badge" :photo="photo" />
+    <NudifyPhotoBadge v-if="badge && $settings.app.duplicates" :photo="photo" />
   </div>
 </template>
 

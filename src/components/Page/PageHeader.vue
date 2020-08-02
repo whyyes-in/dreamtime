@@ -20,7 +20,7 @@
 
   &::v-deep {
     .title {
-      @apply text-lg font-semibold text-white mb-0;
+      @apply text-lg font-bold text-white mb-1;
 
       .icon {
         @apply mr-2;

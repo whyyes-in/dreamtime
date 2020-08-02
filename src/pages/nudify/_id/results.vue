@@ -49,6 +49,11 @@
       </template>
     </PageHeader>
 
+    <div v-if="photo.isScaleModeCorrected" class="notification notification--warning">
+      <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
+      You have selected the scale method <strong>{{ photo.preferences.advanced.scaleMode }}</strong> but have not used the tool! <strong>Automatic Resize</strong> will be used instead.
+    </div>
+
     <!-- Custom Masks -->
     <section v-if="photo.withCustomMasks" class="results__masks">
       <NudifyMaskPhoto :mask="photo.masks.correct" />

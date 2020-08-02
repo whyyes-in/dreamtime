@@ -79,6 +79,7 @@ export default {
   data: () => ({
     localValue: null,
     field: null,
+    firstWatchIgnored: false,
   }),
 
   computed: {
@@ -137,6 +138,11 @@ export default {
 
   watch: {
     localValue(value) {
+      if (!this.firstWatchIgnored) {
+        this.firstWatchIgnored = true
+        return
+      }
+
       if (this.value$) {
         this.value$ = set(this.value$, this.localFieldId, value)
       } else {

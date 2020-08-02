@@ -14,7 +14,6 @@ import { BaseUpdater } from './base'
 import { requirements, settings } from '../system'
 import { dreamtrack } from '../services'
 
-const { getVersion } = $provider.waifu
 const { getWaifuPath } = $provider.paths
 const { fs } = $provider
 const { activeWindow } = $provider.util
@@ -54,16 +53,7 @@ class WaifuUpdater extends BaseUpdater {
    * @return {string}
    */
   async _getCurrentVersion() {
-    if (!requirements.waifu.installed) {
-      return 'v0.0.0'
-    }
-
-    try {
-      const version = await getVersion()
-      return version
-    } catch (error) {
-      return 'v0.0.0'
-    }
+    return requirements.waifu.version
   }
 
   /**

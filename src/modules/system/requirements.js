@@ -26,11 +26,15 @@ export const requirements = {
     installed: false,
     compatible: false,
     checkpoints: false,
+    version: undefined,
+    error: undefined,
   },
 
   waifu: {
     installed: false,
     compatible: false,
+    version: undefined,
+    error: undefined,
   },
 
   recommended: {
@@ -122,30 +126,35 @@ export const requirements = {
     }
 
     const { dreamtrack } = require('../services')
-
     const compareVersions = require('compare-versions')
-    let version
 
-    try {
-      version = await power.getVersion()
-      const currentVersion = `v${process.env.npm_package_version}`
+    const payload = await power.getVersion()
 
-      const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'minimum'], 'v1.2.10')
-      const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'maximum'])
+    this.power.version = payload.version
 
-      if (compareVersions.compare(version, minimum, '<')) {
-        return false
-      }
+    if (!payload.status) {
+      consola.warn(`DreamPower compatibility check failed. (version = ${payload.version}).`, payload.error)
 
-      if (!isNil(maximum) && compareVersions.compare(version, maximum, '>')) {
-        return false
-      }
+      this.power.error = payload.error
 
-      return true
-    } catch (err) {
-      consola.warn(`DreamPower compatibility check failed. (version = ${version}).`, err)
       return false
     }
+
+    const { version } = payload
+    const appVersion = `v${process.env.npm_package_version}`
+
+    const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', appVersion, 'dreampower', 'minimum'], 'v1.2.10')
+    const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', appVersion, 'dreampower', 'maximum'])
+
+    if (compareVersions.compare(version, minimum, '<')) {
+      return false
+    }
+
+    if (!isNil(maximum) && compareVersions.compare(version, maximum, '>')) {
+      return false
+    }
+
+    return true
   },
 
   async _hasCompatibleWaifu() {
@@ -154,30 +163,35 @@ export const requirements = {
     }
 
     const { dreamtrack } = require('../services')
-
     const compareVersions = require('compare-versions')
-    let version
 
-    try {
-      version = await waifu.getVersion()
-      const currentVersion = `v${process.env.npm_package_version}`
+    const payload = await waifu.getVersion()
 
-      const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'waifu', 'minimum'], 'v0.1.0')
-      const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'waifu', 'maximum'])
+    this.waifu.version = payload.version
 
-      if (compareVersions.compare(version, minimum, '<')) {
-        return false
-      }
+    if (!payload.status) {
+      consola.warn(`Waifu2X compatibility check failed. (version = ${payload.version}).`, payload.error)
 
-      if (!isNil(maximum) && compareVersions.compare(version, maximum, '>')) {
-        return false
-      }
+      this.waifu.error = payload.error
 
-      return true
-    } catch (err) {
-      consola.warn(`Waifu2X compatibility check failed. (version = ${version}).`, err)
       return false
     }
+
+    const { version } = payload
+    const appVersion = `v${process.env.npm_package_version}`
+
+    const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', appVersion, 'waifu', 'minimum'], 'v0.1.0')
+    const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', appVersion, 'waifu', 'maximum'])
+
+    if (compareVersions.compare(version, minimum, '<')) {
+      return false
+    }
+
+    if (!isNil(maximum) && compareVersions.compare(version, maximum, '>')) {
+      return false
+    }
+
+    return true
   },
 
   /**

@@ -214,7 +214,7 @@ export default {
 
 .nudify__buttons {
   .button {
-    @apply w-full mb-3;
+    @apply w-full mb-6;
   }
 }
 </style>

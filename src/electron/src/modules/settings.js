@@ -136,7 +136,7 @@ class Settings {
     const hasGPU = process.platform === 'darwin' ? false : system.graphics.length > 0
 
     this.payload = {
-      version: 9,
+      version: 10,
       user: uuid(),
 
       wizard: {
@@ -158,6 +158,10 @@ class Settings {
         duplicates: false,
         showAds: true,
         showTips: true,
+        window: {
+          width: 1200,
+          height: 700,
+        },
       },
 
       notifications: {
@@ -243,7 +247,7 @@ class Settings {
 
         advanced: {
           device: hasGPU ? 'GPU' : 'CPU',
-          scaleMode: 'overlay',
+          scaleMode: 'cropjs',
           useColorTransfer: false,
           useColorPaddingStrip: true,
           compress: 0,
@@ -473,6 +477,7 @@ class Settings {
       }
     }
 
+    // 8 -> 9
     if (this.payload?.version === 8 && this._default.version >= 9) {
       this.payload = merge(this.payload, {
         version: 9,
@@ -491,6 +496,19 @@ class Settings {
       } catch (err) {
         logger.warn(err)
       }
+    }
+
+    // 9 -> 10
+    if (this.payload?.version === 9 && this._default.version >= 10) {
+      this.payload = merge(this.payload, {
+        version: 10,
+        app: {
+          window: {
+            width: 1200,
+            height: 700,
+          },
+        },
+      })
     }
 
     this.save()

@@ -12,6 +12,11 @@
       </h3>
     </PageHeader>
 
+    <AppNotification v-if="photo.preferences.mode === 3" name="advanced-mode" class="notification--info">
+      <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
+      <span>Custom masks mode is recommended only for experienced users. <a href="https://dreamtime.tech/docs/guide/custom-masks/" target="_blank">Click here to visit the guide</a>.</span>
+    </AppNotification>
+
     <SettingsPreferences v-model="photo.preferences" :animated="!photo.canModify" />
   </div>
 </template>

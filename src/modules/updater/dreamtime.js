@@ -7,9 +7,6 @@
 //
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
-import { dirname } from 'path'
-import delay from 'delay'
-import { exec } from 'child_process'
 import { BaseUpdater } from './base'
 import dream from '../dream'
 
@@ -51,25 +48,10 @@ class DreamTimeUpdater extends BaseUpdater {
    * @param {string} filepath
    */
   async install(filepath) {
-    if (!dream.isPortable) {
-      try {
-        exec(filepath)
+    shell.showItemInFolder(filepath)
 
-        await delay(1000)
-
-        // Quit to update
-        app.quit()
-      } catch (error) {
-        shell.openItem(dirname(filepath))
-        throw error
-      }
-    } else {
-      if (!shell.openItem(filepath)) {
-        shell.openItem(dirname(filepath))
-      }
-
-      app.quit()
-    }
+    // Quit to update
+    app.quit()
   }
 
   /**
