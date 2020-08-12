@@ -27,6 +27,13 @@ const { getCurrentWindow } = require('electron').remote
 
 const { power, waifu } = $provider
 
+export const ALGORITHM = {
+  NONE: -1,
+  DREAMPOWER: 0,
+  WAIFU2X: 1,
+  DREAMTIME: 2,
+}
+
 export class PhotoRun {
   /**
    * @type {string}
@@ -66,6 +73,11 @@ export class PhotoRun {
    * @type {string}
    */
   status = 'pending'
+
+  /**
+   * @type {ALGORITHM}
+   */
+  algorithmStatus = ALGORITHM.NONE
 
   /**
    * @type {Boolean}
@@ -274,9 +286,13 @@ export class PhotoRun {
         }
       }
     }
+
+    this.algorithmStatus = ALGORITHM.NONE
   }
 
   runNudification() {
+    this.algorithmStatus = ALGORITHM.DREAMPOWER
+
     return new Promise((resolve, reject) => {
       const onSpawnError = (error) => {
         reject(new Warning(
@@ -353,6 +369,8 @@ export class PhotoRun {
   }
 
   runUpscale() {
+    this.algorithmStatus = ALGORITHM.WAIFU2X
+
     return new Promise((resolve, reject) => {
       const onSpawnError = (error) => {
         reject(new Warning(
@@ -437,6 +455,8 @@ export class PhotoRun {
       input = this.outputFile
       output = this.outputFile
     }
+
+    this.algorithmStatus = ALGORITHM.DREAMTIME
 
     const image = new ImageMagick(input)
 

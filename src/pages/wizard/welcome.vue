@@ -13,7 +13,7 @@
     </h2>
 
     <button class="button button--xl" @click="next">
-      Continue!
+      Continue
     </button>
   </div>
 </template>

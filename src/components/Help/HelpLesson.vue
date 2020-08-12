@@ -96,6 +96,10 @@ export default {
       height: 180px;
     }
 
+    .box__content {
+      @apply pt-3;
+    }
+
     .photo--drag {
       background-image: url('~assets/images/undraw/undraw_throw_down_ub2l.svg')
     }

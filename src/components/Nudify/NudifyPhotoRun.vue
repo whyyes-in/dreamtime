@@ -1,5 +1,6 @@
 <template>
   <div class="box run" :class="previewClass">
+    <!-- Preview -->
     <div class="box__photo run__photo">
       <video v-if="file.exists && isVideo"
              :src="file.url"
@@ -15,8 +16,15 @@
            :style="{ backgroundImage: `url('${file.url}')` }"
            data-private
            @click="openPreview" />
+
+      <div v-if="run.algorithmStatus !== ALGORITHM.NONE" class="run__photo__status">
+        <span v-if="run.algorithmStatus === ALGORITHM.DREAMPOWER" key="dreampower" v-tooltip="'The photo is being nudified by DreamPower.'">Nudifying</span>
+        <span v-if="run.algorithmStatus === ALGORITHM.WAIFU2X" key="waifu2x" v-tooltip="'The photo is being upscaled by Waifu2X.'">Upscaling</span>
+        <span v-if="run.algorithmStatus === ALGORITHM.DREAMTIME" key="dreamtime" v-tooltip="'The photo is being prepared by DreamTime.'">Other</span>
+      </div>
     </div>
 
+    <!-- Preferences -->
     <div
       v-if="run.preferences.body.randomize || run.preferences.body.progressive.enabled"
       class="run__preferences">
@@ -46,6 +54,7 @@
       </div>
     </div>
 
+    <!-- Buttons -->
     <div class="box__footer buttons">
       <div v-if="run.running" key="button-status" class="button button--sm">
         <span class="icon">
@@ -147,6 +156,7 @@
 <script>
 import { dreamtrack } from '~/modules/services'
 import { Nudify } from '~/modules/nudify'
+import { ALGORITHM } from '~/modules/nudify/photo-run'
 
 export default {
   filters: {
@@ -165,6 +175,10 @@ export default {
       required: true,
     },
   },
+
+  data: () => ({
+    ALGORITHM,
+  }),
 
   computed: {
     isVideo() {
@@ -258,6 +272,14 @@ export default {
   @apply absolute top-0 bottom-0 left-0 right-0 z-10;
   @apply bg-contain bg-no-repeat bg-center;
   cursor: zoom-in;
+}
+
+.run__photo__status {
+  @apply absolute z-20;
+  @apply bg-primary py-2 px-6 rounded-br rounded-tr text-black font-semibold;
+  left: 0;
+  top: 20px;
+  cursor: help;
 }
 
 .run__video__preview {

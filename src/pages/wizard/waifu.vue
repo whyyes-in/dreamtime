@@ -7,7 +7,7 @@
       </h2>
 
       <h3 class="subtitle">
-        {{ $waifu.name }}
+        {{ $waifu.name }}. Optional algorithm to upscale photos.
       </h3>
 
       <template v-slot:right>
@@ -21,7 +21,8 @@
     <div class="project__content">
       <div v-if="requirements.waifu.error" class="notification notification--danger">
         <h5>CHECK ERROR!</h5>
-        Failed to get the installed {{ $waifu.name }} version. Please fix this problem before continuing.
+        Failed to get the installed {{ $dreampower.name }} version. Please fix this problem before continuing.<br>
+        You can visit our <a href="https://chat.dreamnet.tech" target="_blank">chat</a> to get support.
         <br><br>
 
         <pre>{{ requirements.waifu.error.stack }}</pre>
@@ -29,10 +30,10 @@
 
       <div v-else-if="requirements.waifu.installed && !requirements.waifu.compatible" class="notification notification--danger">
         <h5>OUTDATED</h5>
-        This component requires an update to continue to be used in this version of {{ $dreamtime.name }}.
+        This component requires an update to continue.
       </div>
 
-      <div v-else-if="requirements.waifu.installed" class="notification">
+      <div v-if="$waifu.version" class="notification">
         Installed version: <strong>{{ $waifu.version }}</strong>
       </div>
 
@@ -48,7 +49,7 @@
 
       <div v-if="updater.error" class="notification notification--danger">
         <h5>CONNECTION ERROR!</h5>
-        <span>It is not possible to update this component because a problem has occurred when trying to get the information from Github, please make sure you have a stable internet connection and restart the application.</span>
+        <span>A problem has occurred when trying to get the information from Github, please make sure you have a stable internet connection and restart the application.</span>
         <br><br>
 
         <pre>
@@ -70,8 +71,6 @@
             title="Change"
             @click="changeWaifu">
         </SettingsField>
-
-        <SettingsField field-id="processing.usePython" />
       </AppBox>
     </div>
 

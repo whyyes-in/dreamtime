@@ -47,8 +47,6 @@
         </SettingsField>
 
         <SettingsField field-id="processing.cores" :attrs="{ type: 'number', min: 1, max: $provider.system.cores }" />
-
-        <SettingsField field-id="processing.usePython" />
       </div>
     </section>
   </div>

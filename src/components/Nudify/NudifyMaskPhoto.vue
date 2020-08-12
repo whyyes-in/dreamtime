@@ -86,6 +86,13 @@
               @click="generate()">
         <FontAwesomeIcon icon="play" />
       </button>
+
+      <button v-else-if="mask.isReadOnly && mask.nextMask"
+              key="play-disabled"
+              v-tooltip="'This mask will be generated with the next.'"
+              class="button button--success button--sm button--disabled">
+        <FontAwesomeIcon icon="play" />
+      </button>
     </div>
 
     <!-- Terminal Dialog -->

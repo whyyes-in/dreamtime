@@ -25,19 +25,20 @@ export function exec(args, options = {}) {
     ...options,
   }
 
-  if (settings.processing.usePython) {
-    // Python Script
+  if (process.env.WAIFU_PYTHON) {
+    // Main Script
     args.unshift('waifu2x.py')
 
+    // C:\\Users\\koles\\Anaconda3\\envs\\waifu\\python
+    const pythonPath = fs.existsSync(process.env.WAIFU_PYTHON) ? process.env.WAIFU_PYTHON : 'python'
+
     logger.debug('[Python] Running:', {
+      pythonPath,
       args,
       options,
     })
 
-    // FIXME: Anaconda Support.
-    // return spawn('C:\\Users\\koles\\Anaconda3\\envs\\waifu\\python', args, options)
-
-    return spawn('python', args, options)
+    return spawn(pythonPath, args, options)
   }
 
   logger.debug('Running:', args)

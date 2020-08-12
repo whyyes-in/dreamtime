@@ -15,7 +15,7 @@ import { settings } from '~/modules/system'
 import { dreamtrack } from '~/modules/services'
 import { Help, events } from '~/modules'
 
-const CHANGE_INTERVAL = process.env.NODE_ENV === 'development' ? 15 * 1000 : 15 * 60 * 1000
+const CHANGE_INTERVAL = process.env.NODE_ENV === 'development' ? 60 * 1000 : 15 * 60 * 1000
 
 export default {
   data: () => ({

@@ -21,7 +21,8 @@
     @apply bg-button-dark;
   }
 
-  &[disabled] {
+  &[disabled],
+  &.button--disabled {
     @apply opacity-50 cursor-not-allowed;
   }
 

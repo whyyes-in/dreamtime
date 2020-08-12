@@ -7,7 +7,7 @@
   resolved "https://npm.dreamnet.tech/7zip-bin/-/7zip-bin-5.0.3.tgz#bc5b5532ecafd923a61f2fb097e3b108c0106a3f"
   integrity sha512-GLyWIFBbGvpKPGo55JyRZAo4lVbnBiD52cKlw/0Vt+wnmKvWJkpZvsjVoaIolyBXDeAQKSicRtqFNPem9w0WYA==
 
-"@adonisjs/websocket-client@^1.0.9":
+"@adonisjs/websocket-client@1.0.9":
   version "1.0.9"
   resolved "https://npm.dreamnet.tech/@adonisjs%2fwebsocket-client/-/websocket-client-1.0.9.tgz#94f018489e68e05425046b053478d44ed003b827"
   integrity sha512-GhHmGgyylwYUB+lBMt6KFPEQo1tck4Pn1n/aFs23CydcdChJfy4Yhtn+edqTtIYS+HTpbvXNvqn2z4EiS/xZOg==

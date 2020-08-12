@@ -136,7 +136,7 @@ class Settings {
     const hasGPU = process.platform === 'darwin' ? false : system.graphics.length > 0
 
     this.payload = {
-      version: 10,
+      version: 11,
       user: uuid(),
 
       wizard: {
@@ -161,6 +161,7 @@ class Settings {
         window: {
           width: 1200,
           height: 700,
+          maximized: true,
         },
       },
 
@@ -185,7 +186,6 @@ class Settings {
       processing: {
         gpus: [0],
         cores: 1,
-        usePython: false,
       },
 
       preferences: {
@@ -509,6 +509,24 @@ class Settings {
           },
         },
       })
+    }
+
+    // 10 -> 11
+    if (this.payload?.version === 10 && this._default.version >= 11) {
+      this.payload = merge(this.payload, {
+        version: 11,
+        app: {
+          window: {
+            maximized: true,
+          },
+        },
+      })
+
+      try {
+        delete this.payload.processing.usePython
+      } catch (err) {
+        logger.warn(err)
+      }
     }
 
     this.save()

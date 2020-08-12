@@ -276,7 +276,10 @@ class DreamApp {
     //
     this.window.webContents.once('dom-ready', () => {
       this.window.show()
-      // this.window.maximize()
+
+      if (settings.get('app.window.maximized', true)) {
+        this.window.maximize()
+      }
     })
 
     // Resize
@@ -285,6 +288,16 @@ class DreamApp {
       settings.set('app.window.height', newBounds.height)
       settings.save()
     }, 1000))
+
+    this.window.on('maximize', function () {
+      settings.set('app.window.maximized', true)
+      settings.save()
+    })
+
+    this.window.on('unmaximize', function () {
+      settings.set('app.window.maximized', false)
+      settings.save()
+    })
 
     // ui location
     this.interfaceURL = this.getInterfaceURL()

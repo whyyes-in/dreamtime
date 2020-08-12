@@ -22,22 +22,20 @@ let version
 export function exec(args, options = {}) {
   args.push('--debug')
 
-  if (settings.processing.usePython) {
-    // python script
+  if (process.env.POWER_PYTHON) {
+    // Main script
     args.unshift('main.py')
 
+    // C:\\Users\\koles\\Anaconda3\\envs\\dreampower\\python
+    const pythonPath = fs.existsSync(process.env.POWER_PYTHON) ? process.env.POWER_PYTHON : 'python'
+
     logger.debug('[Python] Running:', {
+      pythonPath,
       args,
       options,
     })
 
-    // FIXME: Anaconda support.
-    /* return spawn('C:\\Users\\koles\\Anaconda3\\envs\\dreampower\\python', args, {
-      cwd: getPowerPath(),
-      ...options,
-    }) */
-
-    return spawn('python', args, {
+    return spawn(pythonPath, args, {
       cwd: getPowerPath(),
       ...options,
     })
