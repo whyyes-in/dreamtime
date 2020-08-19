@@ -63,6 +63,32 @@
       </AppBox>
 
       <AppBox title="Settings.">
+        <!-- Download protocol. -->
+        <MenuItem
+          label="Download protocol.">
+          <template v-slot:description>
+            <span class="item__description">Select the protocol that will be used to download the file. <AppTip tooltip="- <strong>Any</strong>: Use all protocols if necessary.<br>- <strong>HTTP</strong>: Download the file from verified servers. Fastest and most reliable for most connections.<br>- <strong>Torrent & IPFS</strong>: Download the file from other computers. It is possible to cancel the download and resume it later. More reliable for low speed connections. May require a few minutes of preparation before starting the download." /></span>
+          </template>
+
+          <select v-model="updater.downloadMethod" class="input">
+            <option :value="0">
+              Any
+            </option>
+
+            <option :value="1">
+              HTTP
+            </option>
+
+            <option v-if="updater.hasTorrentUrls" :value="3">
+              Torrent
+            </option>
+
+            <option v-if="updater.hasIPFSUrls" :value="2">
+              IPFS
+            </option>
+          </select>
+        </MenuItem>
+
         <SettingsField v-if="!$dreamtime.isPortable" label="Location" field-id="folders.waifu">
           <input
             v-model="$settings.folders.waifu"

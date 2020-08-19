@@ -9,6 +9,12 @@
       <h3 class="subtitle">
         Settings that affect the use of resources for the nudification.
       </h3>
+
+      <template v-slot:right>
+        <button class="button button--danger" @click="reset()">
+          <span>Reset</span>
+        </button>
+      </template>
     </PageHeader>
 
     <AppNotification name="device-change">
@@ -53,6 +59,8 @@
 </template>
 
 <script>
+import { cloneDeep, merge } from 'lodash'
+import Swal from 'sweetalert2/dist/sweetalert2'
 import { VModel } from '~/mixins'
 
 export default {
@@ -61,6 +69,30 @@ export default {
   computed: {
     isMacOS() {
       return process.platform === 'darwin'
+    },
+  },
+
+  methods: {
+    async reset() {
+      const response = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'This will set all options in this section to their default values.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#F44336',
+        confirmButtonText: 'Yes',
+      })
+
+      if (!response.value) {
+        return
+      }
+
+      // eslint-disable-next-line no-underscore-dangle
+      const settings = cloneDeep($provider.settings._default.processing)
+
+      this.value$.processing = merge(this.value$.processing, settings)
+
+      window.$redirect('/')
     },
   },
 }

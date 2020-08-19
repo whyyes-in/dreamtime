@@ -9,6 +9,12 @@
       <h3 class="subtitle">
         Change the location of the components and files.
       </h3>
+
+      <template v-slot:right>
+        <button class="button button--danger" @click="reset()">
+          <span>Reset</span>
+        </button>
+      </template>
     </PageHeader>
 
     <div v-if="$dream.isPortable" class="notification">
@@ -102,12 +108,13 @@
 </template>
 
 <script>
-import { isNil } from 'lodash'
+import { isNil, cloneDeep, merge } from 'lodash'
+import Swal from 'sweetalert2/dist/sweetalert2'
 import { VModel } from '~/mixins'
 
 const { paths } = $provider
 const { existsSync } = $provider.fs
-const { dialog } = $provider.api
+const { dialog, app } = $provider.api
 
 export default {
   mixins: [VModel],
@@ -169,6 +176,32 @@ export default {
 
       const dir = this.showOpenDialog(this.value$.folders.waifu)
       this.value$.folders.waifu = dir
+    },
+
+    async reset() {
+      const response = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'This will set all options in this section to their default values.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#F44336',
+        confirmButtonText: 'Yes',
+      })
+
+      if (!response.value) {
+        return
+      }
+
+      // eslint-disable-next-line no-underscore-dangle
+      const settings = cloneDeep($provider.settings._default.folders)
+
+      this.value$.folders = merge(this.value$.folders, settings)
+
+      // Ugly...
+      setTimeout(() => {
+        app.relaunch()
+        app.quit()
+      }, 1000)
     },
   },
 }

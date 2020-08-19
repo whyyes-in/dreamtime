@@ -71,7 +71,7 @@ class DreamApp {
 
     process.on('unhandledRejection', (err) => {
       logger.warn('Unhandled rejection!', err)
-      AppError.handle(err)
+      AppError.handle(err, 'warning')
 
       return true
     })

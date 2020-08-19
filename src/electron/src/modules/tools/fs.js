@@ -1,4 +1,6 @@
-import { attempt } from 'lodash'
+import {
+  attempt, startsWith, merge, endsWith,
+} from 'lodash'
 import { basename, join } from 'path'
 import fs from 'fs-extra'
 import { app, dialog } from 'electron'
@@ -6,13 +8,25 @@ import axios from 'axios'
 import https from 'https'
 import deferred from 'deferred'
 import chokidar from 'chokidar'
-import { getAppResourcesPath } from './paths'
-import { AppError } from '../app-error'
+import WebTorrent from 'webtorrent'
+import IpfsCtl from 'ipfsd-ctl'
+import toStream from 'it-to-stream'
+import all from 'it-all'
+import { EventEmitter } from 'events'
+import { getAppResourcesPath, getPath } from './paths'
 
 const logger = require('@dreamnet/logplease').create('electron:modules:tools:fs')
 
 // eslint-disable-next-line node/no-deprecated-api
 export * from 'fs-extra'
+
+/**
+ * @typedef DownloadOptions
+ * @property {boolean} showSaveAs
+ * @property {string} directory
+ * @property {string} filename
+ * @property {string} filepath
+ */
 
 /**
  * Returns the base64 of a dataURL
@@ -114,99 +128,346 @@ export function extractSeven(path, destinationPath) {
 
 /**
  *
+ *
+ * @export
  * @param {string} url
- * @param {Object} [options]
+ * @param {*} options
+ * @param {EventEmitter} events
+ * @param {fs.WriteStream} writeStream
+ */
+export async function downloadFromHttp(url, options, events, writeStream) {
+  let readStream
+  let headers
+
+  try {
+    const request = await axios.request({
+      url,
+      responseType: 'stream',
+      maxContentLength: -1,
+      httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+    })
+
+    readStream = request.data
+    headers = request.headers
+  } catch (err) {
+    events.emit('error', err)
+    return
+  }
+
+  // Close handler
+  events.on('close', () => {
+    attempt(() => {
+      if (readStream) {
+        readStream.destroy()
+      }
+    })
+  })
+
+  const contentLength = headers['content-length'] || -1
+
+  readStream.on('error', (err) => {
+    events.emit('error', err)
+  })
+
+  readStream.on('data', () => {
+    events.emit('progress', {
+      progress: (writeStream.bytesWritten / contentLength),
+      written: (writeStream.bytesWritten / 1048576).toFixed(2),
+      total: (contentLength / 1048576).toFixed(2),
+    })
+  })
+
+  readStream.pipe(writeStream)
+}
+
+/**
+ *
+ *
+ * @export
+ * @param {string} cid
+ * @param {DownloadOptions} options
+ * @param {EventEmitter} events
+ * @param {fs.WriteStream} writeStream
+ */
+export async function downloadFromIPFS(cid, options, events, writeStream) {
+  /** @type {import('ipfsd-ctl/src/ipfsd-daemon')} */
+  let node
+  let stats
+  let readStream
+
+  // Close handler
+  events.on('close', () => {
+    attempt(() => {
+      if (readStream) {
+        readStream.destroy()
+      }
+
+      if (node) {
+        node.stop()
+        node = null
+      }
+    })
+  })
+
+  // Utility functions
+  const createNode = async function () {
+    logger.debug('Creating IPFS node...')
+    logger.debug(require('go-ipfs-dep').path())
+
+    fs.ensureDirSync(getPath('temp', 'ipfs'))
+
+    node = await IpfsCtl.createController({
+      ipfsHttpModule: require('ipfs-http-client'),
+      ipfsBin: require('go-ipfs-dep').path().replace('app.asar', 'app.asar.unpacked'),
+      ipfsOptions: {
+        repo: getPath('temp', 'ipfs'),
+        start: true,
+        init: true,
+      },
+      remote: false,
+      disposable: false,
+      test: false,
+      type: 'go',
+    })
+
+    await node.init()
+
+    await node.start()
+
+    if (!node.api) {
+      logger.debug(node)
+      throw new Error('The IPFS node was not created correctly.')
+    }
+  }
+
+  const connectToProviders = async function () {
+    logger.debug('Connecting to providers...')
+
+    try {
+      await node.api.swarm.connect('/ip4/64.227.19.223/tcp/4001/p2p/QmSarArpxemsPESa6FNkmuu9iSE1QWqPX2R3Aw6f5jq4D5')
+      await node.api.swarm.connect('/ip4/64.227.27.182/tcp/4001/p2p/QmRjLSisUCHVpFa5ELVvX3qVPfdxajxWJEHs9kN3EcxAW6')
+      await node.api.swarm.connect('/dns4/mariana.dreamnet.tech/tcp/4001/p2p/QmcWoy1FzBicbYuopNT2rT6EDQSBDfco1TxibEyYgWbiMq')
+    } catch (err) {
+      logger.warn(err)
+    }
+  }
+
+  try {
+    await createNode()
+
+    await connectToProviders()
+
+    if (!node) {
+      // It seems that the user has canceled it
+      return
+    }
+
+    stats = await node.api.object.stat(cid, { timeout: 3000 })
+
+    logger.debug('Downloading...')
+
+    readStream = toStream.readable(node.api.cat(cid))
+  } catch (err) {
+    events.emit('error', err)
+    return
+  }
+
+  // eslint-disable-next-line promise/always-return
+  all(node.api.dht.findProvs(cid, { timeout: 10000 })).then((provs) => {
+    events.emit('peers', provs.length)
+  }).catch(() => { })
+
+  readStream.on('error', (err) => {
+    events.emit('error', err)
+  })
+
+  readStream.on('data', () => {
+    const progress = writeStream.bytesWritten / stats.CumulativeSize
+
+    events.emit('progress', {
+      progress,
+      written: (writeStream.bytesWritten / 1048576).toFixed(2),
+      total: (stats.CumulativeSize / 1048576).toFixed(2),
+    })
+  })
+
+  readStream.pipe(writeStream)
+}
+
+/**
+ *
+ *
+ * @export
+ * @param {string} magnetURI
+ * @param {DownloadOptions} options
+ * @param {EventEmitter} events
+ * @param {fs.WriteStream} writeStream
+ */
+export function downloadFromTorrent(magnetURI, options, events, writeStream) {
+  let client
+  let torrent
+
+  // Error handler
+  events.on('close', () => {
+    attempt(() => {
+      if (torrent) {
+        torrent.destroy()
+      }
+
+      if (client) {
+        client.destroy()
+      }
+    })
+  })
+
+  try {
+    client = new WebTorrent()
+
+    torrent = client.add(magnetURI)
+  } catch (err) {
+    events.emit('error', err)
+    return
+  }
+
+  const timeout = setTimeout(() => {
+    events.emit('error', new Error('timeout'))
+  }, 3000)
+
+  client.on('error', (err) => {
+    events.emit('error', err)
+  })
+
+  torrent.on('error', (err) => {
+    events.emit('error', err)
+  })
+
+  torrent.on('metadata', () => {
+    clearTimeout(timeout)
+
+    if (torrent.files.length > 1) {
+      events.emit('error', new Error('The torrent contains more than one file.'))
+      return
+    }
+
+    events.emit('peers', torrent.numPeers)
+
+    const file = torrent.files[0]
+
+    file.createReadStream().pipe(writeStream)
+  })
+
+  torrent.on('download', () => {
+    events.emit('progress', {
+      progress: torrent.progress,
+      written: (torrent.downloaded / 1048576).toFixed(2),
+      total: (torrent.length / 1048576).toFixed(2),
+    })
+  })
+
+  torrent.on('wire', () => {
+    events.emit('peers', torrent.numPeers)
+  })
+
+  /*
+  torrent.on('done', () => {
+    // Finish & Close
+    events.emit('finish', options.filepath)
+    events.emit('close')
+  })
+  */
+}
+
+/**
+ *
+ * @param {string} url
+ * @param {DownloadOptions} [options]
  */
 export function download(url, options = {}) {
-  const EventBus = require('js-event-bus')
-  const bus = new EventBus()
+  const events = new EventEmitter()
 
-  // eslint-disable-next-line no-param-reassign
-  options = {
+  let cancelled = false
+
+  // Options setup
+  options = merge({
     showSaveAs: false,
     directory: app.getPath('downloads'),
     filename: basename(url).split('?')[0].split('#')[0],
-    ...options,
-  }
+  }, options)
 
-  let filepath = join(options.directory, options.filename)
-  let cancelled = false
+  options.filepath = join(options.directory, options.filename)
 
   if (options.showSaveAs) {
-    // save as dialog
-    filepath = dialog.showSaveDialogSync({
-      defaultPath: filepath,
+    options.filepath = dialog.showSaveDialogSync({
+      defaultPath: options.filepath,
     })
   }
 
-  const writeStream = fs.createWriteStream(filepath)
+  // Write stream
+  const writeStream = fs.createWriteStream(options.filepath)
 
-  axios.request({
-    url,
-    responseType: 'stream',
-    maxContentLength: -1,
-    httpsAgent: new https.Agent({ rejectUnauthorized: false }),
-  }).then(({ data, headers }) => {
-    const contentLength = headers['content-length'] || -1
-
-    data.on('data', () => {
-      const progress = writeStream.bytesWritten / contentLength
-
-      bus.emit('progress', null, {
-        progress,
-        written: (writeStream.bytesWritten / 1048576).toFixed(2),
-        total: (contentLength / 1048576).toFixed(2),
-      })
-    })
-
-    data.on('error', (err) => {
-      throw new AppError(err, { title: 'Download failed.' })
-    })
-
-    writeStream.on('error', (err) => {
-      throw new AppError(err, { title: 'Download failed.' })
-    })
-
-    writeStream.on('finish', () => {
-      if (cancelled) {
-        bus.emit('cancelled')
-        return
-      }
-
-      if (!fs.existsSync(filepath)) {
-        throw new AppError('The file was not saved correctly.', { title: 'Download failed.' })
-      }
-
-      bus.emit('finish', null, filepath)
-    })
-
-    data.pipe(writeStream)
-
-    bus.on('cancel', () => {
-      cancelled = true
-
-      attempt(() => {
-        writeStream.destroy()
-        data.destroy()
-        fs.unlinkSync(filepath)
-      })
-
-      logger.info('Download cancelled by user.')
-      bus.emit('cancelled')
-    })
-
-    return true
-  }).catch((err) => {
-    attempt(() => {
-      writeStream.destroy(err)
-      fs.unlinkSync(filepath)
-    })
-
-    logger.warn('Download cancelled due to an error.', err)
-    bus.emit('error', null, err)
+  writeStream.on('error', (err) => {
+    events.emit('error', err)
   })
 
-  return bus
+  writeStream.on('finish', () => {
+    if (cancelled) {
+      events.emit('cancelled')
+      return
+    }
+
+    // Finish & Close
+    events.emit('finish', options.filepath)
+    events.emit('close')
+  })
+
+  // Cancel handler
+  events.on('cancel', () => {
+    cancelled = true
+
+    attempt(() => {
+      fs.unlinkSync(options.filepath)
+    })
+
+    logger.info('Download cancelled by user.')
+
+    // Cancelled & Close
+    events.emit('cancelled')
+    events.emit('close')
+  })
+
+  // Error handler
+  events.on('error', (err) => {
+    attempt(() => {
+      fs.unlinkSync(options.filepath)
+    })
+
+    logger.warn('Download error:', err)
+
+    // Error & Close
+    events.emit('close')
+  })
+
+  // Close handler
+  events.on('close', () => {
+    attempt(() => {
+      writeStream.destroy()
+    })
+  })
+
+  // Download!
+  if (startsWith(url, 'Qm')) {
+    downloadFromIPFS(url, options, events, writeStream)
+  } else if (startsWith(url, 'magnet:') || endsWith(url, '.torrent')) {
+    downloadFromTorrent(url, options, events, writeStream)
+  } else if (startsWith(url, 'http')) {
+    downloadFromHttp(url, options, events, writeStream)
+  } else {
+    setTimeout(() => {
+      events.emit('error', new Error('Invalid download address.'))
+    }, 0)
+  }
+
+  return events
 }
 
 /**

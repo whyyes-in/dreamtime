@@ -16,6 +16,7 @@ import { BaseService } from './base'
 import { dreamtrack } from './dreamtrack'
 import { Consola } from '../consola'
 import { settings } from '../system/settings'
+import { requirements } from '../system'
 
 const { system } = $provider
 const { execSync } = remote.require('child_process')
@@ -38,7 +39,7 @@ class RollbarService extends BaseService {
    * @type {boolean}
    */
   get can() {
-    return system.online && isString(this.accessToken) && settings.telemetry.bugs // && process.env.NODE_ENV === 'production'
+    return system.online && isString(this.accessToken) && settings.telemetry.bugs && requirements.canNudify // && process.env.NODE_ENV === 'production'
   }
 
   /**

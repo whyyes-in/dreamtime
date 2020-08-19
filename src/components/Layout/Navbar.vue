@@ -167,7 +167,8 @@ export default {
       @apply text-lg;
     }
 
-    &:hover {
+    &:hover,
+    &.nuxt-link-exact-active {
       @apply text-primary border-primary;
     }
   }

@@ -10,6 +10,12 @@
         Default preferences for new photos.
         <AppTip tooltip="You can change these options individually in each photo." />
       </h3>
+
+      <template v-slot:right>
+        <button class="button button--danger" @click="reset()">
+          <span>Reset</span>
+        </button>
+      </template>
     </PageHeader>
 
     <AppNotification v-if="value$.preferences.mode === 3" name="advanced-mode" class="notification--info">
@@ -22,10 +28,37 @@
 </template>
 
 <script>
+import { cloneDeep, merge } from 'lodash'
+import Swal from 'sweetalert2/dist/sweetalert2'
 import { VModel } from '~/mixins'
 
 export default {
   mixins: [VModel],
+
+  methods: {
+    async reset() {
+      const response = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'This will set all options in this section to their default values.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#F44336',
+        confirmButtonText: 'Yes',
+      })
+
+      if (!response.value) {
+        return
+      }
+
+      // eslint-disable-next-line no-underscore-dangle
+      const settings = cloneDeep($provider.settings._default.preferences)
+      delete settings.advanced.device
+
+      this.value$.preferences = merge(this.value$.preferences, settings)
+
+      window.$redirect('/')
+    },
+  },
 }
 </script>
 

@@ -10,10 +10,10 @@
 import {
   isNil, isArray, isPlainObject, find,
   startsWith, filter, isEmpty, toNumber, isString,
+  endsWith, attempt,
 } from 'lodash'
 import axios from 'axios'
 import compareVersions from 'compare-versions'
-import deferred from 'deferred'
 import filesize from 'filesize'
 import delay from 'delay'
 import { basename } from 'path'
@@ -22,7 +22,9 @@ import { Consola } from '../consola'
 
 const { system } = $provider
 const { getPath } = $provider.paths
-const { existsSync, statSync, download } = $provider.fs
+const {
+  existsSync, statSync, download, unlinkSync,
+} = $provider.fs
 const { dialog } = $provider.api
 const { platform } = $provider.util
 
@@ -33,6 +35,13 @@ const extRegex = /(?:\.(zip|7z|exe|dmg|snap))?$/
  * @type {string}
  */
 const GITHUB_API = 'https://api.github.com/repos'
+
+const DMETHOD = {
+  ANY: 0,
+  HTTP: 1,
+  IPFS: 2,
+  TORRENT: 3,
+}
 
 export class BaseUpdater {
   /**
@@ -81,12 +90,49 @@ export class BaseUpdater {
   /**
    * @type {Array}
    */
-  downloadUrls = []
+  downloadAllUrls = []
+
+  /**
+   *
+   * @type {DMETHOD}
+   */
+  downloadMethod = DMETHOD.ANY
+
+  getDownloadUrls(method) {
+    switch (method) {
+      case DMETHOD.ANY:
+        return this.downloadAllUrls
+
+      case DMETHOD.HTTP:
+        return this.downloadAllUrls.filter((url) => startsWith(url, 'http') && !endsWith(url, '.torrent'))
+
+      case DMETHOD.IPFS:
+        return this.downloadAllUrls.filter((url) => startsWith(url, 'Qm'))
+
+      case DMETHOD.TORRENT:
+        return this.downloadAllUrls.filter((url) => startsWith(url, 'magnet:') || endsWith(url, '.torrent'))
+
+      default:
+        return []
+    }
+  }
+
+  get downloadUrls() {
+    return this.getDownloadUrls(this.downloadMethod)
+  }
+
+  get hasIPFSUrls() {
+    return this.getDownloadUrls(DMETHOD.IPFS).length > 0
+  }
+
+  get hasTorrentUrls() {
+    return this.getDownloadUrls(DMETHOD.TORRENT).length > 0
+  }
 
   /**
    * @type {EventEmitter}
    */
-  downloadEvents
+  events
 
   /**
    * @type {Object}
@@ -97,6 +143,7 @@ export class BaseUpdater {
     progress: 0,
     written: -1,
     total: -1,
+    peers: -1,
   }
 
   /**
@@ -162,11 +209,11 @@ export class BaseUpdater {
    * @type {string}
    */
   get filename() {
-    if (this.downloadUrls.length === 0) {
+    if (this.downloadAllUrls.length === 0) {
       return null
     }
 
-    for (const url of this.downloadUrls) {
+    for (const url of this.downloadAllUrls) {
       const filename = basename(url).split('?')[0].split('#')[0]
 
       if (isEmpty(filename) || isNil(extRegex.exec(filename)[1])) {
@@ -226,7 +273,7 @@ export class BaseUpdater {
 
       this.refresh()
 
-      if (this.downloadUrls.length === 0) {
+      if (this.downloadAllUrls.length === 0) {
         throw new Warning('No available download links found, please try again later.')
       }
 
@@ -242,7 +289,7 @@ export class BaseUpdater {
   }
 
   refresh() {
-    this.downloadUrls = this._getDownloadUrls()
+    this.downloadAllUrls = this._getDownloadUrls()
   }
 
   /**
@@ -285,10 +332,6 @@ export class BaseUpdater {
       // github download url at the end, it doesn't always work.
       urls.push(asset.browser_download_url)
     }
-
-    // for now we use only the http/https protocol
-    // todo: ipfs
-    urls = urls.filter((item) => startsWith(item, 'http'))
 
     return urls
   }
@@ -361,6 +404,10 @@ export class BaseUpdater {
           await this._install(filepath)
           return
         }
+
+        attempt(() => {
+          unlinkSync(filepath)
+        })
       }
 
       filepath = await this._download()
@@ -373,6 +420,22 @@ export class BaseUpdater {
     }
   }
 
+  pause() {
+    if (isNil(this.events)) {
+      return
+    }
+
+    this.events.emit('pause')
+  }
+
+  resume() {
+    if (isNil(this.events)) {
+      return
+    }
+
+    this.events.emit('resume')
+  }
+
   /**
    *
    */
@@ -381,7 +444,7 @@ export class BaseUpdater {
       this._setUpdateProgress('installing')
 
       // Avoid opening it while it is in use.
-      await delay(3000)
+      await delay(2000)
 
       await this.install(filepath)
     } catch (err) {
@@ -395,8 +458,11 @@ export class BaseUpdater {
   async _download() {
     let filepath
 
+    this.consola.debug('Download URLS:')
+    this.consola.debug(this.downloadUrls)
+
     for (const url of this.downloadUrls) {
-      this._setUpdateProgress('downloading')
+      this._setUpdateProgress('preparing')
 
       try {
         // eslint-disable-next-line no-await-in-loop
@@ -424,58 +490,69 @@ export class BaseUpdater {
    */
   _downloadFrom(url) {
     this.consola.info(`Downloading update from: ${url}`)
-    const def = deferred()
 
-    this.downloadEvents = download(url, {
-      filename: this.filename,
+    return new Promise((resolve, reject) => {
+      this.events = download(url, {
+        filename: this.filename,
+      })
+
+      this.events.on('progress', (payload) => {
+        this._setUpdateProgress('downloading')
+
+        if (payload.total > 0) {
+          this.update.progress = toNumber(payload.progress * 100).toFixed(2)
+        } else {
+          this.update.progress = -1
+        }
+
+        this.update.total = payload.total
+        this.update.written = payload.written
+      })
+
+      this.events.on('peers', (value) => {
+        this.update.peers = value
+      })
+
+      this.events.on('error', (err) => {
+        this.events = null
+        reject(err)
+      })
+
+      this.events.on('finish', (filepath) => {
+        this.events = null
+
+        if (!filepath || !existsSync(filepath)) {
+          reject(new Warning('Unable to download update.', 'The file has been downloaded but has not been saved.'))
+          return
+        }
+
+        const stats = statSync(filepath)
+        const size = filesize(stats.size, { exponent: 2, output: 'object' })
+
+        if (size.value < 20) {
+          reject(new Warning('Unable to download update.', 'The file has been downloaded corrupted.'))
+          return
+        }
+
+        resolve(filepath)
+      })
+
+      this.events.on('cancelled', () => {
+        this.events = null
+        resolve()
+      })
     })
-
-    this.downloadEvents.on('progress', (payload) => {
-      if (payload.total > 0) {
-        this.update.progress = toNumber(payload.progress * 100).toFixed(2)
-      } else {
-        this.update.progress = -1
-      }
-
-      this.update.total = payload.total
-      this.update.written = payload.written
-    })
-
-    this.downloadEvents.on('error', (err) => {
-      this.downloadEvents = null
-      def.reject(err)
-    })
-
-    this.downloadEvents.on('finish', (filepath) => {
-      const stats = statSync(filepath)
-      const size = filesize(stats.size, { exponent: 2, output: 'object' })
-
-      if (size.value < 20) {
-        // todo: better corrupt detection
-        def.reject(new Warning('Unable to download update.', 'The file is corrupt.'))
-      }
-
-      this.downloadEvents = null
-      def.resolve(filepath)
-    })
-
-    this.downloadEvents.on('cancelled', () => {
-      this.downloadEvents = null
-      def.resolve()
-    })
-
-    return def.promise
   }
 
   /**
    *
    */
   cancel() {
-    if (isNil(this.downloadEvents)) {
+    if (isNil(this.events)) {
       return
     }
 
-    this.downloadEvents.emit('cancel')
+    this.events.emit('cancel')
   }
 
   /**

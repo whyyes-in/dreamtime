@@ -87,7 +87,7 @@ export class AppError extends Error {
     attempt(() => {
       logger[level](this.message, { error })
 
-      if (!quiet) {
+      if (!quiet && level === 'error') {
         this.show()
       }
     })
@@ -97,7 +97,7 @@ export class AppError extends Error {
     }
   }
 
-  static handle(error) {
+  static handle(error, level = 'error') {
     let appError = error
 
     if (!(error instanceof AppError)) {
@@ -114,7 +114,7 @@ export class AppError extends Error {
       appError = new AppError('The application has encountered an unexpected error.', {
         error: exception,
         title: 'Unexpected error!',
-        level: 'error',
+        level,
       })
     }
 

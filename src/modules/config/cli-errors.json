@@ -40,6 +40,11 @@
     "message": "Please buy more RAM before using DreamTime. Also verify that your system's RAM is in good condition."
   },
   {
+    "query": "Cannot allocate memory",
+    "title": "System out of memory",
+    "message": "Please buy more RAM before using DreamTime. Also verify that your system's RAM is in good condition."
+  },
+  {
     "query": "CUDA out of memory",
     "title": "GPU out of memory",
     "message": "Please use CPU processing or buy a new GPU with more than 8 GB of VRAM."

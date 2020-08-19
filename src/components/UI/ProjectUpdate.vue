@@ -15,9 +15,14 @@
       </h2>
     </div>
 
+    <!-- Preparing -->
+    <div v-if="isPreparing" class="update__status">
+      Preparing download...
+    </div>
+
     <!-- Downloading -->
-    <div v-if="isDownloading && updater.update.progress >= 0" class="update__status">
-      Downloading ~ <strong>{{ updater.update.progress }}%</strong> ~ {{ updater.update.written | size }}/{{ updater.update.total | size }} MB.
+    <div v-else-if="isDownloading && updater.update.progress >= 0" class="update__status">
+      Downloading ~ <strong>{{ updater.update.progress }}%</strong> ~ {{ updater.update.written | size }}/{{ updater.update.total | size }} MB. <span v-if="updater.update.peers > 0">({{ updater.update.peers }} peers)</span>
     </div>
 
     <!-- Downloading -->
@@ -54,7 +59,7 @@
         Update
       </button>
 
-      <button v-else-if="updater.update.active"
+      <button v-if="updater.update.active"
               key="update-cancel"
               class="button button--danger"
               @click.prevent="updater.cancel()">
@@ -65,7 +70,7 @@
       <button v-if="updater.downloadUrls.length > 0"
               v-tooltip="'List of links to download the update manually.'"
               class="button button--info"
-              @click.prevent="$refs.mirrorsDialog.show()">
+              @click.prevent="$refs.mirrorsDialog.showModal()">
         <span class="icon"><font-awesome-icon icon="link" /></span>
         Mirrors
       </button>
@@ -103,8 +108,10 @@
     <dialog ref="mirrorsDialog">
       <div class="dialog__content">
         <ul class="mirrors">
-          <li v-for="(item, index) in updater.downloadUrls" :key="index">
-            <a :href="item" target="_blank">{{ item | domain }}</a>
+          <li v-for="(url, index) in updater.downloadAllUrls" :key="index">
+            <a v-if="isTorrent(url)" :href="url" target="_blank">Torrent ({{ url | domain }})</a>
+            <a v-else-if="isIPFS(url)" :href="`https://gateway.ipfs.io/ipfs/${url}?filename=${updater.filename}`" target="_blank">IPFS</a>
+            <a v-else :href="url" target="_blank">HTTP ({{ url | domain }})</a>
           </li>
         </ul>
 
@@ -119,7 +126,7 @@
 </template>
 
 <script>
-import { toNumber } from 'lodash'
+import { toNumber, startsWith, endsWith } from 'lodash'
 import * as projects from '~/modules/projects'
 
 export default {
@@ -135,6 +142,10 @@ export default {
     },
 
     domain(value) {
+      if (startsWith(value, 'magnet:')) {
+        return 'magnet'
+      }
+
       return (new URL(value)).hostname
     },
   },
@@ -163,6 +174,10 @@ export default {
       return this.updater?.currentVersion || 'v0.0.0'
     },
 
+    isPreparing() {
+      return this.updater?.update?.status === 'preparing'
+    },
+
     isDownloading() {
       return this.updater?.update?.status === 'downloading'
     },
@@ -179,6 +194,16 @@ export default {
 
   beforeDestroy() {
     this.updater.cancel()
+  },
+
+  methods: {
+    isTorrent(url) {
+      return startsWith(url, 'magnet:') || endsWith(url, '.torrent')
+    },
+
+    isIPFS(url) {
+      return startsWith(url, 'Qm')
+    },
   },
 }
 </script>

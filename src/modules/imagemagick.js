@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import fs from 'fs'
 import { initializeImageMagick, ImageMagick as ImageMagickWASM } from '@imagemagick/magick-wasm'
-import { withString } from '@imagemagick/magick-wasm/util/string'
+import { _withString } from '@imagemagick/magick-wasm/native/string'
 import { Exception } from '@imagemagick/magick-wasm/exception/exception'
 import { MagickFormat } from '@imagemagick/magick-wasm/magick-format'
 import { MagickImage } from '@imagemagick/magick-wasm/magick-image'
@@ -72,7 +72,7 @@ export class ImageMagick {
 
     await new Promise((resolve) => {
       Exception.use((exception) => {
-        withString(`${geometry.width}x${geometry.height}+${geometry.x}+${geometry.y}!`, (geometryPtr) => {
+        _withString(`${geometry.width}x${geometry.height}+${geometry.x}+${geometry.y}!`, (geometryPtr) => {
           ImageMagickWASM._api._MagickImage_BackgroundColor_Set(this.image._instance, 'white')
           const newImage = ImageMagickWASM._api._MagickImage_Crop(this.image._instance, geometryPtr, exception.ptr)
           this.image._setInstance(newImage, exception)

@@ -7,7 +7,7 @@
       </h2>
 
       <h3 class="subtitle">
-        Share your photo preferences with the world.
+        Share or save your photo preferences.
       </h3>
     </PageHeader>
 
@@ -30,7 +30,7 @@
             Export
           </h2>
           <h3 class="subtitle">
-            Share your preferences or save them for later.
+            Save your photo preferences in an easy-to-remember ID.
           </h3>
         </div>
 

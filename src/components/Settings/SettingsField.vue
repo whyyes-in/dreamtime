@@ -174,7 +174,7 @@ export default {
   &::v-deep {
     .item__action {
       @apply flex items-center justify-center;
-      max-width: 300px;
+      //max-width: 300px;
     }
   }
 }
