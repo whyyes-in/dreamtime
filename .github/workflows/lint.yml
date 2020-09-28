@@ -28,7 +28,7 @@ jobs:
 
       - name: Setup
         working-directory: src/
-        run: yarn install
+        run: yarn install --network-timeout 1000000
 
       - name: Lint
         working-directory: src/

@@ -72,7 +72,7 @@ export default {
 }
 
 .community__sections {
-  @apply grid grid-cols-2 col-gap-6;
+  @apply grid grid-cols-2 gap-x-6;
 }
 
 .box--community {

@@ -38,10 +38,6 @@
     max-height: 100px;
   }
 
-  code {
-    @apply bg-black px-2 text-sm rounded-sm break-words;
-  }
-
   a {
     @apply underline text-white font-bold;
   }
@@ -49,7 +45,7 @@
 
 .swal2-footer {
   code {
-    @apply text-sm text-center;
+    @apply text-center;
   }
 }
 
@@ -81,4 +77,24 @@
 
 .introjs-overlay {
   backdrop-filter: blur(10px);
+}
+
+.tippy-content {
+  @apply px-6 py-3 bg-menus-light shadow;
+
+  ul {
+    @apply list-disc;
+
+    li {
+      @apply text-sm ml-3;
+
+      &:not(:last-child) {
+        @apply mb-2;
+      }
+    }
+  }
+}
+
+.vue-slider-dot-tooltip-inner {
+  @apply bg-primary border-primary;
 }

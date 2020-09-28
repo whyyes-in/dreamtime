@@ -268,11 +268,11 @@ export const Nudify = {
   async forgetAll(status = 'pending') {
     const response = await Swal.fire({
       title: 'Are you sure?',
-      text: 'Forgetting will remove all photos from the queue (it will not delete the files) and free up memory.',
+      text: 'All photos in this section will be removed.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#F44336',
-      confirmButtonText: 'Yes, forget it',
+      confirmButtonText: 'Yes, remove all',
     })
 
     if (!response.value) {

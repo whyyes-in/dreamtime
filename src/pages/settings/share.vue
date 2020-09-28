@@ -119,18 +119,11 @@
 
           <SettingsField v-model="importPreferences" field-id="preferences.advanced.waifu.arch" readonly />
 
-          <SettingsField v-model="importPreferences" field-id="preferences.body.executions" readonly />
+          <SettingsField v-model="importPreferences" field-id="preferences.body.runs.mode" readonly />
 
-          <SettingsField v-if="importPreferences.body.randomize"
-                         v-model="importPreferences"
-                         field-id="preferences.body.randomize"
-                         readonly />
+          <SettingsField v-model="importPreferences" field-id="preferences.body.runs.count" readonly />
 
-          <SettingsField v-if="importPreferences.body.progressive.enabled && !importPreferences.body.randomize"
-                         v-model="importPreferences"
-                         field-id="preferences.body.progressive.enabled"
-                         :description="`Body preferences will increase ${importPreferences.body.progressive.rate} at each run.`"
-                         readonly />
+          <SettingsField v-model="importPreferences" field-id="preferences.body.runs.rate" readonly />
 
           <!-- Boobs -->
           <Preference v-if="importPreferences.body.boobs"

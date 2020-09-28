@@ -69,6 +69,11 @@ export class BaseUpdater {
   http
 
   /**
+   * @type {Array}
+   */
+  releases = []
+
+  /**
    * @type {Object}
    */
   latest = {}
@@ -367,18 +372,18 @@ export class BaseUpdater {
     const response = await this.http.get('/releases')
 
     // only final releases
-    const releases = filter(response.data, {
+    this.releases = filter(response.data, {
       draft: false,
       prerelease: false,
     })
 
-    if (releases.length === 0) {
+    if (this.releases.length === 0) {
       throw new Exception('Github has returned that there are no releases!')
     }
 
     // eslint-disable-next-line prefer-destructuring
-    this.latest = releases[0]
-    this.latestCompatible = this._getLatestCompatible(releases)
+    this.latest = this.releases[0]
+    this.latestCompatible = this._getLatestCompatible(this.releases)
 
     if (isNil(this.latestCompatible)) {
       throw new Exception('Unable to fetch the latest compatible version.')

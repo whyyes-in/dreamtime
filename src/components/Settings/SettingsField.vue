@@ -2,6 +2,7 @@
   <MenuItem
     :label="fieldLabel"
     :description="fieldDescription"
+    :tooltip="fieldTooltip"
     :data-id="field.id">
     <slot>
       <div v-if="!readonly" class="flex-1">
@@ -9,6 +10,7 @@
         <select v-if="field.input === 'select'"
                 v-model="localValue"
                 class="input"
+                :disabled="disabled"
                 v-bind="inputAttrs">
           <option v-for="(option, index) in selectOptions" :key="index" :value="option.value">
             {{ option.label }}
@@ -19,6 +21,7 @@
         <input v-if="field.input === 'input'"
                v-model="localValue"
                class="input"
+               :disabled="disabled"
                v-bind="inputAttrs">
       </div>
 
@@ -28,7 +31,9 @@
 </template>
 
 <script>
-import { get, set, find } from 'lodash'
+import {
+  get, set, find, isObject,
+} from 'lodash'
 import { VModel } from '~/mixins'
 
 export default {
@@ -50,6 +55,11 @@ export default {
       default: null,
     },
 
+    tooltip: {
+      type: String,
+      default: null,
+    },
+
     options: {
       type: Array,
       default: null,
@@ -66,6 +76,11 @@ export default {
     },
 
     readonly: {
+      type: Boolean,
+      default: false,
+    },
+
+    disabled: {
       type: Boolean,
       default: false,
     },
@@ -127,6 +142,14 @@ export default {
       return this.field.description
     },
 
+    fieldTooltip() {
+      if (this.tooltip) {
+        return this.tooltip
+      }
+
+      return this.field.tooltip
+    },
+
     inputAttrs() {
       if (this.attrs) {
         return this.attrs
@@ -140,6 +163,15 @@ export default {
     localValue(value) {
       if (!this.firstWatchIgnored) {
         this.firstWatchIgnored = true
+        return
+      }
+
+      if (this.readonly || this.disabled) {
+        return
+      }
+
+      if (this.value$ && !isObject(this.value$)) {
+        console.warn('Saving has been prevented because value$ is not an object.')
         return
       }
 
@@ -160,8 +192,10 @@ export default {
       throw new Error(`Invalid field ID: ${this.fieldId}`)
     }
 
-    if (this.value) {
+    if (isObject(this.value)) {
       this.localValue = get(this.value, this.localFieldId)
+    } else if (this.value) {
+      this.localValue = this.value
     } else {
       this.localValue = this.$settings.get(this.fieldId)
     }

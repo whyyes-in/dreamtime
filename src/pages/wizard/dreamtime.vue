@@ -12,9 +12,13 @@
     </PageHeader>
 
     <div class="project__content">
+      <div v-if="!$dreamtime.isPortable && isLinux" class="notification">
+        <span class="icon"><font-awesome-icon icon="info-circle" /></span> Linux users: it is recommended to update {{ $dreamtime.name }} with Snap instead:<br><code>sudo snap refresh dreamtimetech</code>
+      </div>
+
       <div v-if="updater.error" class="notification notification--danger">
         <h5>CONNECTION ERROR!</h5>
-        <span>It is not possible to update this component because a problem has occurred when trying to get the information from Github, please make sure you have a stable internet connection and restart the application.</span>
+        <span>A problem has occurred when trying to get the information from Github, please make sure you have a stable internet connection and restart the application.</span>
         <br><br>
 
         <pre>
@@ -36,17 +40,13 @@ import { dreamtime } from '~/modules/updater'
 export default {
   layout: 'wizard',
 
-  middleware({ redirect, route }) {
-    if (!route.query.forced) {
-      if (!dreamtime.available) {
-        redirect('/')
-      }
-    }
-  },
-
   computed: {
     updater() {
       return dreamtime
+    },
+
+    isLinux() {
+      return process.platform === 'linux'
     },
   },
 }

@@ -9,7 +9,7 @@
 
 import fs from 'fs-extra'
 import {
-  cloneDeep, isNil, isEmpty, isPlainObject, get, set, merge,
+  cloneDeep, isNil, isEmpty, isPlainObject, get, set, merge, omit,
 } from 'lodash'
 import { AppError } from './app-error'
 import { paths, system } from './tools'
@@ -136,7 +136,7 @@ class Settings {
     const hasGPU = process.platform === 'darwin' ? false : system.graphics.length > 0
 
     this.payload = {
-      version: 11,
+      version: 12,
       user: uuid(),
 
       wizard: {
@@ -190,11 +190,9 @@ class Settings {
 
       preferences: {
         body: {
-          executions: 1,
-          randomize: false,
-
-          progressive: {
-            enabled: false,
+          runs: {
+            mode: false,
+            count: 1,
             rate: 0.1,
           },
 
@@ -527,6 +525,28 @@ class Settings {
       } catch (err) {
         logger.warn(err)
       }
+    }
+
+    // 11 -> 12
+    if (this.payload?.version === 11 && this._default.version >= 12) {
+      this.payload = merge(this.payload, {
+        version: 12,
+        preferences: {
+          body: {
+            runs: {
+              mode: false,
+              count: 2,
+              rate: 0.1,
+            },
+          },
+        },
+      })
+
+      this.payload = omit(this.payload, [
+        'preferences.body.executions',
+        'preferences.body.randomize',
+        'preferences.body.progressive',
+      ])
     }
 
     this.save()

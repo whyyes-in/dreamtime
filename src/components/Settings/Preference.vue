@@ -2,7 +2,7 @@
   <section v-if="!readonly" class="box">
     <div class="box__content">
       <MenuItem :description="`Value: ${value$.size}`" :label="`${label} size`">
-        <div v-if="!body.randomize">
+        <div v-if="body.runs.mode === false">
           <VueSlider v-model="value$.size"
                      :min="min"
                      :max="max"
@@ -11,9 +11,9 @@
       </MenuItem>
 
       <MenuItem
-        v-if="!body.randomize && body.progressive.enabled"
-        label="Progressive?"
-        description="Increase this body part progressively in each run.">
+        v-if="body.runs.mode === 'increase'"
+        label="Increase?"
+        description="Indicates if this should increase with each run.">
         <select v-model="value$.progressive" class="input">
           <option :value="true">
             Enabled
@@ -24,7 +24,7 @@
         </select>
       </MenuItem>
 
-      <div v-if="body.randomize">
+      <div v-if="body.runs.mode === 'randomize'">
         <MenuItem
           label="Randomize?"
           description="Randomize this body part in each run.">

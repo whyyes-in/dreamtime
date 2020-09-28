@@ -51,7 +51,9 @@
 
     <div v-if="photo.isScaleModeCorrected && !photo.pending" class="notification notification--warning">
       <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
-      You have selected the scale method <strong>{{ photo.preferences.advanced.scaleMode }}</strong> but have not used the tool! <strong>Automatic Resize</strong> will be used instead.
+      The <strong>{{ photo.scaleModeName }}</strong> scale method has been selected but the tool has not been used, this will generate lower quality fake nudes. <nuxt-link :to="photo.scaleModeURL">
+        Please use the tool
+      </nuxt-link>.
     </div>
 
     <!-- Custom Masks -->

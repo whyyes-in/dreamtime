@@ -9,7 +9,7 @@
     </div>
 
     <div v-tippy
-         data-tippy-content="Number of different users who have used the application."
+         data-tippy-content="Number of unique users who have used the application."
          data-tippy-placement="bottom"
          class="box">
       <span class="stats__value">{{ stats | stat('users.total') }}</span>

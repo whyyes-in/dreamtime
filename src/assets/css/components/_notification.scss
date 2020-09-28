@@ -10,8 +10,8 @@
  */
 
 .notification {
-  @apply mb-4 py-4 px-4 rounded;
-  @apply bg-white text-black text-sm;
+  @apply mb-4 py-4 pl-4 pr-6 rounded;
+  @apply bg-menus-light text-white text-sm;
 
   h5 {
     @apply font-bold;
@@ -23,23 +23,19 @@
   }
 
   &.notification--warning {
-    @apply bg-warning-500;
+    @apply bg-warning-500 text-black;
   }
 
   &.notification--danger {
-    @apply bg-danger-400;
+    @apply bg-danger-400 text-black;
   }
 
   &.notification--success {
-    @apply bg-success-500;
+    @apply bg-success-500 text-black;
   }
 
   .icon {
     @apply mr-2;
-  }
-
-  code {
-    @apply mx-1 p-1 bg-gray-300;
   }
 
   pre {

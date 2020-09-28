@@ -20,7 +20,8 @@
 
     <div class="project__content">
       <div v-if="!requirements.power.installed" class="notification notification--warning">
-        This component needs to be installed to continue.
+        <span class="icon"><font-awesome-icon icon="info-circle" /></span>
+        <span>This component needs to be installed to continue.</span>
       </div>
 
       <div v-else-if="requirements.power.error" class="notification notification--danger">

@@ -12,6 +12,31 @@
       </div>
     </section>
 
+    <!-- Runs -->
+    <section v-if="value$.mode === 2" id="preferences-runs" class="box">
+      <div class="box__header">
+        <h2 class="title">
+          Per run.
+        </h2>
+        <h3 class="subtitle">
+          Customize body preferences for multiple runs.
+        </h3>
+      </div>
+
+      <div class="box__content">
+        <SettingsField
+          v-model="value$"
+          field-id="preferences.body.runs.mode" />
+
+        <SettingsField v-if="value$.body.runs.mode !== false" v-model="value$" field-id="preferences.body.runs.count" />
+
+        <SettingsField v-if="value$.body.runs.mode === 'increase'"
+                       v-model="value$"
+                       field-id="preferences.body.runs.rate"
+                       :description="`Body preferences will increase ${value$.body.runs.rate} at each run.`" />
+      </div>
+    </section>
+
     <!-- Boobs -->
     <Preference id="preferences-body"
                 v-model="value$.body.boobs"
@@ -37,34 +62,6 @@
     <Preference v-model="value$.body.pubicHair"
                 label="Pubic Hair"
                 :min="0" />
-
-    <!-- Runs -->
-    <section v-if="value$.mode === 2" id="preferences-runs" class="box">
-      <div class="box__header">
-        <h2 class="title">
-          Per run.
-        </h2>
-        <h3 class="subtitle">
-          Customize what will happen each run.
-          <AppTip tooltip="The runs allow you to nudify the same photo with different preferences." />
-        </h3>
-      </div>
-
-      <div class="box__content">
-        <SettingsField v-model="value$" field-id="preferences.body.executions" />
-
-        <SettingsField v-model="value$" field-id="preferences.body.randomize" />
-
-        <SettingsField v-model="value$"
-                       field-id="preferences.body.progressive.enabled"
-                       :description="`Body preferences will increase ${value$.body.progressive.rate} at each run.`" />
-
-        <SettingsField v-if="!value$.body.randomize && value$.body.progressive.enabled"
-                       v-model="value$"
-                       field-id="preferences.body.progressive.rate"
-                       :description="`Value: ${value$.body.progressive.rate}`" />
-      </div>
-    </section>
 
     <!-- Advanced -->
     <section v-if="value$.mode > 1" id="preferences-advanced" class="box">

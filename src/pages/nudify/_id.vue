@@ -69,7 +69,7 @@
         <button
           v-if="photo.finished && photo.runsCount > 1"
           key="save-all"
-          v-tooltip="{content: 'Save all the nudes.', placement: 'right'}"
+          v-tooltip="{content: 'Save all the fake nudes.', placement: 'right'}"
           class="button button--info"
           @click.prevent="saveAll">
           <span class="icon"><font-awesome-icon icon="save" /></span>
@@ -80,8 +80,10 @@
         <button
           v-if="photo.waiting"
           key="cancel"
+          v-tooltip="{content: 'Remove the photo from the queue.', placement: 'right'}"
           class="button button--danger"
           @click.prevent="cancel">
+          <span class="icon"><font-awesome-icon icon="sign-out-alt" /></span>
           <span>Cancel</span>
         </button>
 
@@ -99,13 +101,13 @@
         <button
           id="nudify-forget"
           v-tooltip="{
-            content: 'Free memory by removing the photo from the application. (Nudified photos will not be deleted)',
+            content: 'Remove the photo from the application and free up memory. (Fake nudes files will not be removed)',
             placement: 'right',
             boundary: 'viewport'}"
           class="button"
           @click.prevent="forget">
           <span class="icon"><font-awesome-icon icon="trash-alt" /></span>
-          <span>Forget</span>
+          <span>Remove</span>
         </button>
       </section>
     </portal>

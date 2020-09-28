@@ -211,14 +211,16 @@ export async function downloadFromIPFS(cid, options, events, writeStream) {
 
   // Utility functions
   const createNode = async function () {
+    const ipfsBin = require('go-ipfs-dep').path().replace('app.asar', 'app.asar.unpacked')
+
     logger.debug('Creating IPFS node...')
-    logger.debug(require('go-ipfs-dep').path())
+    logger.debug(ipfsBin)
 
     fs.ensureDirSync(getPath('temp', 'ipfs'))
 
     node = await IpfsCtl.createController({
       ipfsHttpModule: require('ipfs-http-client'),
-      ipfsBin: require('go-ipfs-dep').path().replace('app.asar', 'app.asar.unpacked'),
+      ipfsBin,
       ipfsOptions: {
         repo: getPath('temp', 'ipfs'),
         start: true,
@@ -244,8 +246,6 @@ export async function downloadFromIPFS(cid, options, events, writeStream) {
     logger.debug('Connecting to providers...')
 
     try {
-      await node.api.swarm.connect('/ip4/64.227.19.223/tcp/4001/p2p/QmSarArpxemsPESa6FNkmuu9iSE1QWqPX2R3Aw6f5jq4D5')
-      await node.api.swarm.connect('/ip4/64.227.27.182/tcp/4001/p2p/QmRjLSisUCHVpFa5ELVvX3qVPfdxajxWJEHs9kN3EcxAW6')
       await node.api.swarm.connect('/dns4/mariana.dreamnet.tech/tcp/4001/p2p/QmcWoy1FzBicbYuopNT2rT6EDQSBDfco1TxibEyYgWbiMq')
     } catch (err) {
       logger.warn(err)
@@ -257,12 +257,19 @@ export async function downloadFromIPFS(cid, options, events, writeStream) {
 
     await connectToProviders()
 
+    logger.debug('Connected!')
+
     if (!node) {
       // It seems that the user has canceled it
       return
     }
 
-    stats = await node.api.object.stat(cid, { timeout: 3000 })
+    logger.debug(`Obtaining download information... (${cid})`)
+
+    stats = await node.api.object.stat(cid, { timeout: 30000 })
+
+    // eslint-disable-next-line no-console
+    console.log(stats)
 
     logger.debug('Downloading...')
 
@@ -273,7 +280,7 @@ export async function downloadFromIPFS(cid, options, events, writeStream) {
   }
 
   // eslint-disable-next-line promise/always-return
-  all(node.api.dht.findProvs(cid, { timeout: 10000 })).then((provs) => {
+  all(node.api.dht.findProvs(cid, { timeout: 30000 })).then((provs) => {
     events.emit('peers', provs.length)
   }).catch(() => { })
 

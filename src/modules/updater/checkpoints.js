@@ -7,6 +7,7 @@
 //
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
+import { isString } from 'lodash'
 import { BaseUpdater } from './base'
 import { requirements } from '../system'
 
@@ -45,6 +46,10 @@ class CheckpointsUpdater extends BaseUpdater {
     }
 
     const version = read(filepath) || 'v0.0.1'
+
+    if (!isString(version)) {
+      return 'v0.0.1'
+    }
 
     return version.trim()
   }

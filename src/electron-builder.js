@@ -38,7 +38,7 @@ const linux = {
   linux: {
     target: process.env.BUILD_PORTABLE ? 'zip' : 'snap',
     artifactName: process.env.BUILD_PORTABLE ? '${productName}-v${version}-ubuntu-portable.${ext}' : '${productName}-v${version}-ubuntu-installer.${ext}',
-    executableName: process.env.npm_package_name,
+    executableName: 'dreamtimetech',
     synopsis: pkg.description,
     category: 'Graphics',
     extraResources: [
@@ -47,6 +47,9 @@ const linux = {
         to: '7zip-bin',
       },
     ],
+  },
+  snap: {
+    confinement: 'strict',
   },
 }
 

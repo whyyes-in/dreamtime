@@ -2,7 +2,7 @@
   <div class="preview" :style="photoURL" data-private>
     <video v-if="isVideo"
            :src="file.url"
-           autoplay
+           :autoplay="autoplay"
            muted
            loop />
 
@@ -26,6 +26,11 @@ export default {
     live: {
       type: Boolean,
       default: false,
+    },
+
+    autoplay: {
+      type: Boolean,
+      default: true,
     },
   },
 

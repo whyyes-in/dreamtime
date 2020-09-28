@@ -296,7 +296,15 @@ export class Photo {
    * @readonly
    */
   get runsCount() {
-    return this.mode === PMODE.ADVANCED ? 1 : this.preferences.body.executions
+    if (this.mode === PMODE.ADVANCED) {
+      return 1
+    }
+
+    if (this.preferences.body.runs.mode !== false) {
+      return this.preferences.body.runs.count
+    }
+
+    return 1
   }
 
   /**
@@ -382,6 +390,38 @@ export class Photo {
   get isScaleModeCorrected() {
     const { scaleMode } = this.preferences.advanced
     return scaleMode !== this.scaleMode
+  }
+
+  get scaleModeName() {
+    switch (this.preferences.advanced.scaleMode) {
+      case 'overlay':
+        return 'Overlay'
+
+      case 'cropjs':
+        return 'Crop'
+
+      case 'padding':
+        return 'Padding'
+
+      default:
+        return 'Automatic'
+    }
+  }
+
+  get scaleModeURL() {
+    switch (this.preferences.advanced.scaleMode) {
+      case 'overlay':
+        return `/nudify/${this.id}/overlay`
+
+      case 'cropjs':
+        return `/nudify/${this.id}/crop`
+
+      case 'padding':
+        return `/nudify/${this.id}/padding`
+
+      default:
+        return `/nudify/${this.id}`
+    }
   }
 
   /**
@@ -868,7 +908,7 @@ export class Photo {
   track() {
     const { mode } = this.preferences
     const { useColorTransfer } = this.preferences.advanced
-    const { randomize, progressive } = this.preferences.body
+    const { mode: runsMode } = this.preferences.body.runs
 
     consola.track('DREAM_START', { mode })
 
@@ -876,11 +916,11 @@ export class Photo {
       consola.track('DREAM_COLOR_TRANSFER')
     }
 
-    if (randomize) {
+    if (runsMode === 'randomize') {
       consola.track('DREAM_RANDOMIZE')
     }
 
-    if (progressive.enabled) {
+    if (runsMode === 'increase') {
       consola.track('DREAM_PROGRESSIVE')
     }
   }

@@ -1,12 +1,12 @@
 <template>
   <div class="photo" :class="photoClass">
-    <NudifyPhotoPreview :photo="photo" :live="true" />
+    <NudifyPhotoPreview :photo="photo" :live="false" :autoplay="false" />
 
     <div class="photo__content">
       <div class="photo__content__actions">
         <span v-show="photo.running || photo.finished">{{ photo.timer.duration }}s</span>
 
-        <button v-tooltip="'Open'" @click="open">
+        <button v-tooltip="'Photo Panel'" @click="open">
           <font-awesome-icon icon="external-link-square-alt" />
         </button>
 
@@ -14,7 +14,7 @@
           <font-awesome-icon icon="play" />
         </button>
 
-        <button v-show="photo.waiting" v-tooltip="'Remove from Queue'" @click="cancel">
+        <button v-show="photo.waiting" v-tooltip="'Cancel'" @click="cancel">
           <font-awesome-icon icon="sign-out-alt" />
         </button>
 

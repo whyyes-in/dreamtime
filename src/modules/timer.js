@@ -47,7 +47,7 @@ export class Timer {
   update() {
     this.duration = dayjs().diff(this.startTime, 'second')
 
-    if (this.duration > 10800) {
+    if (this.duration === 54001) {
       // This does not seem normal.
       consola.warn('Timer out of control.').report()
       this.stop()

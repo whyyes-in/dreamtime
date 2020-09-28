@@ -11,17 +11,17 @@
 
         <div v-show="$nudify.waiting.length > 0" class="queue__section__actions">
           <button
-            v-tooltip="{placement: 'bottom', content: 'Forget those who wait'}"
+            v-tooltip="{placement: 'bottom', content: 'Remove all'}"
             class="button button--danger button--xs"
             @click.prevent="$nudify.forgetAll('waiting')">
             <font-awesome-icon icon="trash-alt" />
           </button>
 
           <button
-            v-tooltip="{placement: 'bottom', content: 'Cancel those who wait' }"
+            v-tooltip="{placement: 'bottom', content: 'Cancel all' }"
             class="button button--xs"
             @click.prevent="$nudify.cancelAll('waiting')">
-            <font-awesome-icon icon="stop" />
+            <font-awesome-icon icon="sign-out-alt" />
           </button>
         </div>
       </div>
@@ -45,7 +45,7 @@
 
         <div v-show="$nudify.pending.length > 0" class="queue__section__actions">
           <button
-            v-tooltip="'Forget all'"
+            v-tooltip="'Remove all'"
             class="button button--danger button--xs"
             @click.prevent="$nudify.forgetAll()">
             <font-awesome-icon icon="trash-alt" />
@@ -79,7 +79,7 @@
 
         <div v-show="$nudify.finished.length > 0" class="queue_section__actions">
           <button
-            v-tooltip="'Forget all'"
+            v-tooltip="'Remove all'"
             class="button button--danger button--xs"
             @click.prevent="$nudify.forgetAll('finished')">
             <font-awesome-icon icon="trash-alt" />

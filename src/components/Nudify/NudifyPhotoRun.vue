@@ -18,15 +18,18 @@
            @click="openPreview" />
 
       <div v-if="run.algorithmStatus !== ALGORITHM.NONE" class="run__photo__status">
-        <span v-if="run.algorithmStatus === ALGORITHM.DREAMPOWER" key="dreampower" v-tooltip="'The photo is being nudified by DreamPower.'">Nudifying</span>
+        <span v-if="run.algorithmStatus === ALGORITHM.DREAMPOWER" key="dreampower" v-tooltip="'The photo is being nudified by the algorithm.'">
+          Nudifying
+        </span>
         <span v-if="run.algorithmStatus === ALGORITHM.WAIFU2X" key="waifu2x" v-tooltip="'The photo is being upscaled by Waifu2X.'">Upscaling</span>
         <span v-if="run.algorithmStatus === ALGORITHM.DREAMTIME" key="dreamtime" v-tooltip="'The photo is being prepared by DreamTime.'">Other</span>
+        <span v-if="run.frameStatus" v-tooltip="'Video frame.'"> ({{ run.frameStatus }})</span>
       </div>
     </div>
 
     <!-- Preferences -->
     <div
-      v-if="run.preferences.body.randomize || run.preferences.body.progressive.enabled"
+      v-if="run.preferences.body.runs.mode !== false"
       class="run__preferences">
       <div class="preference">
         <span>Boobs</span>

@@ -135,6 +135,10 @@ export default {
     .photo--masks {
       background-image: url('~assets/images/undraw/undraw_making_art_759c.svg')
     }
+
+    .photo--support {
+      background-image: url('~assets/images/undraw/undraw_active_support_6rwo.svg')
+    }
   }
 }
 

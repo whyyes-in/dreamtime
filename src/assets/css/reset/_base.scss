@@ -26,3 +26,8 @@ html,
 #__layout {
   @apply h-full;
 }
+
+code {
+  @apply rounded px-1 text-sm break-words shadow-sm;
+  background-color: #444950;
+}

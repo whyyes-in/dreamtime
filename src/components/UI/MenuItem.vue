@@ -10,7 +10,10 @@
 
     <!-- Title & Description -->
     <div v-if="label" class="item__label">
-      <span class="item__title" v-html="label" />
+      <div class="item__title">
+        <span v-html="label" />
+        <AppTip v-if="tooltip" :tooltip="prettyTooltip" />
+      </div>
 
       <slot name="description">
         <span v-if="description" class="item__description" v-html="description" />
@@ -26,7 +29,10 @@
 
 <script>
 import { isNil, startsWith } from 'lodash'
+import MarkdownIt from 'markdown-it'
 import { dreamtrack } from '~/modules/services'
+
+const md = new MarkdownIt()
 
 const { shell } = $provider.api
 
@@ -43,6 +49,11 @@ export default {
     },
 
     description: {
+      type: String,
+      default: undefined,
+    },
+
+    tooltip: {
       type: String,
       default: undefined,
     },
@@ -76,6 +87,10 @@ export default {
       return {
         'item--link': !isNil(this.href) || this.isLink,
       }
+    },
+
+    prettyTooltip() {
+      return md.render(this.tooltip)
     },
   },
 
@@ -143,6 +158,12 @@ export default {
 
   .item__title {
     @apply block font-semibold;
+  }
+
+  &::v-deep {
+    .tip {
+      @apply ml-1;
+    }
   }
 
   .item__description {

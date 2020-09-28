@@ -7,7 +7,7 @@
       </h2>
 
       <h3 class="subtitle">
-        Settings that affect the use of resources for the nudification.
+        Settings that affect the performance of the nudification algorithm.
       </h3>
 
       <template v-slot:right>
@@ -16,6 +16,20 @@
         </button>
       </template>
     </PageHeader>
+
+    <!-- GPU -->
+    <div v-if="$settings.preferences.advanced.device === 'GPU'">
+      <div v-if="!requirements.recommended.vram" class="notification notification--warning">
+        <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
+        <span>Your NVIDIA GPU has low VRAM! It is very possible that the nudification fails.</span>
+      </div>
+    </div>
+
+    <!-- RAM -->
+    <div v-if="!requirements.recommended.ram" class="notification notification--warning">
+      <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
+      <span>Your system has less than <strong>12 GB</strong> of RAM. It is very possible that the nudification fails.</span>
+    </div>
 
     <AppNotification name="device-change">
       The <strong>device</strong> option is now part of the preferences for each photo. If you already have photos in the queue, you should change the device in those photos too.
@@ -61,10 +75,15 @@
 <script>
 import { cloneDeep, merge } from 'lodash'
 import Swal from 'sweetalert2/dist/sweetalert2'
+import { requirements } from '~/modules/system'
 import { VModel } from '~/mixins'
 
 export default {
   mixins: [VModel],
+
+  data: () => ({
+    requirements,
+  }),
 
   computed: {
     isMacOS() {

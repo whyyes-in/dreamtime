@@ -36,20 +36,6 @@
           Please move the application to another place.
         </span>
       </div>
-
-      <!-- GPU -->
-      <div v-if="$settings.preferences.advanced.device === 'GPU'">
-        <div v-if="!requirements.recommended.vram" class="notification notification--warning">
-          <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
-          <span>Your NVIDIA GPU has very low VRAM! The algorithm is very likely to fail.</span>
-        </div>
-      </div>
-
-      <!-- RAM -->
-      <div v-if="!requirements.recommended.ram" class="notification notification--warning">
-        <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
-        <span>Your system has less than <strong>12 GB</strong> of RAM.</span>
-      </div>
     </div>
 
     <section class="box">

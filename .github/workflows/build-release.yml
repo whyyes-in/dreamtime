@@ -1,4 +1,4 @@
-name: Build
+name: Build Release
 
 on:
   push:
@@ -6,8 +6,9 @@ on:
       - src/**
       - .github/workflows/**
     branches:
-      - hotfix/*
-      - canary
+      - release/*
+    tags:
+      - v*
 
 jobs:
   build:
@@ -19,6 +20,7 @@ jobs:
     # https://help.github.com/en/articles/workflow-syntax-for-github-actions#jobsjob_idstrategy
     strategy:
       fail-fast: true
+      max-parallel: 2
       matrix:
         os:
           - ubuntu-latest
@@ -43,6 +45,11 @@ jobs:
       - uses: actions/checkout@v1
         with:
           submodules: true
+
+      - name: Install Snapcraft
+        uses: samuelmeuli/action-snapcraft@v1
+        with:
+          snapcraft_token: ${{ secrets.SNAPCRAFT_TOKEN }}
 
       - name: Install Node.js 12.x
         uses: actions/setup-node@v1
@@ -79,3 +86,34 @@ jobs:
             dist/*.exe
             dist/*.snap
             dist/*.dmg
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: dreamtime-${{ matrix.platform }}-${{ matrix.type }}-static
+          path: src/dist
+
+      - name: Deploy to Storage
+        working-directory: src/
+        continue-on-error: true
+        timeout-minutes: 20
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF: ${{ github.ref }}
+          BUILD_PLATFORM: ${{ matrix.platform }}
+          BUILD_EXTENSION: ${{ matrix.extension }}
+          DEPLOY_ENCRYPT_KEY: ${{ secrets.DEPLOY_ENCRYPT_KEY }}
+          DEPLOY_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEPLOY_GITHUB_OWNER: dreamnettech
+          DEPLOY_TEKNIK_TOKEN: ${{ secrets.DEPLOY_TEKNIK_TOKEN }}
+          DEPLOY_TEKNIK_OWNER: dreamnet
+          DEPLOY_PINATA_KEY: ${{ secrets.DEPLOY_PINATA_KEY }}
+          DEPLOY_PINATA_SECRET: ${{ secrets.DEPLOY_PINATA_SECRET }}
+          DEPLOY_MEGA_EMAIL: ${{ secrets.DEPLOY_MEGA_EMAIL }}
+          DEPLOY_MEGA_PASSWORD: ${{ secrets.DEPLOY_MEGA_PASSWORD }}
+          DEPLOY_MEGA_FOLDER: "/Projects/DreamTime/Releases/"
+        run: yarn run deploy
+
+      - name: Deploy to Snapcraft
+        if: matrix.type == 'installer' && matrix.platform == 'ubuntu'
+        working-directory: dist/
+        run: snapcraft upload --release=stable *.snap

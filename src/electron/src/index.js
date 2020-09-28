@@ -182,6 +182,13 @@ class DreamApp {
           return
         }
 
+        if (url.host === 'github.com' || url.host === 'dreamnet.tech' || url.host === 'dreamtime.tech' || url.host === 'dreamcore.tech') {
+          // Probably come from the changelog, we open in the browser.
+          event.preventDefault()
+          shell.openExternal(navigationUrl)
+          return
+        }
+
         event.preventDefault()
 
         logger.warn('Illegal page load blocked!', {
@@ -263,6 +270,7 @@ class DreamApp {
       icon,
 
       webPreferences: {
+        enableRemoteModule: true,
         nodeIntegration: true,
         nodeIntegrationInWorker: true,
         webSecurity: false, // Necessary to load filesystem photos.

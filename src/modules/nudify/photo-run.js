@@ -80,6 +80,11 @@ export class PhotoRun {
   algorithmStatus = ALGORITHM.NONE
 
   /**
+   * @type {string}
+   */
+  frameStatus
+
+  /**
    * @type {Boolean}
    */
   failed = false
@@ -193,10 +198,8 @@ export class PhotoRun {
     if (mode === PMODE.MINIMAL || mode === PMODE.SIMPLE) {
       this.preferences = merge(this.preferences, {
         body: {
-          executions: 1,
-          randomize: false,
-          progressive: {
-            enabled: false,
+          runs: {
+            mode: false,
           },
         },
         advanced: {
@@ -216,11 +219,11 @@ export class PhotoRun {
     }
 
     if (mode !== PMODE.ADVANCED) {
-      // Body randomize/progresive.
+      // Body randomize/increase.
       const { body } = this.preferences
 
-      if (body.randomize) {
-        // randomize.
+      if (body.runs.mode === 'randomize') {
+        // Randomize.
         forIn(preferencesConfig, (payload, key) => {
           const { enabled, min, max } = body[key].randomize
 
@@ -228,9 +231,9 @@ export class PhotoRun {
             body[key].size = random(min, max, true)
           }
         })
-      } else if (body.progressive.enabled) {
-        // progressive.
-        const add = body.progressive.rate * (this.id - 1)
+      } else if (body.runs.mode === 'increase') {
+        // Increase by Step.
+        const add = body.runs.rate * (this.id - 1)
 
         forIn(preferencesConfig, (payload, key) => {
           if (body[key].progressive) {
@@ -288,6 +291,7 @@ export class PhotoRun {
     }
 
     this.algorithmStatus = ALGORITHM.NONE
+    this.frameStatus = undefined
   }
 
   runNudification() {
@@ -317,7 +321,15 @@ export class PhotoRun {
       this.process.on('stdout', (output) => {
         // DreamPower output.
         output.forEach((text) => {
-          text = toString(text)
+          text = trim(toString(text))
+
+          if (this.photo.file.isAnimated && text.includes('Multiple Image Processing')) {
+            const frameDetect = text.match(/^(.*) : ([0-9]*)\/([0-9]*)$/)
+
+            if (frameDetect && frameDetect[2] && frameDetect[3]) {
+              this.frameStatus = `${frameDetect[2]}/${frameDetect[3]}`
+            }
+          }
 
           this.cli.lines.unshift({
             text,

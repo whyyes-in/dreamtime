@@ -20,7 +20,8 @@
 
     <div class="project__content">
       <div v-if="!requirements.power.checkpoints" class="notification notification--warning">
-        This component is required to continue using {{ $dreamtime.name }}.
+        <span class="icon"><font-awesome-icon icon="info-circle" /></span>
+        <span>This component needs to be installed to continue.</span>
       </div>
 
       <div v-else class="notification">
@@ -29,7 +30,7 @@
 
       <div v-if="updater.error" class="notification notification--danger">
         <h5>CONNECTION ERROR!</h5>
-        <span>It is not possible to update this component because a problem has occurred when trying to get the information from Github, please make sure you have a stable internet connection and restart the application.</span>
+        <span>A problem has occurred when trying to get the information from Github, please make sure you have a stable internet connection and restart the application.</span>
         <br><br>
 
         <pre>

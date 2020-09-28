@@ -1,5 +1,5 @@
 <template>
-  <div v-if="canShow" class="notification">
+  <div v-if="canShow" class="notification" @click="$emit('click')">
     <span class="close-icon" @click="close()">
       <FontAwesomeIcon icon="times-circle" />
     </span>

@@ -20,7 +20,7 @@
 
     <AppNotification v-if="value$.preferences.mode === 3" name="advanced-mode" class="notification--info">
       <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
-      <span>Custom masks mode is recommended only for experienced users. <a href="https://dreamtime.tech/docs/guide/custom-masks/" target="_blank">Click here to visit the guide</a>.</span>
+      <span>Custom masks mode is recommended only for experienced users. Are you sure this is the mode you want? You can get more information <a href="https://dreamtime.tech/docs/guide/custom-masks/" target="_blank">here</a>.</span>
     </AppNotification>
 
     <SettingsPreferences v-model="value$.preferences" />

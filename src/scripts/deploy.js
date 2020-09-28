@@ -10,6 +10,7 @@
 
 const path = require('path')
 const fs = require('fs')
+const sha256File = require('sha256-file')
 const { Release } = require('@dreamnet/deploy')
 const pkg = require('../package.json')
 
@@ -88,27 +89,27 @@ async function run(release) {
  *
  */
 async function start() {
-  if (PROVIDERS.length === 0) {
-    console.warn('There are no providers to upload!')
-    return
-  }
-
   const portablePath = path.resolve(DISTPATH, `${FILENAME}-portable.zip`)
   const installerPath = path.resolve(DISTPATH, `${FILENAME}-installer.${process.env.BUILD_EXTENSION}`)
 
-  const buildPath = fs.existsSync(portablePath) ? portablePath : installerPath
+  const releasePath = fs.existsSync(portablePath) ? portablePath : installerPath
 
-  if (fs.existsSync(buildPath)) {
-    console.log(buildPath)
+  if (fs.existsSync(releasePath)) {
+    const checksum = sha256File(releasePath)
 
-    const release = new Release(buildPath)
-    await run(release)
+    console.log(releasePath)
+    console.log(`Checksum (sha256): ${checksum}`)
+
+    if (PROVIDERS.length > 0) {
+      const release = new Release(releasePath)
+      await run(release)
+
+      // Print results
+      console.log(JSON.stringify(output, null, 2))
+    }
   } else {
-    console.warn(`The file does not exist: ${buildPath}`)
+    console.warn(`The file does not exist: ${releasePath}`)
   }
-
-  // Print results
-  console.log(JSON.stringify(output, null, 2))
 }
 
 start()
