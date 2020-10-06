@@ -217,7 +217,17 @@
 
 - id: preferences.advanced.useColorTransfer
   label: Color Transfer.
-  description: Use a experimental algorithm to recover the original colors of the photo.
+  description: Try to recover the original colors of the photo.
+  input: select
+  options:
+    - label: Enabled
+      value: true
+    - label: Disabled
+      value: false
+
+- id: preferences.advanced.useArtifactsInpaint
+  label: Visual Artifacts Inpaint.
+  description: Try to remove the visual artifacts that appears in the vagina.
   input: select
   options:
     - label: Enabled
@@ -382,7 +392,7 @@
 
 - id: telemetry.dom
   label: Session tracking.
-  description: Allow to send information about how you use the application. (No sensitive information or photos will be sent)
+  description: Allow to send detailed information on how you use the application.
   tooltip: |-
     - Operating system.
     - CPU, RAM and GPU.

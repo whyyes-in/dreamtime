@@ -27,9 +27,22 @@
 </pre>
       </div>
 
+      <!-- Updater -->
       <AppBox>
         <ProjectUpdate project="dreamtime" />
       </AppBox>
+
+      <hr>
+
+      <PageHeader>
+        <h2 class="title">
+          <span class="icon"><font-awesome-icon icon="book" /></span>
+          <span>Changelog</span>
+        </h2>
+      </PageHeader>
+
+      <!-- Changelog -->
+      <ProjectChangelog project="dreamtime" :limit="1" />
     </div>
   </div>
 </template>

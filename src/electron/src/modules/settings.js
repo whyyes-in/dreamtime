@@ -136,7 +136,7 @@ class Settings {
     const hasGPU = process.platform === 'darwin' ? false : system.graphics.length > 0
 
     this.payload = {
-      version: 12,
+      version: 13,
       user: uuid(),
 
       wizard: {
@@ -248,6 +248,7 @@ class Settings {
           scaleMode: 'cropjs',
           useColorTransfer: false,
           useColorPaddingStrip: true,
+          useArtifactsInpaint: true,
           compress: 0,
           imageSize: 512,
           waifu: {
@@ -547,6 +548,18 @@ class Settings {
         'preferences.body.randomize',
         'preferences.body.progressive',
       ])
+    }
+
+    // 12 -> 13
+    if (this.payload?.version === 12 && this._default.version >= 13) {
+      this.payload = merge(this.payload, {
+        version: 12,
+        preferences: {
+          advanced: {
+            useArtifactsInpaint: true,
+          },
+        },
+      })
     }
 
     this.save()

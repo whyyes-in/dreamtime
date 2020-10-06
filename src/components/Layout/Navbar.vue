@@ -28,6 +28,12 @@
         <font-awesome-icon icon="images" />
       </nuxt-link>
 
+      <!--
+      <nuxt-link v-tooltip="'Community'" to="/social" class="nav__item nav__item--link">
+        <font-awesome-icon icon="users" />
+      </nuxt-link>
+      -->
+
       <nuxt-link v-if="isDev"
                  v-tooltip="'Dev Garden'"
                  to="/garden"
@@ -180,7 +186,11 @@ export default {
     width: 40px;
 
     &:hover {
-      @apply bg-dark-400;
+      @apply bg-menus-light text-primary;
+    }
+
+    &.nuxt-link-active {
+      @apply text-primary;
     }
 
     img {

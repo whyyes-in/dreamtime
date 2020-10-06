@@ -1,13 +1,13 @@
 <template>
   <div class="photo" :class="photoClass">
-    <NudifyPhotoPreview :photo="photo" :live="false" :autoplay="false" />
+    <NudifyPhotoPreview :photo="photo" :live="true" :autoplay="false" />
 
     <div class="photo__content">
       <div class="photo__content__actions">
         <span v-show="photo.running || photo.finished">{{ photo.timer.duration }}s</span>
 
         <button v-tooltip="'Photo Panel'" @click="open">
-          <font-awesome-icon icon="external-link-square-alt" />
+          <font-awesome-icon icon="tools" />
         </button>
 
         <button v-show="!photo.running && !photo.waiting && !photo.withCustomMasks" v-tooltip="'Add to Queue'" @click="add">
@@ -107,7 +107,7 @@ export default {
   }
 
   button {
-    @apply outline-none;
+    @apply outline-none text-xl;
 
     &:hover {
       @apply text-primary;

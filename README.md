@@ -40,16 +40,9 @@ Visit the [Getting Started](https://time.dreamnet.tech/docs/development/getting-
 
 ## Supporting
 
-DreamTime is an open-source project that will be **free forever**. The project is kept in development thanks to the support of our incredible backers.
+DreamTime is an open-source project that will be **free forever**. The project is kept in development thanks to the support of our incredible backers, you can also help keep the project alive in different ways:
 
-These are the ways you can support us:
-
-- 🌟 [Patreon](https://patreon.com/dreamnet)
-- 🌟 [Buy Me A Coffe](https://www.buymeacoffee.com/dreamnettech)
-- [Liberapay](https://liberapay.com/dreamnet)
-- [Crypto](https://commerce.coinbase.com/checkout/24a8bcb6-22db-4166-9bea-fb24fe78f1cd)
-
-🌟 = Get rewards like early access to the latest versions.
+[![](https://img.shields.io/badge/%F0%9F%92%96-Support%20us-red?style=for-the-badge)](https://dreamtime.tech/docs/support/support-us)
 
 ## Sponsors
 

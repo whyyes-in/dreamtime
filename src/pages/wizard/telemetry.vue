@@ -12,20 +12,20 @@
     </PageHeader>
 
     <div class="user__content">
-      <AppBox title="Privacy" class="telemetry__notice">
+      <div class="notification">
+        <span class="icon"><font-awesome-icon icon="info-circle" /></span>
+        <span>Changing this options needs a restart to take effect.</span>
+      </div>
+
+      <AppBox title="Privacy" class="telemetry__notice" photo="telemetry__privacy">
         <p>
           DreamNet respects your privacy, <strong>the photos you generate with DreamTime will not leave your computer in any way</strong>.
         </p>
 
         <p>
-          Below you can see the information we send to our servers and the option to change the telemetry.
+          Below you can see the information we send to our servers and the option to change this.
         </p>
       </AppBox>
-
-      <div class="notification">
-        <span class="icon"><font-awesome-icon icon="info-circle" /></span>
-        <span>Changing this options needs a restart to take effect.</span>
-      </div>
 
       <div class="telemetry__boxes">
         <AppBox title="Analytics." subtitle="Information to generate anonymous statistics.">
@@ -39,14 +39,7 @@
           <SettingsField field-id="user" readonly />
         </AppBox>
 
-        <AppBox title="Bug report." subtitle="Information about an error.">
-          <ul>
-            <li>Operating system.</li>
-            <li>CPU, RAM and GPU.</li>
-            <li>User settings.</li>
-            <li>Console log.</li>
-          </ul>
-
+        <AppBox title="Error report." subtitle="Information about an error.">
           <SettingsField field-id="telemetry.bugs" />
 
           <template v-slot:footer>
@@ -63,14 +56,6 @@
             This information helps us make the application more accessible, easy to use and provides additional data to fix errors.
           </p>
 
-          <ul>
-            <li>Operating system.</li>
-            <li>CPU, RAM and GPU.</li>
-            <li>User settings.</li>
-            <li>Console log.</li>
-            <li>Actions inside the application. (Photos and sensitive information are censored.)</li>
-          </ul>
-
           <SettingsField field-id="telemetry.dom" />
 
           <template v-slot:footer>
@@ -85,7 +70,7 @@
 
       <div class="wizard__footer">
         <button class="button button--xl" @click="next">
-          Continue
+          Start!
         </button>
       </div>
     </div>
@@ -98,9 +83,11 @@ import { settings } from '~/modules/system'
 export default {
   layout: 'wizard',
 
-  middleware({ redirect }) {
-    if (settings.wizard.telemetry) {
-      redirect('/')
+  middleware({ redirect, route }) {
+    if (!route.query.forced) {
+      if (settings.wizard.telemetry) {
+        redirect('/')
+      }
     }
   },
 
@@ -115,7 +102,15 @@ export default {
 
 <style lang="scss" scoped>
 .wizard-user {
+  &::v-deep {
+    .box__photo {
+      height: 230px;
+    }
 
+    .telemetry__privacy {
+      background-image: url('~assets/images/undraw/undraw_privacy_protection_nlwy.svg')
+    }
+  }
 }
 
 .telemetry__notice {

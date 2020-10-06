@@ -49,7 +49,7 @@
       </template>
     </PageHeader>
 
-    <div v-if="photo.isScaleModeCorrected && !photo.pending" class="notification notification--warning">
+    <div v-if="photo.isScaleModeCorrected && !photo.pending && photo.preferences.mode > 1" class="notification notification--warning">
       <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
       The <strong>{{ photo.scaleModeName }}</strong> scale method has been selected but the tool has not been used, this will generate lower quality fake nudes. <nuxt-link :to="photo.scaleModeURL">
         Please use the tool

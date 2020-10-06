@@ -19,7 +19,9 @@
       {
         "exclude": [
           "LOG",
-          "DEVTOOLS"
+          "DEVTOOLS",
+          "POWER_PYTHON",
+          "POWER_PATH"
         ]
       }
     ],

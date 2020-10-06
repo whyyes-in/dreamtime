@@ -25,7 +25,7 @@
     <section class="box cli-errors">
       <div class="box__header">
         <h2 class="title">
-          Updaters
+          Wizard
         </h2>
       </div>
 
@@ -44,6 +44,10 @@
 
         <nuxt-link to="/wizard/waifu?forced=true" class="button">
           Waifu2X
+        </nuxt-link>
+
+        <nuxt-link to="/wizard/telemetry?forced=true" class="button">
+          Telemetry
         </nuxt-link>
       </div>
     </section>

@@ -151,11 +151,11 @@ export default {
 .logo {
   @apply flex justify-center items-center;
   @apply text-white text-sm font-bold px-6 select-none;
-  animation-duration: 10s;
-  animation-iteration-count: infinite;
 
   animation-name: logoAnim;
   animation-timing-function: ease-in-out;
+  animation-duration: 10s;
+  animation-iteration-count: infinite;
 
   background: rgb(99, 66, 245);
   background: linear-gradient(40deg,

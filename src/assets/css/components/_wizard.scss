@@ -24,4 +24,8 @@
     .project__settings {
     }
   }
+
+  hr {
+    @apply mb-6 border-menus-light;
+  }
 }

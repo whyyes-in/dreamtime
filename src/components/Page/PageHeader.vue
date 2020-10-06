@@ -16,7 +16,7 @@
 
 <style lang="scss" scoped>
 .header {
-  @apply flex mb-9;
+  @apply flex mb-6;
 
   &::v-deep {
     .title {

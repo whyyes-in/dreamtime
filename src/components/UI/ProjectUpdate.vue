@@ -7,7 +7,7 @@
       </figure>
 
       <h1 class="title">
-        {{ data.name }} <span v-tooltip="'New version'">{{ updater.latestCompatible.tag_name }}</span>
+        {{ data.name }} <span v-tooltip="'Latest version'">{{ updater.latestCompatible.tag_name }}</span>
       </h1>
 
       <h2 v-if="!updater.update.active" class="subtitle">
@@ -32,7 +32,7 @@
 
     <!-- Installing -->
     <div v-else-if="isInstalling" class="update__status">
-      Installing...
+      Installing, one moment please...
     </div>
 
     <!-- Download Progress -->
@@ -44,7 +44,7 @@
     <div class="update__actions">
       <button v-if="!updater.enabled"
               key="update-disabled"
-              v-tooltip="'This component cannot be updated until the problem explained above is fixed.'"
+              v-tooltip="'This component cannot be updated until the problem above is fixed.'"
               class="button button--success"
               disabled>
         <span class="icon"><font-awesome-icon icon="sync" /></span>
@@ -288,7 +288,11 @@ export default {
   @apply text-sm;
 
   a {
-    @apply text-white underline;
+    @apply text-white;
+
+    &:hover {
+      @apply text-primary;
+    }
   }
 }
 

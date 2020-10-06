@@ -80,7 +80,6 @@
         <button
           v-if="photo.waiting"
           key="cancel"
-          v-tooltip="{content: 'Remove the photo from the queue.', placement: 'right'}"
           class="button button--danger"
           @click.prevent="cancel">
           <span class="icon"><font-awesome-icon icon="sign-out-alt" /></span>

@@ -40,18 +40,15 @@
     <!-- Boobs -->
     <Preference id="preferences-body"
                 v-model="value$.body.boobs"
-                label="Boobs"
-                :min="0" />
+                label="Boobs" />
 
     <!-- Areola -->
     <Preference v-model="value$.body.areola"
-                label="Areola"
-                :min="0" />
+                label="Areola" />
 
     <!-- Nipple -->
     <Preference v-model="value$.body.nipple"
-                label="Nipple"
-                :min="0" />
+                label="Nipple" />
 
     <!-- Vagina -->
     <Preference v-model="value$.body.vagina"
@@ -60,8 +57,7 @@
 
     <!-- Pubic Hair -->
     <Preference v-model="value$.body.pubicHair"
-                label="Pubic Hair"
-                :min="0" />
+                label="Pubic Hair" />
 
     <!-- Advanced -->
     <section v-if="value$.mode > 1" id="preferences-advanced" class="box">
@@ -90,6 +86,22 @@
         <SettingsField v-model="value$" field-id="preferences.advanced.compress" />
 
         <SettingsField v-show="value$.advanced.scaleMode === 'padding'" v-model="value$" field-id="preferences.advanced.useColorPaddingStrip" />
+      </div>
+    </section>
+
+    <!-- Experimental -->
+    <section v-if="value$.mode > 1" class="box">
+      <div class="box__header">
+        <h2 class="title">
+          Experimental.
+        </h2>
+        <h3 class="subtitle">
+          Features that could improve the fake nude.
+        </h3>
+      </div>
+
+      <div class="box__content">
+        <SettingsField v-model="value$" field-id="preferences.advanced.useArtifactsInpaint" />
 
         <SettingsField v-model="value$" field-id="preferences.advanced.useColorTransfer" />
       </div>

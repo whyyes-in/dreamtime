@@ -281,7 +281,7 @@ export default {
   @apply absolute z-20;
   @apply bg-primary py-2 px-6 rounded-br rounded-tr text-black font-semibold;
   left: 0;
-  top: 20px;
+  bottom: 20px;
   cursor: help;
 }
 

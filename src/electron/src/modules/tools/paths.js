@@ -48,7 +48,9 @@ export const getAppResourcesPath = (...args) => {
 export const getPowerPath = (...args) => {
   let folder
 
-  if (process.env.BUILD_PORTABLE) {
+  if (process.env.POWER_PATH) {
+    folder = process.env.POWER_PATH
+  } else if (process.env.BUILD_PORTABLE) {
     folder = getAppPath('AppData', 'dreampower')
   } else {
     folder = settings.folders.cli

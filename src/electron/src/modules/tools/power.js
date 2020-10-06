@@ -26,11 +26,12 @@ export function exec(args, options = {}) {
     // Main script
     args.unshift('main.py')
 
-    // C:\\Users\\koles\\Anaconda3\\envs\\dreampower\\python
+    // C:\Users\\koles\Anaconda3\envs\dreampower\python.exe
     const pythonPath = fs.existsSync(process.env.POWER_PYTHON) ? process.env.POWER_PYTHON : 'python'
 
     logger.debug('[Python] Running:', {
       pythonPath,
+      cwd: getPowerPath(),
       args,
       options,
     })
@@ -151,7 +152,7 @@ export const transform = (run) => {
   }
 
   const {
-    useColorTransfer, scaleMode, compress, imageSize, device,
+    useColorTransfer, useArtifactsInpaint, scaleMode, compress, imageSize, device,
   } = preferences.advanced
   const { geometry } = photo
 
@@ -190,7 +191,12 @@ export const transform = (run) => {
 
   // Color transfer.
   if (useColorTransfer) {
-    args.push('--color-transfer')
+    args.push('--experimental-color-transfer')
+  }
+
+  // Artifacts Inpaint.
+  if (useArtifactsInpaint) {
+    args.push('--experimental-artifacts-inpaint')
   }
 
   // Custom masks.

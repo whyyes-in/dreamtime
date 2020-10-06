@@ -1,12 +1,15 @@
 <template>
   <section v-if="!readonly" class="box">
     <div class="box__content">
-      <MenuItem :description="`Value: ${value$.size}`" :label="`${label} size`">
-        <div v-if="body.runs.mode === false">
+      <MenuItem
+        :description="`Value: <strong>x${value$.size}</strong>`"
+        tooltip="**x1** = What the algorithm considers the realistic size for the photo."
+        :label="`${label} size`">
+        <div v-if="body.runs.mode !== 'randomize'">
           <VueSlider v-model="value$.size"
                      :min="min"
                      :max="max"
-                     :interval="0.05" />
+                     :interval="0.02" />
         </div>
       </MenuItem>
 
@@ -44,10 +47,10 @@
           :description="`Min: ${value$.randomize.min} - Max: ${value$.randomize.max}`">
           <VueSlider
             v-model="randomizeRange"
-            :min-range="0.05"
+            :min-range="0.02"
             :min="min"
             :max="max"
-            :interval="0.05" />
+            :interval="0.02" />
         </MenuItem>
       </div>
     </div>
@@ -78,7 +81,7 @@ export default {
     },
     min: {
       type: Number,
-      default: 0.3,
+      default: 0,
     },
     max: {
       type: Number,

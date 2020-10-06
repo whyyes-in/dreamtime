@@ -185,7 +185,7 @@ module.exports = {
 
       presets({ envName }) {
         const envTargets = {
-          client: { chrome: '83' },
+          client: { chrome: '85' },
           server: { node: 'current' },
         }
 

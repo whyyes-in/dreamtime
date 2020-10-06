@@ -53,16 +53,24 @@
 </pre>
       </div>
 
+      <!-- Updater -->
       <AppBox>
         <ProjectUpdate project="dreampower" />
       </AppBox>
 
+      <!-- Settings -->
       <AppBox title="Settings.">
         <!-- Download protocol. -->
         <MenuItem
-          label="Download protocol.">
+          v-if="updater.hasTorrentUrls || updater.hasIPFSUrls"
+          label="Download protocol."
+          tooltip="- **Any:** Use all protocols if necessary.
+
+- **HTTP:** Fastest and most reliable for most connections.
+
+- **Torrent & IPFS:** Download the file from other computers with the option to cancel at any time and resume later. More reliable for unstable and low speed connections. May require a few minutes of preparation before starting the download.">
           <template v-slot:description>
-            <span class="item__description">Select the protocol that will be used to download the file. <AppTip tooltip="- <strong>Any</strong>: Use all protocols if necessary.<br>- <strong>HTTP</strong>: Download the file from verified servers. Fastest and most reliable for most connections.<br>- <strong>Torrent & IPFS</strong>: Download the file from other computers with the option to cancel at any time and resume later. More reliable for unstable and low speed connections. May require a few minutes of preparation before starting the download." /></span>
+            <span class="item__description">Select the protocol that will be used to download the file.</span>
           </template>
 
           <select v-model="updater.downloadMethod" class="input">
@@ -107,6 +115,18 @@
             @click.prevent="changePower">
         </SettingsField>
       </AppBox>
+
+      <hr>
+
+      <PageHeader>
+        <h2 class="title">
+          <span class="icon"><font-awesome-icon icon="book" /></span>
+          <span>Changelog</span>
+        </h2>
+      </PageHeader>
+
+      <!-- Changelog -->
+      <ProjectChangelog project="dreampower" :limit="1" />
     </div>
   </div>
 </template>

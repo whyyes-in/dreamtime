@@ -171,6 +171,7 @@ export default {
       }
 
       if (this.value$ && !isObject(this.value$)) {
+        // eslint-disable-next-line no-console
         console.warn('Saving has been prevented because value$ is not an object.')
         return
       }

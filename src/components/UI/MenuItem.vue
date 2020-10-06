@@ -1,5 +1,9 @@
 <template>
-  <div class="item" :class="cssClass" @click="click">
+  <component :is="component"
+             :to="href"
+             class="item"
+             :class="cssClass"
+             @click="click">
     <!-- Icon -->
     <slot name="icon">
       <div v-if="icon" class="item__icon">
@@ -24,7 +28,7 @@
     <div v-if="$slots.default" class="item__action" :class="actionClass">
       <slot />
     </div>
-  </div>
+  </component>
 </template>
 
 <script>
@@ -89,6 +93,16 @@ export default {
       }
     },
 
+    component() {
+      if (!isNil(this.href)) {
+        if (startsWith(this.href, '/')) {
+          return 'nuxt-link'
+        }
+      }
+
+      return 'div'
+    },
+
     prettyTooltip() {
       return md.render(this.tooltip)
     },
@@ -99,9 +113,7 @@ export default {
       this.$emit('click')
 
       if (!isNil(this.href)) {
-        if (startsWith(this.href, '/')) {
-          this.$router.push(this.href)
-        } else {
+        if (!startsWith(this.href, '/')) {
           dreamtrack.track('CLICK_LINK', { href: this.href })
           shell.openExternal(this.href)
         }
@@ -122,11 +134,12 @@ export default {
   }
 
   &.item--active,
+  &.nuxt-link-exact-active,
   &.item--link:hover {
-    @apply bg-menus-light text-white;
+    @apply bg-menus-light;
 
     .item__icon, .item__title {
-      @apply text-generic-500;
+      @apply text-white;
     }
   }
 

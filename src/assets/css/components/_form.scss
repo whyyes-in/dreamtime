@@ -30,13 +30,15 @@ input[type="checkbox"] {
 }
 
 .input {
-  @apply border border-input-light bg-input text-common;
+  @apply border border-menus-light bg-black text-common;
   @apply p-2 rounded w-full;
-  @include transition('background-color, color');
+  @include transition('background-color, color, border-color');
   outline: none !important;
 
-  &:hover, &:focus {
-    @apply text-white bg-input-light;
+  &:not([readonly]):not([disabled]) {
+    &:hover, &:focus {
+      @apply text-primary border-primary;
+    }
   }
 
   &::placeholder {
@@ -48,7 +50,6 @@ input[type="checkbox"] {
   }
 
   &[readonly] {
-    @apply text-common-light #{!important};
     @apply cursor-default;
   }
 
