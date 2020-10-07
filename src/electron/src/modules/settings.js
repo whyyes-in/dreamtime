@@ -173,9 +173,9 @@ class Settings {
 
       folders: {
         cropped: paths.getPath('temp'),
-        models: paths.getPath('userData', 'Pictures'),
-        cli: paths.getPath('userData', 'dreampower'),
-        waifu: paths.getPath('userData', 'waifu2x'),
+        models: process.platform === 'linux' ? paths.getPath('pictures', 'DreamTime') : paths.getPath('userData', 'Pictures'),
+        cli: process.platform === 'linux' ? paths.getPath('documents', 'DreamTime', 'dreampower') : paths.getPath('userData', 'dreampower'),
+        waifu: process.platform === 'linux' ? paths.getPath('documents', 'DreamTime', 'waifu2x') : paths.getPath('userData', 'waifu2x'),
       },
 
       telemetry: {
@@ -560,6 +560,52 @@ class Settings {
           },
         },
       })
+
+      // Try to fix permission issues that occur in Snap.
+      if (process.platform === 'linux' && !process.env.BUILD_PORTABLE) {
+        // Models
+        if (this.payload.folders.models.includes(paths.getPath('userData'))) {
+          const newLocation = paths.getPath('pictures', 'DreamTime')
+
+          try {
+            fs.copySync(this.payload.folders.models, newLocation)
+            fs.removeSync(this.payload.folders.models)
+          } catch (err) {
+            logger.warn(err)
+          }
+
+          this.payload.folders.models = newLocation
+        }
+
+        // DreamPower
+        if (this.payload.folders.cli.includes(paths.getPath('userData'))) {
+          const newLocation = paths.getPath('documents', 'DreamTime', 'dreampower')
+
+          try {
+            fs.copySync(this.payload.folders.cli, newLocation)
+            fs.removeSync(this.payload.folders.cli)
+          } catch (err) {
+            logger.warn(err)
+          }
+
+          this.payload.folders.cli = newLocation
+        }
+
+        // Waifu2X
+        if (this.payload.folders.waifu.includes(paths.getPath('userData'))) {
+          const newLocation = paths.getPath('documents', 'DreamTime', 'waifu2x')
+
+          try {
+            fs.copySync(this.payload.folders.waifu, newLocation)
+            fs.removeSync(this.payload.folders.waifu)
+          // eslint-disable-next-line no-empty
+          } catch (err) {
+            logger.warn(err)
+          }
+
+          this.payload.folders.waifu = newLocation
+        }
+      }
     }
 
     this.save()

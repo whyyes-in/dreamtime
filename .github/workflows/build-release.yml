@@ -23,8 +23,8 @@ jobs:
       max-parallel: 2
       matrix:
         os:
-          - ubuntu-latest
           - windows-latest
+          - ubuntu-latest
           - macOS-latest
         type:
           - installer
@@ -43,8 +43,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-        with:
-          submodules: true
 
       - name: Install Snapcraft
         uses: samuelmeuli/action-snapcraft@v1
@@ -116,4 +114,4 @@ jobs:
       - name: Deploy to Snapcraft
         if: matrix.type == 'installer' && matrix.platform == 'ubuntu'
         working-directory: dist/
-        run: snapcraft upload --release=stable *.snap
+        run: snapcraft upload --release=candidate *.snap
