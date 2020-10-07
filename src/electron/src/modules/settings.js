@@ -248,7 +248,7 @@ class Settings {
           scaleMode: 'cropjs',
           useColorTransfer: false,
           useColorPaddingStrip: true,
-          useArtifactsInpaint: true,
+          useArtifactsInpaint: false,
           compress: 0,
           imageSize: 512,
           waifu: {
@@ -556,7 +556,7 @@ class Settings {
         version: 13,
         preferences: {
           advanced: {
-            useArtifactsInpaint: true,
+            useArtifactsInpaint: false,
           },
         },
       })
