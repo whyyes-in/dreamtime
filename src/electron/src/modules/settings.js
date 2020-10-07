@@ -564,7 +564,7 @@ class Settings {
       // Try to fix permission issues that occur in Snap.
       if (process.platform === 'linux' && !process.env.BUILD_PORTABLE) {
         // Models
-        if (this.payload.folders.models.includes(paths.getPath('userData'))) {
+        if (this.payload.folders.models.includes('/snap/dreamtimetech')) {
           const newLocation = paths.getPath('pictures', 'DreamTime')
 
           try {
@@ -578,7 +578,7 @@ class Settings {
         }
 
         // DreamPower
-        if (this.payload.folders.cli.includes(paths.getPath('userData'))) {
+        if (this.payload.folders.cli.includes('/snap/dreamtimetech')) {
           const newLocation = paths.getPath('documents', 'DreamTime', 'dreampower')
 
           try {
@@ -592,7 +592,7 @@ class Settings {
         }
 
         // Waifu2X
-        if (this.payload.folders.waifu.includes(paths.getPath('userData'))) {
+        if (this.payload.folders.waifu.includes('/snap/dreamtimetech')) {
           const newLocation = paths.getPath('documents', 'DreamTime', 'waifu2x')
 
           try {
