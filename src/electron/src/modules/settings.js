@@ -553,7 +553,7 @@ class Settings {
     // 12 -> 13
     if (this.payload?.version === 12 && this._default.version >= 13) {
       this.payload = merge(this.payload, {
-        version: 12,
+        version: 13,
         preferences: {
           advanced: {
             useArtifactsInpaint: true,
