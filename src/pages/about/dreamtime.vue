@@ -26,12 +26,6 @@
           <!-- Updater -->
           <AppUpdate :project="$dreamtime" href="/wizard/dreamtime" />
 
-          <MenuItem
-            label="Changelog"
-            description="Look at the changes that have happened between versions."
-            icon="book"
-            href="/about/changelog" />
-
           <!-- Remote navigation -->
           <MenuItem
             v-for="(item, index) in $dreamtime.data.about.navigation"
@@ -42,6 +36,8 @@
             :href="item.href" />
         </div>
       </div>
+
+      <ProjectChangelog project="dreamtime" />
     </div>
   </div>
 </template>

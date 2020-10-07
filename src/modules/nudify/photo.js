@@ -907,13 +907,17 @@ export class Photo {
    */
   track() {
     const { mode } = this.preferences
-    const { useColorTransfer } = this.preferences.advanced
+    const { useColorTransfer, useArtifactsInpaint } = this.preferences.advanced
     const { mode: runsMode } = this.preferences.body.runs
 
     consola.track('DREAM_START', { mode })
 
     if (useColorTransfer) {
       consola.track('DREAM_COLOR_TRANSFER')
+    }
+
+    if (useArtifactsInpaint) {
+      consola.track('DREAM_ARTIFACTS_INPAINT')
     }
 
     if (runsMode === 'randomize') {

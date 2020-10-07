@@ -38,8 +38,7 @@
       </div>
 
       <div v-if="isMacOS" class="notification">
-        <h5>Waifu2X on Mac OS is experimental!</h5>
-        You may need to run the command <code>brew install openblas</code> before using it.
+        You may need to run the command <code>brew install openblas</code> before using Waifu2X.
       </div>
 
       <div v-if="$settings.preferences.advanced.device === 'GPU'" class="notification">

@@ -34,7 +34,6 @@
 <script>
 import { isNil, startsWith } from 'lodash'
 import MarkdownIt from 'markdown-it'
-import { dreamtrack } from '~/modules/services'
 
 const md = new MarkdownIt()
 
@@ -114,7 +113,7 @@ export default {
 
       if (!isNil(this.href)) {
         if (!startsWith(this.href, '/')) {
-          dreamtrack.track('CLICK_LINK', { href: this.href })
+          consola.track('CLICK_LINK', { href: this.href })
           shell.openExternal(this.href)
         }
       }

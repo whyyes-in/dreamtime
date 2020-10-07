@@ -402,7 +402,7 @@ export class BaseUpdater {
           type: 'question',
           buttons: ['Yes', 'No, download it again'],
           title: 'Update.',
-          message: 'The update file was found on your computer. Do you want to use it?',
+          message: 'The file is already on your computer, do you want to use it?',
         })
 
         if (useLocal === 0) {
@@ -495,6 +495,14 @@ export class BaseUpdater {
    */
   _downloadFrom(url) {
     this.consola.info(`Downloading update from: ${url}`)
+
+    if (this.downloadMethod > DMETHOD.IPFS) {
+      consola.track('DOWNLOAD_IPFS', url)
+    }
+
+    if (this.downloadMethod > DMETHOD.TORRENT) {
+      consola.track('DOWNLOAD_TORRENT', url)
+    }
 
     return new Promise((resolve, reject) => {
       this.events = download(url, {

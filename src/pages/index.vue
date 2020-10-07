@@ -235,9 +235,9 @@ export default {
 
       const paths = map(files, 'path')
 
-      consola.track('UPLOAD_FILE')
-
       this.addFiles(paths)
+
+      consola.track('UPLOAD_FILE')
 
       event.target.value = ''
     },

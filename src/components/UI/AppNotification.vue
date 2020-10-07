@@ -1,5 +1,5 @@
 <template>
-  <div v-if="canShow" class="notification" @click="$emit('click')">
+  <div v-if="canShow" class="notification" @click="click">
     <span class="close-icon" @click="close()">
       <FontAwesomeIcon icon="times-circle" />
     </span>
@@ -34,6 +34,14 @@ export default {
   },
 
   methods: {
+    click(e) {
+      if (e.target.nodeName !== 'DIV') {
+        return
+      }
+
+      this.$emit('click')
+    },
+
     close() {
       localStorage.setItem(`notification_${this.name}`, 'true')
       this.closed = true
@@ -51,5 +59,9 @@ export default {
   @apply absolute text-lg cursor-pointer;
   top: 5px;
   right: 10px;
+
+  &:hover {
+    @apply text-danger;
+  }
 }
 </style>

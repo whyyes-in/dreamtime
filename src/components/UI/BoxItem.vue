@@ -33,7 +33,6 @@
 
 <script>
 import { isNil, startsWith } from 'lodash'
-import { dreamtrack } from '~/modules/services'
 import { dream } from '~/modules'
 
 const { shell } = $provider.api
@@ -99,7 +98,7 @@ export default {
         if (startsWith(this.href, '/')) {
           this.$router.push(this.href)
         } else {
-          dreamtrack.track('CLICK_LINK', { href: this.href })
+          consola.track('CLICK_LINK', { href: this.href })
           shell.openExternal(this.href)
         }
       }

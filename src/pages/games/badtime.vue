@@ -40,7 +40,7 @@ export default {
 
   mounted() {
     this.unlock()
-    tutorial.badtime()
+    consola.track('BADTIME_PLAY')
   },
 
   methods: {

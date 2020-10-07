@@ -96,7 +96,7 @@
           Experimental.
         </h2>
         <h3 class="subtitle">
-          Features that could improve the fake nude.
+          Features that could (or not) improve the fake nude.
         </h3>
       </div>
 

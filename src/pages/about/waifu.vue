@@ -1,8 +1,7 @@
 <template>
   <div class="project">
     <div v-if="isMacOS" class="notification">
-      <h5>Waifu2X on Mac OS is experimental!</h5>
-      You may need to run the command <code>brew install openblas</code> before using it.
+      You may need to run the command <code>brew install openblas</code> before using Waifu2X.
     </div>
 
     <div class="project__content">
@@ -51,6 +50,8 @@
             :href="item.href" />
         </div>
       </div>
+
+      <ProjectChangelog project="waifu" />
     </div>
   </div>
 </template>

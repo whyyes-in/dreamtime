@@ -55,7 +55,7 @@
 - id: app.showAds
   label: Show Ads.
   description: Show ads at the bottom of the menu.
-  tooltip: Allowing ads helps DreamTime development. These ads are selected by DreamNet.
+  tooltip: The displayed advertisements are selected by DreamNet and allow to support the DreamTime development.
   input: select
   options:
     - label: Enabled
@@ -201,8 +201,8 @@
   input: input
   attrs:
     type: number
-    min: 0.1
-    step: 0.1
+    min: 0.02
+    step: 0.02
     max: 2
 
 - id: preferences.advanced.useColorPaddingStrip

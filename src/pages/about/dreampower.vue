@@ -33,6 +33,8 @@
             :href="item.href" />
         </div>
       </div>
+
+      <ProjectChangelog project="dreampower" />
     </div>
   </div>
 </template>

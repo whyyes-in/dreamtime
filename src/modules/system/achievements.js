@@ -26,7 +26,7 @@ export const achievements = {
         return
       }
 
-      consola.track('BADTIME')
+      consola.track('BADTIME_UNLOCK')
 
       Swal.fire({
         title: 'Achievement unlocked!',

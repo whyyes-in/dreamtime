@@ -49,6 +49,12 @@ export default {
 <style lang="scss" scoped>
 .changelog {
   &::v-deep {
+    .box__header {
+      .title {
+        @apply text-xl;
+      }
+    }
+
     .box__content {
       h3, h2 {
         @apply text-lg text-white font-semibold mb-3;
