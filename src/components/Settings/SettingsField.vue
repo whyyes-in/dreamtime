@@ -5,7 +5,7 @@
     :tooltip="fieldTooltip"
     :data-id="field.id">
     <slot>
-      <div v-if="!readonly" class="flex-1">
+      <div v-if="!readonly">
         <!-- Select -->
         <select v-if="field.input === 'select'"
                 v-model="localValue"
@@ -23,6 +23,17 @@
                class="input"
                :disabled="disabled"
                v-bind="inputAttrs">
+
+        <!-- Checkbox -->
+        <div v-if="field.input === 'checkbox'" class="checkbox">
+          <input :id="fieldId"
+                 v-model="localValue"
+                 type="checkbox"
+                 :disabled="disabled"
+                 v-bind="inputAttrs">
+
+          <label :for="fieldId" />
+        </div>
       </div>
 
       <span v-else>{{ valueLabel }}</span>
@@ -207,9 +218,8 @@ export default {
 <style lang="scss" scoped>
 .item {
   &::v-deep {
-    .item__action {
-      @apply flex items-center justify-center;
-      //max-width: 300px;
+    .item__label {
+      flex: 2 1 0%;
     }
   }
 }

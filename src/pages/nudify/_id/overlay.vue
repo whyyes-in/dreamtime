@@ -11,7 +11,7 @@
         <AppTip :tooltip="tooltip" />
       </h3>
 
-      <template v-slot:right>
+      <template #right>
         <button id="cropper-reload"
                 v-tooltip="'Get recent changes from the editor.'"
                 class="button"

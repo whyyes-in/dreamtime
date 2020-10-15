@@ -5,7 +5,7 @@
           :title="lesson.title"
           :content="content"
           @click="$emit('click')">
-    <template v-slot:footer>
+    <template #footer>
       <div v-if="!small" class="box__footer text-center">
         <a v-for="(button,key) in lesson.buttons"
            :key="key"

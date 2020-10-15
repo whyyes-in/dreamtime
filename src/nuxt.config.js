@@ -246,10 +246,8 @@ module.exports = {
         use: ['js-yaml-loader'],
       })
 
-      if (isDev) {
-        // Source maps.
-        config.devtool = 'source-map'
-      }
+      // Source maps.
+      config.devtool = 'source-map'
     },
   },
 }

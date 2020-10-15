@@ -39,7 +39,7 @@ export default {
 
   animation-name: tipAnim;
   animation-timing-function: ease-in-out;
-  animation-duration: 20s;
+  animation-duration: 30s;
   animation-iteration-count: infinite;
 }
 </style>

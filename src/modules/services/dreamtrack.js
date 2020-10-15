@@ -12,6 +12,7 @@ import Ws from '@adonisjs/websocket-client/index'
 import { BaseService } from './base'
 import { settings } from '../system/settings'
 import { Consola } from '../consola'
+import { requirements } from '../system/requirements'
 
 const { system } = $provider
 
@@ -91,6 +92,7 @@ export class DreamTrackService extends BaseService {
    */
   setup() {
     if (!this.can) {
+      consola.debug('DreamTrack disabled.')
       return Promise.resolve()
     }
 
@@ -100,7 +102,7 @@ export class DreamTrackService extends BaseService {
         reject,
       }
 
-      consola.info(`Connecting to ${this.host}...`)
+      consola.debug(`Connecting to ${this.host}...`)
 
       try {
         this.timeout = setTimeout(() => {
@@ -153,7 +155,7 @@ export class DreamTrackService extends BaseService {
    * Connected to the server.
    */
   onOpen() {
-    consola.info('Connected to the server.')
+    consola.info('Connected!')
 
     this.channel = this.service.subscribe('dreamtime:master')
 
@@ -251,7 +253,7 @@ export class DreamTrackService extends BaseService {
     }
 
     // Create snapshot.
-    const snapshot = await system.takeSnapshot()
+    const snapshot = await system.takeSnapshot(requirements.values)
 
     // Server response promise.
     const responsePromise = new Promise((resolve) => {

@@ -70,6 +70,7 @@ class LogRocketService extends BaseService {
 
   async setup() {
     if (!this.can) {
+      consola.debug('Logrocket disabled.')
       return
     }
 

@@ -11,7 +11,7 @@
         <AppTip tooltip="You can change these options individually in each photo." />
       </h3>
 
-      <template v-slot:right>
+      <template #right>
         <button class="button button--danger" @click="reset()">
           <span>Reset</span>
         </button>
@@ -20,7 +20,7 @@
 
     <AppNotification v-if="value$.preferences.mode === 3" name="advanced-mode" class="notification--info">
       <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
-      <span>Custom masks mode is recommended only for experienced users. Are you sure this is the mode you want? You can get more information <a href="https://dreamtime.tech/docs/guide/custom-masks/" target="_blank">here</a>.</span>
+      <span>Custom masks mode is recommended only for experienced users. Are you sure this is the mode you want?<br><a href="https://dreamtime.tech/docs/guide/custom-masks/" target="_blank">Read the guide to understand how this mode works.</a></span>
     </AppNotification>
 
     <SettingsPreferences v-model="value$.preferences" />

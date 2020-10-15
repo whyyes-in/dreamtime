@@ -8,7 +8,7 @@
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
 import {
-  isNil, isError, isString, toString, isBoolean, isPlainObject,
+  isNil, isError, isString, toString, isBoolean, isPlainObject, cloneDeep,
 } from 'lodash'
 import he from 'he'
 import Swal from 'sweetalert2/dist/sweetalert2'
@@ -165,11 +165,22 @@ export class Log {
     // logger.
     this.logger[this.level](this.message)
 
-    if (this.error) {
-      this.logger[this.level](this.error)
-    }
-
     if (this.isError) {
+      await this.getSourceMapError()
+
+      this.logger.debug({
+        level: this.level,
+        title: this.title,
+        message: this.message,
+        quiet: this.quiet,
+        error: this.error ? {
+          name: this.error.name,
+          message: this.error.message,
+          stack: this.error.stack,
+        } : null,
+        extra: this.extra,
+      })
+
       this.report()
 
       if (!this.quiet) {
@@ -192,7 +203,7 @@ export class Log {
       return this
     }
 
-    const error = await this.getSourceMapError()
+    const { error } = this
 
     const snapshotUrl = await dreamtrack.takeSnapshot()
     const sessionUrl = logrocket.sessionURL
@@ -235,9 +246,8 @@ export class Log {
       rollbarUrl,
     }
 
-    dreamtrack.track('ERROR', urls)
+    dreamtrack.track('ERROR', cloneDeep(urls))
 
-    consola.debug('The error has been reported.')
     consola.debug(urls)
 
     return this
@@ -245,7 +255,7 @@ export class Log {
 
   async getSourceMapError() {
     if (!isError(this.error)) {
-      return this.error
+      return
     }
 
     const { error } = this
@@ -257,8 +267,6 @@ export class Log {
     })
 
     error.stack = await getStack()
-
-    return error
   }
 
   /**
@@ -280,7 +288,6 @@ export class Log {
       title: title || this.title || 'Unexpected problem!',
       html,
       icon: this.isError ? 'error' : 'warning',
-      // footer: this.reported ? `<code>🐞 This problem has been reported to DreamNet.<br>It will be fixed as soon as possible.</code>` : null,
     })
 
     this.showed = true

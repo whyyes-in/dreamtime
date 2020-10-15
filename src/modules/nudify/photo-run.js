@@ -119,6 +119,10 @@ export class PhotoRun {
     return this.status === 'finished'
   }
 
+  get successful() {
+    return this.finished && this.outputFile.exists
+  }
+
   get useUpscaling() {
     return this.preferences.advanced.waifu.enabled && requirements.canUseWaifu
   }

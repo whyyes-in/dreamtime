@@ -10,7 +10,7 @@
         The place where you can find all your creations.
       </h3>
 
-      <template v-slot:right>
+      <template #right>
         <button class="button"
                 @click.prevent="openFolder">
           <span class="icon"><font-awesome-icon icon="folder-open" /></span>

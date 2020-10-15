@@ -10,7 +10,7 @@
         Desktop notification settings.
       </h3>
 
-      <template v-slot:right>
+      <template #right>
         <button class="button button--danger" @click="reset()">
           <span>Reset</span>
         </button>

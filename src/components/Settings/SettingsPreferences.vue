@@ -9,6 +9,10 @@
                        v-model="value$"
                        field-id="preferences.advanced.scaleMode"
                        :options-field="optionsField" />
+
+        <SettingsField v-if="value$.mode >= 1 && value$.advanced.scaleMode === 'padding'" v-model="value$" field-id="preferences.advanced.useColorPaddingStrip" />
+
+        <SettingsField v-if="value$.mode >= 1" v-model="value$" field-id="preferences.advanced.useClothTransparencyEffect" />
       </div>
     </section>
 
@@ -16,7 +20,8 @@
     <section v-if="value$.mode === 2" id="preferences-runs" class="box">
       <div class="box__header">
         <h2 class="title">
-          Per run.
+          <span class="icon"><font-awesome-icon icon="running" /></span>
+          <span>Per run.</span>
         </h2>
         <h3 class="subtitle">
           Customize body preferences for multiple runs.
@@ -40,30 +45,36 @@
     <!-- Boobs -->
     <Preference id="preferences-body"
                 v-model="value$.body.boobs"
+                :preferences-mode="value$.mode"
                 label="Boobs" />
 
     <!-- Areola -->
     <Preference v-model="value$.body.areola"
+                :preferences-mode="value$.mode"
                 label="Areola" />
 
     <!-- Nipple -->
     <Preference v-model="value$.body.nipple"
+                :preferences-mode="value$.mode"
                 label="Nipple" />
 
     <!-- Vagina -->
     <Preference v-model="value$.body.vagina"
+                :preferences-mode="value$.mode"
                 label="Vagina"
                 :max="1.5" />
 
     <!-- Pubic Hair -->
     <Preference v-model="value$.body.pubicHair"
+                :preferences-mode="value$.mode"
                 label="Pubic Hair" />
 
     <!-- Advanced -->
     <section v-if="value$.mode > 1" id="preferences-advanced" class="box">
       <div class="box__header">
         <h2 class="title">
-          Advanced.
+          <span class="icon"><font-awesome-icon icon="toolbox" /></span>
+          <span>Advanced.</span>
         </h2>
         <h3 class="subtitle">
           Additional processing settings.
@@ -81,11 +92,9 @@
           </select>
         </SettingsField>
 
-        <SettingsField v-show="value$.advanced.scaleMode !== 'none'" v-model="value$" field-id="preferences.advanced.imageSize" />
+        <SettingsField v-if="value$.advanced.scaleMode !== 'none'" v-model="value$" field-id="preferences.advanced.imageSize" />
 
         <SettingsField v-model="value$" field-id="preferences.advanced.compress" />
-
-        <SettingsField v-show="value$.advanced.scaleMode === 'padding'" v-model="value$" field-id="preferences.advanced.useColorPaddingStrip" />
       </div>
     </section>
 
@@ -93,10 +102,11 @@
     <section v-if="value$.mode > 1" class="box">
       <div class="box__header">
         <h2 class="title">
-          Experimental.
+          <span class="icon"><font-awesome-icon icon="flask" /></span>
+          <span>Experimental.</span>
         </h2>
         <h3 class="subtitle">
-          Features that could (or not) improve the fake nude.
+          Options that could (or not) improve the fake nude.
         </h3>
       </div>
 
@@ -111,7 +121,8 @@
     <section v-if="value$.mode > 1 && !animated" class="box">
       <div class="box__header">
         <h2 class="title">
-          Waifu2X.
+          <span class="icon"><font-awesome-icon icon="expand" /></span>
+          <span>Waifu2X.</span>
         </h2>
         <h3 class="subtitle">
           Settings for the upscale and denoise algorithm.
@@ -130,8 +141,8 @@
       </div>
 
       <div v-else class="box__content">
-        <nuxt-link to="/wizard/waifu" class="underline">
-          Install Waifu2X to use this feature.
+        <nuxt-link to="/wizard/waifu" class="button">
+          Install Waifu2X.
         </nuxt-link>
       </div>
     </section>
@@ -176,8 +187,12 @@ export default {
 <style lang="scss" scoped>
 .preferences {
   &::v-deep {
-    .box .box__header {
-      @apply pt-6;
+    .box__header {
+      .title {
+        .icon {
+          @apply mr-1;
+        }
+      }
     }
   }
 }

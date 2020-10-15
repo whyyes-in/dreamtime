@@ -5,44 +5,42 @@
         :description="`Value: <strong>x${value$.size}</strong>`"
         tooltip="**x1** = What the algorithm considers the realistic size for the photo."
         :label="`${label} size`">
-        <div v-if="body.runs.mode !== 'randomize'">
+        <div v-show="preferencesMode !== 2 || body.runs.mode !== 'randomize' || (body.runs.mode === 'randomize' && !value$.randomize.enabled)">
           <VueSlider v-model="value$.size"
                      :min="min"
                      :max="max"
-                     :interval="0.02" />
+                     :interval="0.05" />
         </div>
       </MenuItem>
 
       <MenuItem
-        v-if="body.runs.mode === 'increase'"
+        v-if="preferencesMode === 2 && body.runs.mode === 'increase'"
         label="Increase?"
         description="Indicates if this should increase with each run.">
-        <select v-model="value$.progressive" class="input">
-          <option :value="true">
-            Enabled
-          </option>
-          <option :value="false">
-            Disabled
-          </option>
-        </select>
+        <div class="checkbox">
+          <input :id="label"
+                 v-model="value$.progressive"
+                 type="checkbox">
+
+          <label :for="label" />
+        </div>
       </MenuItem>
 
-      <div v-if="body.runs.mode === 'randomize'">
+      <div v-if="preferencesMode === 2 && body.runs.mode === 'randomize'">
         <MenuItem
           label="Randomize?"
-          description="Randomize this body part in each run.">
-          <select v-model="value$.randomize.enabled"
-                  class="input">
-            <option :value="true">
-              Enabled
-            </option>
-            <option :value="false">
-              Disabled
-            </option>
-          </select>
+          description="Indicates if this should randomize with each run.">
+          <div class="checkbox">
+            <input :id="label"
+                   v-model="value$.randomize.enabled"
+                   type="checkbox">
+
+            <label :for="label" />
+          </div>
         </MenuItem>
 
         <MenuItem
+          v-if="preferencesMode === 2 && value$.randomize.enabled"
           label="Random range"
           :description="`Min: ${value$.randomize.min} - Max: ${value$.randomize.max}`">
           <VueSlider
@@ -50,7 +48,7 @@
             :min-range="0.02"
             :min="min"
             :max="max"
-            :interval="0.02" />
+            :interval="0.05" />
         </MenuItem>
       </div>
     </div>
@@ -90,6 +88,10 @@ export default {
     readonly: {
       type: Boolean,
       default: false,
+    },
+    preferencesMode: {
+      type: Number,
+      default: 2,
     },
   },
 

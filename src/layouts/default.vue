@@ -38,9 +38,9 @@ import { mapState } from 'vuex'
 import { UploadMixin } from '~/mixins'
 
 export default {
-  middleware: ['wizard'],
 
   mixins: [UploadMixin],
+  middleware: ['wizard'],
 
   computed: {
     layoutClass() {

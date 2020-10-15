@@ -906,11 +906,10 @@ export class Photo {
    *
    */
   track() {
-    const { mode } = this.preferences
     const { useColorTransfer, useArtifactsInpaint } = this.preferences.advanced
     const { mode: runsMode } = this.preferences.body.runs
 
-    consola.track('DREAM_START', { mode })
+    consola.track('DREAM_END')
 
     if (useColorTransfer) {
       consola.track('DREAM_COLOR_TRANSFER')
@@ -976,7 +975,15 @@ export class Photo {
 
     await this.sync()
 
-    this.track()
+    consola.track('DREAM_START', { mode: this.preferences.mode })
+
+    // X-Rays effect requires the "Corrected" mask.
+    if (this.preferences.advanced.useClothTransparencyEffect) {
+      const xrayRun = new PhotoRun('xray', this, STEP.CORRECT)
+
+      this.masks[STEP.CORRECT].run = xrayRun
+      this.queue.add(xrayRun)
+    }
 
     for (let it = 1; it <= this.runsCount; it += 1) {
       const run = new PhotoRun(it, this)
@@ -987,7 +994,7 @@ export class Photo {
 
     await new Promise((resolve) => {
       this.queue.once('finished', () => {
-        consola.track('DREAM_END')
+        this.track()
         resolve()
       })
     })

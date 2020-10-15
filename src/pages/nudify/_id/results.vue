@@ -12,7 +12,7 @@
         <AppTip :tooltip="{ content: tooltip, placement: 'bottom' }" />
       </h3>
 
-      <template v-slot:right>
+      <template #right>
         <div class="buttons">
           <a class="button button--info" href="https://dreamtime.tech/docs/guide/custom-masks" target="_blank">
             <span class="icon"><font-awesome-icon icon="question-circle" /></span>
@@ -39,7 +39,7 @@
         Look at the results of the nudification. Sweet Dreams!
       </h3>
 
-      <template v-slot:right>
+      <template #right>
         <button v-tooltip="{ content: 'Open the folder where the results are stored.', placement: 'bottom' }"
                 class="button"
                 @click.prevent="openFolder">

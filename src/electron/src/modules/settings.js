@@ -136,7 +136,7 @@ class Settings {
     const hasGPU = process.platform === 'darwin' ? false : system.graphics.length > 0
 
     this.payload = {
-      version: 13,
+      version: 14,
       user: uuid(),
 
       wizard: {
@@ -152,7 +152,7 @@ class Settings {
       },
 
       app: {
-        disableHardwareAcceleration: false,
+        hardwareAcceleration: true,
         uploadMode: 'none',
         queuePosition: 'right',
         duplicates: false,
@@ -172,7 +172,7 @@ class Settings {
       },
 
       folders: {
-        cropped: paths.getPath('temp'),
+        cropped: process.platform === 'linux' ? paths.getPath('documents', 'DreamTime', 'tmp') : paths.getPath('temp'),
         models: process.platform === 'linux' ? paths.getPath('pictures', 'DreamTime') : paths.getPath('userData', 'Pictures'),
         cli: process.platform === 'linux' ? paths.getPath('documents', 'DreamTime', 'dreampower') : paths.getPath('userData', 'dreampower'),
         waifu: process.platform === 'linux' ? paths.getPath('documents', 'DreamTime', 'waifu2x') : paths.getPath('userData', 'waifu2x'),
@@ -192,7 +192,7 @@ class Settings {
         body: {
           runs: {
             mode: false,
-            count: 1,
+            count: 2,
             rate: 0.1,
           },
 
@@ -249,6 +249,7 @@ class Settings {
           useColorTransfer: false,
           useColorPaddingStrip: true,
           useArtifactsInpaint: false,
+          useClothTransparencyEffect: false,
           compress: 0,
           imageSize: 512,
           waifu: {
@@ -561,7 +562,7 @@ class Settings {
         },
       })
 
-      // Try to fix permission issues that occur in Snap.
+      // Try to fix Snap Store permissions.
       if (process.platform === 'linux' && !process.env.BUILD_PORTABLE) {
         // Models
         if (this.payload.folders.models.includes('/snap/dreamtimetech')) {
@@ -604,6 +605,43 @@ class Settings {
           }
 
           this.payload.folders.waifu = newLocation
+        }
+      }
+    }
+
+    // 13 -> 14
+    if (this.payload?.version === 13 && this._default.version >= 14) {
+      this.payload = merge(this.payload, {
+        version: 14,
+        app: {
+          hardwareAcceleration: !this.payload.app.disableHardwareAcceleration,
+        },
+        preferences: {
+          advanced: {
+            useClothTransparencyEffect: false,
+          },
+        },
+      })
+
+      try {
+        delete this.payload.app.disableHardwareAcceleration
+      } catch (err) {
+        logger.warn(err)
+      }
+
+      // Try to fix Snap Store permissions.
+      if (process.platform === 'linux' && !process.env.BUILD_PORTABLE) {
+        // TMP
+        if (this.payload.folders.cropped.includes('/snap/dreamtimetech')) {
+          const newLocation = paths.getPath('documents', 'DreamTime', 'tmp')
+
+          try {
+            fs.removeSync(this.payload.folders.cropped)
+          } catch (err) {
+            logger.warn(err)
+          }
+
+          this.payload.folders.cropped = newLocation
         }
       }
     }

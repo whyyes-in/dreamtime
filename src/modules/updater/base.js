@@ -496,11 +496,11 @@ export class BaseUpdater {
   _downloadFrom(url) {
     this.consola.info(`Downloading update from: ${url}`)
 
-    if (this.downloadMethod > DMETHOD.IPFS) {
+    if (this.downloadMethod === DMETHOD.IPFS) {
       consola.track('DOWNLOAD_IPFS', url)
     }
 
-    if (this.downloadMethod > DMETHOD.TORRENT) {
+    if (this.downloadMethod === DMETHOD.TORRENT) {
       consola.track('DOWNLOAD_TORRENT', url)
     }
 

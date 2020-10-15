@@ -50,6 +50,12 @@
 import { cloneDeep } from 'lodash'
 
 export default {
+
+  middleware: ({ route, redirect }) => {
+    if (route.fullPath === '/settings') {
+      redirect('/settings/app')
+    }
+  },
   data: () => ({
     settings: {},
   }),
@@ -65,12 +71,6 @@ export default {
 
   created() {
     this.settings = cloneDeep(this.$settings.payload)
-  },
-
-  middleware: ({ route, redirect }) => {
-    if (route.fullPath === '/settings') {
-      redirect('/settings/app')
-    }
   },
 }
 </script>

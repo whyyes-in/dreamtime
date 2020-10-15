@@ -10,7 +10,7 @@
         Settings that affect the behavior of the application.
       </h3>
 
-      <template v-slot:right>
+      <template #right>
         <button class="button button--danger" @click="reset()">
           <span>Reset</span>
         </button>
@@ -40,7 +40,7 @@
 
     <section class="box">
       <div class="box__content">
-        <SettingsField field-id="app.disableHardwareAcceleration" />
+        <SettingsField field-id="app.hardwareAcceleration" />
 
         <SettingsField field-id="app.uploadMode" />
 

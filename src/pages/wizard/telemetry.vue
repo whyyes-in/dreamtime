@@ -42,7 +42,7 @@
         <AppBox title="Error report." subtitle="Information about an error.">
           <SettingsField field-id="telemetry.bugs" />
 
-          <template v-slot:footer>
+          <template #footer>
             <div class="box__footer">
               <a href="https://i.gyazo.com/30972dbc8c2396b58928b5100a016e2d.png"
                  target="_blank"
@@ -58,7 +58,7 @@
 
           <SettingsField field-id="telemetry.dom" />
 
-          <template v-slot:footer>
+          <template #footer>
             <div class="box__footer">
               <a href="https://link.dreamnet.tech/ipfs/QmaUaQafgSGVZzEncJnuQRhN6iugbbrVhnpSfSW4CqWL5q"
                  target="_blank"

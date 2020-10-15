@@ -90,7 +90,7 @@ class DreamApp {
     await settings.boot()
 
     // this may increase performance on some systems.
-    if (settings.app?.disableHardwareAcceleration) {
+    if (!settings.app?.hardwareAcceleration) {
       logger.debug('Hardware Acceleration disabled.')
       app.disableHardwareAcceleration()
     }

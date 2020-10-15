@@ -130,7 +130,7 @@ class System {
   /**
    *
    */
-  async takeSnapshot() {
+  async takeSnapshot(requirements = {}) {
     logger.info('Taking snapshot...')
 
     const [load, cpuSpeed, cpuTemperature, memory] = await Promise.all([
@@ -148,12 +148,13 @@ class System {
       },
       memory,
       settings: settings.payload,
+      requirements,
     }
 
-    logger.info('Current load:', load)
-    logger.info('CPU Speed:', cpuSpeed)
-    logger.info('CPU Temperature:', cpuTemperature)
-    logger.info('Memory:', memory)
+    // logger.info('Current load:', load)
+    // logger.info('CPU Speed:', cpuSpeed)
+    // logger.info('CPU Temperature:', cpuTemperature)
+    // logger.info('Memory:', memory)
 
     return this.snapshot
   }

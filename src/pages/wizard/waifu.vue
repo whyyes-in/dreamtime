@@ -10,7 +10,7 @@
         {{ $waifu.name }}. Optional algorithm to upscale photos.
       </h3>
 
-      <template v-slot:right>
+      <template #right>
         <button class="button" @click="$dreamtime.openAppDataFolder()">
           <span class="icon"><font-awesome-icon icon="folder-open" /></span>
           <span>{{ $dreamtime.name }} Folder</span>
@@ -71,7 +71,7 @@
 - **HTTP:** Fastest and most reliable for most connections.
 
 - **Torrent & IPFS:** Download the file from other computers with the option to cancel at any time and resume later. More reliable for unstable and low speed connections. May require a few minutes of preparation before starting the download.">
-          <template v-slot:description>
+          <template #description>
             <span class="item__description">Select the protocol that will be used to download the file.</span>
           </template>
 

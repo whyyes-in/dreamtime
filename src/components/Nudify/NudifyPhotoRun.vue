@@ -94,35 +94,36 @@
         <font-awesome-icon icon="terminal" />
       </button>
 
-      <!--
       <button
-        v-if="run.finished && run.outputFile.exists"
-        v-tooltip="'Open photo'"
-        class="button button--info button--sm"
-        @click.prevent="open">
-        <font-awesome-icon icon="image" />
+        v-if="run.successful && run.preferences.advanced.useClothTransparencyEffect"
+        key="button-transparency"
+        v-tooltip="'X-Rays Tool'"
+        class="button button--primary button--sm"
+        @click="showTransparencyModal()">
+        <span class="icon">
+          <font-awesome-icon icon="spray-can" />
+        </span>
       </button>
-      -->
 
       <button
-        v-if="run.finished && run.outputFile.exists"
+        v-if="run.successful"
         key="button-save"
+        v-tooltip="'Save'"
         class="button button--success button--sm"
         @click.prevent="save">
         <span class="icon">
           <font-awesome-icon icon="save" />
         </span>
-        <span>Save</span>
       </button>
 
       <button v-if="run.finished"
               key="button-rerun"
+              v-tooltip="'Rerun'"
               class="button button--info button--sm"
               @click.prevent="rerun">
         <span class="icon">
           <font-awesome-icon icon="retweet" />
         </span>
-        <span>Rerun</span>
       </button>
 
       <button v-if="run.running"
@@ -153,13 +154,51 @@
         </div>
       </div>
     </dialog>
+
+    <!-- Transparency Dialog -->
+    <dialog ref="transparencyDialog">
+      <div class="box">
+        <div class="box__content">
+          <canvas ref="transparencyCanvas"
+                  class="transparency"
+                  width="512"
+                  height="512" />
+
+          <MenuItem
+            label="Transparency">
+            <VueSlider v-model="transparency.alpha"
+                       :min="0.05"
+                       :max="0.95"
+                       :interval="0.05" />
+          </MenuItem>
+        </div>
+
+        <div class="box__footer box__footer--buttons">
+          <button
+            class="button button--success"
+            @click.prevent="saveTransparency">
+            <span class="icon">
+              <font-awesome-icon icon="save" />
+            </span>
+            <span>Save</span>
+          </button>
+
+          <button class="button button--danger" @click="$refs.transparencyDialog.close()">
+            Close
+          </button>
+        </div>
+      </div>
+    </dialog>
   </div>
 </template>
 
 <script>
+import { debounce } from 'lodash'
+import { saveAs } from 'file-saver'
 import { dreamtrack } from '~/modules/services'
 import { Nudify } from '~/modules/nudify'
 import { ALGORITHM } from '~/modules/nudify/photo-run'
+import { STEP } from '~/modules/nudify/photo-mask'
 
 export default {
   filters: {
@@ -181,6 +220,12 @@ export default {
 
   data: () => ({
     ALGORITHM,
+    transparency: {
+      alpha: 0.5,
+      nude: undefined,
+      corrected: undefined,
+      canvas: undefined,
+    },
   }),
 
   computed: {
@@ -218,6 +263,16 @@ export default {
     },
   },
 
+  watch: {
+    'transparency.alpha'() {
+      this.onTransparencyChange()
+    },
+  },
+
+  created() {
+    this.onTransparencyChange = debounce(this.transparencyRefresh, 50, { leading: true })
+  },
+
   methods: {
     save() {
       this.run.outputFile.save(this.run.outputName)
@@ -241,6 +296,70 @@ export default {
 
     saveMask() {
       this.run.maskfinFile.save(`maskfin-${this.run.outputName}`)
+    },
+
+    showTransparencyModal() {
+      this.transparencyRefresh()
+
+      this.$refs.transparencyDialog.showModal()
+    },
+
+    async transparencyRefresh() {
+      if (!this.run.outputFile.exists) {
+        throw new Warning('The fake nude has not been created.')
+      }
+
+      if (!this.run.photo.masks[STEP.CORRECT].exists) {
+        throw new Warning('The "Corrected" mask has not been created.')
+      }
+
+      const canvas = this.$refs.transparencyCanvas
+
+      if (!canvas) {
+        throw new Warning('An internal problem has occurred, please try again.')
+      }
+
+      const context = canvas.getContext('2d')
+
+      if (!context) {
+        throw new Warning('An internal problem has occurred, please try again.')
+      }
+
+      this.transparency.canvas = canvas
+
+      if (!this.transparency.nude) {
+        const nude = new Image()
+        nude.src = this.run.outputFile.path
+
+        await new Promise((resolve) => {
+          nude.onload = () => resolve()
+        })
+
+        this.transparency.nude = nude
+      }
+
+      if (!this.transparency.corrected) {
+        const corrected = new Image()
+        corrected.src = this.run.photo.masks[STEP.CORRECT].file.path
+
+        await new Promise((resolve) => {
+          corrected.onload = () => resolve()
+        })
+
+        this.transparency.corrected = corrected
+      }
+
+      context.clearRect(0, 0, canvas.width, canvas.height)
+      context.globalAlpha = 1.0
+      context.drawImage(this.transparency.nude, 0, 0, canvas.width, canvas.height)
+      context.globalAlpha = this.transparency.alpha
+      context.drawImage(this.transparency.corrected, 0, 0, canvas.width, canvas.height)
+    },
+
+    saveTransparency() {
+      this.transparency.canvas.toBlob((blob) => {
+        saveAs(blob, this.run.outputName)
+      })
     },
   },
 }
@@ -331,5 +450,10 @@ export default {
       @apply text-danger-500;
     }
   }
+}
+
+.transparency {
+  width: 512px;
+  height: 512px;
 }
 </style>

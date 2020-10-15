@@ -118,6 +118,11 @@ export const transform = (run) => {
   if (run.isMaskGeneration) {
     //
     switch (run.mask) {
+      case 'correct':
+        start = 0
+        end = 0
+        break
+
       case 'mask':
         // Corrected -> Mask
         start = 0

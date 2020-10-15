@@ -47,7 +47,7 @@ export const requirements = {
   },
 
   get values() {
-    return pick(this, 'power', 'waifu', 'windows', 'recommended')
+    return pick(this, 'power', 'waifu', 'recommended', 'folders')
   },
 
   /**

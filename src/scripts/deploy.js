@@ -10,9 +10,18 @@
 
 const path = require('path')
 const fs = require('fs')
+const axios = require('axios')
 const sha256File = require('sha256-file')
 const { Release } = require('@dreamnet/deploy')
 const pkg = require('../package.json')
+
+/*
+process.env.BUILD_PLATFORM = 'windows'
+process.env.BUILD_EXTENSION = 'exe'
+process.env.DREAMTRACK_HOST = 'http://localhost:50200'
+process.env.DREAMTRACK_KEY = ''
+process.env.GITHUB_REF = 'refs/tags/v0.0.0'
+*/
 
 //
 const output = []
@@ -32,6 +41,7 @@ if (process.env.GITHUB_REF) {
 process.env.DEPLOY_GIT_REPO = 'dreamtime'
 
 const isEarly = process.env.DEPLOY_GIT_TAG.includes('-early') || process.env.DEPLOY_GIT_TAG.includes('-rc')
+let isPortable = false
 
 //
 const VERSION = `v${pkg.version}`
@@ -87,22 +97,111 @@ async function run(release) {
 /**
  *
  *
+ * @param {Release} release
+ */
+async function deploy(release, checksum) {
+  const payload = []
+
+  const { cid } = release
+
+  const arch = isPortable ? 'portable' : undefined
+  const archText = isPortable ? 'portable' : 'installer'
+  const ext = isPortable ? 'zip' : process.env.BUILD_EXTENSION
+
+  // IPFS Gateways
+  if (cid) {
+    payload.push({
+      platform: process.env.BUILD_PLATFORM,
+      url: `https://link.dreamnet.tech/ipfs/${cid}?filename=${FILENAME}-${archText}.${ext}`,
+      arch,
+      checksum,
+      priority: 10,
+    })
+
+    payload.push({
+      platform: process.env.BUILD_PLATFORM,
+      url: `https://gateway.ipfs.io/ipfs/${cid}?filename=${FILENAME}-${archText}.${ext}`,
+      arch,
+      checksum,
+      priority: 9,
+    })
+
+    payload.push({
+      platform: process.env.BUILD_PLATFORM,
+      url: `https://gateway.pinata.cloud/ipfs/${cid}?filename=${FILENAME}-${archText}.${ext}`,
+      arch,
+      checksum,
+      priority: 8,
+    })
+  }
+
+  payload.push({
+    platform: process.env.BUILD_PLATFORM,
+    url: `https://git.teknik.io/dreamnet/dreamtime/releases/download/${VERSION}/${FILENAME}-${archText}.${ext}`,
+    arch,
+    checksum,
+    priority: 5,
+  })
+
+  payload.push({
+    platform: process.env.BUILD_PLATFORM,
+    url: `https://github.com/dreamnettech/dreamtime/releases/download/${VERSION}/${FILENAME}-${archText}.${ext}`,
+    arch,
+    checksum,
+    priority: 0,
+    is_direct: false,
+  })
+
+  try {
+    console.log('Deploying to DreamTrack...')
+
+    await axios({
+      method: 'POST',
+      baseURL: process.env.DREAMTRACK_HOST,
+      url: `/downloads/dreamtime/${VERSION}`,
+      headers: {
+        Authorization: `Basic ${process.env.DREAMTRACK_KEY}`,
+      },
+      data: { payload },
+    })
+
+    console.log('✔️ Done!')
+  } catch (error) {
+    console.warn(error)
+
+    if (error.response && error.response.data) {
+      console.warn(error.response.data.message)
+    }
+  }
+}
+
+/**
+ *
+ *
  */
 async function start() {
   const portablePath = path.resolve(DISTPATH, `${FILENAME}-portable.zip`)
   const installerPath = path.resolve(DISTPATH, `${FILENAME}-installer.${process.env.BUILD_EXTENSION}`)
 
-  const releasePath = fs.existsSync(portablePath) ? portablePath : installerPath
+  if (fs.existsSync(portablePath)) {
+    isPortable = true
+  }
+
+  const releasePath = isPortable ? portablePath : installerPath
 
   if (fs.existsSync(releasePath)) {
     const checksum = sha256File(releasePath)
 
-    console.log(releasePath)
-    console.log(`Checksum (sha256): ${checksum}`)
+    console.log(`Deploying: ${releasePath} (${checksum})`)
 
     if (PROVIDERS.length > 0) {
       const release = new Release(releasePath)
+
       await run(release)
+
+      if (!isEarly) {
+        await deploy(release, checksum)
+      }
 
       // Print results
       console.log(JSON.stringify(output, null, 2))

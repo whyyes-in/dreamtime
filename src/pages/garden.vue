@@ -25,6 +25,21 @@
     <section class="box cli-errors">
       <div class="box__header">
         <h2 class="title">
+          Force Error
+        </h2>
+      </div>
+
+      <div class="box__content">
+        <button class="button"
+                @click="showError()">
+          Trigger Error
+        </button>
+      </div>
+    </section>
+
+    <section class="box cli-errors">
+      <div class="box__header">
+        <h2 class="title">
           Wizard
         </h2>
       </div>
@@ -69,6 +84,10 @@ export default {
       }
 
       throw new Warning(item.title || 'Unknown error!', item.message, new Error('Im a bug! 🐞'))
+    },
+
+    showError() {
+      throw new Exception('Developer error!', 'Oh, fiddlesticks. What now?', new Error('Im a bug! 🐞'))
     },
   },
 }

@@ -10,7 +10,7 @@
         Change the location of the components and files.
       </h3>
 
-      <template v-slot:right>
+      <template #right>
         <button class="button button--danger" @click="reset()">
           <span>Reset</span>
         </button>

@@ -36,7 +36,7 @@ input[type="checkbox"] {
   outline: none !important;
 
   &:not([readonly]):not([disabled]) {
-    &:hover, &:focus {
+    &:hover {
       @apply text-primary border-primary;
     }
   }
@@ -55,5 +55,35 @@ input[type="checkbox"] {
 
   &.input--sm {
     @apply text-sm px-2;
+  }
+}
+
+$checkbox-size: 1.5rem;
+
+.checkbox {
+  @apply text-center;
+
+  input[type="checkbox"] {
+    @apply opacity-0 pointer-events-none absolute;
+  }
+
+  input[type="checkbox"] + label {
+    @apply inline-block;
+    width: $checkbox-size;
+    height: $checkbox-size;
+  }
+
+  input[type="checkbox"] + label::before {
+    @apply inline-block rounded border-2 border-menus-light bg-black;
+    content: "";
+    vertical-align: bottom;
+    width: $checkbox-size;
+    height: $checkbox-size;
+  }
+
+  input[type="checkbox"]:checked + label::before {
+    @apply text-primary text-center border-primary font-black text-xl;
+    content: "✓";
+    line-height: 22px;
   }
 }

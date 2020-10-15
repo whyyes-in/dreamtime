@@ -62,7 +62,6 @@ class RollbarService extends BaseService {
       captureUncaught: false,
       captureUnhandledRejections: false,
       captureIp: 'anonymize',
-      enabled: settings.telemetry.bugs,
       verbose: process.env.NODE_ENV === 'development',
       logLevel: 'info',
       nodeSourceMaps: true,
@@ -91,6 +90,7 @@ class RollbarService extends BaseService {
    */
   async setup() {
     if (!this.can) {
+      consola.debug('Rollbar disabled.')
       return
     }
 

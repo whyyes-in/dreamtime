@@ -10,7 +10,7 @@
         Settings that affect the performance of the nudification algorithm.
       </h3>
 
-      <template v-slot:right>
+      <template #right>
         <button class="button button--danger" @click="reset()">
           <span>Reset</span>
         </button>
