@@ -157,7 +157,7 @@ async function deploy(release, checksum) {
 
     await axios({
       method: 'POST',
-      baseURL: process.env.DREAMTRACK_HOST,
+      baseURL: process.env.DEPLOY_DREAMTRACK_HOST,
       url: `/downloads/dreamtime/${VERSION}`,
       headers: {
         Authorization: `Basic ${process.env.DREAMTRACK_KEY}`,
