@@ -297,7 +297,7 @@ export const getVersion = () => new Promise((resolve) => {
         resolve({
           status: false,
           version: undefined,
-          error: new Error(`DreamPower was unable to respond or returned any error code, this may be due to:
+          error: new Error(`DreamPower was unable to respond or return any error code, this may be due to:
 
 - Corrupt installation. (Please download and install again)
 - Some OS update, recent program installation or external program (such as antivirus) are interfering with DreamPower.`),
@@ -315,6 +315,8 @@ export const getVersion = () => new Promise((resolve) => {
             version: undefined,
             error: new Error(response),
           })
+
+          return
         }
 
         version = `v${response[0]}`
@@ -333,6 +335,7 @@ export const getVersion = () => new Promise((resolve) => {
         })
       }
     }
+
     resolve({
       status: false,
       version: undefined,
