@@ -15,6 +15,11 @@
     "message": "Please install <a href='https://developer.nvidia.com/cuda-10.2-download-archive' target='_blank'>CUDA 10.2</a> or disable Waifu2X."
   },
   {
+    "query": "CUBLAS_STATUS_EXECUTION_FAILED when calling",
+    "title": "GPU Error",
+    "message": "The algorithm is not yet compatible with your GPU. Please change the processing device option to CPU."
+  },
+  {
     "query": "no longer supports this GPU",
     "title": "GPU Error",
     "message": "The algorithm no longer supports your GPU. Please change the processing device option to CPU."
@@ -98,6 +103,11 @@
     "query": "Write Error",
     "title": "Storage Error",
     "message": "It was not possible to save the fake nude. Please make sure you have enough disk space, that DreamTime has the permissions to write files and the folders in settings or the photo location do not have special characters (letters outside the english keyboard)."
+  },
+  {
+    "query": "Permission denied",
+    "title": "Storage Error",
+    "message": "It was not possible to save the fake nude. Permission denied."
   },
   {
     "query": "No space left on device",

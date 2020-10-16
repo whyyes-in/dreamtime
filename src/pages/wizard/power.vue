@@ -21,21 +21,28 @@
     <div class="project__content">
       <div v-if="!requirements.power.installed" class="notification notification--warning">
         <span class="icon"><font-awesome-icon icon="info-circle" /></span>
-        <span>This component needs to be installed to continue.</span>
+        <span>It is necessary to download and install this component to continue.</span>
       </div>
 
       <div v-else-if="requirements.power.error" class="notification notification--danger">
-        <h5>CHECK ERROR!</h5>
-        Failed to get the installed {{ $dreampower.name }} version. Please fix this problem before continuing.<br>
-        You can visit our <a href="https://chat.dreamnet.tech" target="_blank">chat</a> to get support.
+        <h5>
+          <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
+          <span>INTERNAL ERROR!</span>
+        </h5>
+
+        {{ $dreamtime.name }} has not been able to verify that {{ $dreampower.name }} works correctly, please fix this issue before continuing. Visit <a href="#" target="_blank">the website</a> with the most common problems or our <a href="https://chat.dreamnet.tech" target="_blank">chat</a> for technical support.
         <br><br>
 
         <pre>{{ requirements.power.error.stack }}</pre>
       </div>
 
       <div v-else-if="!requirements.power.compatible" class="notification notification--danger">
-        <h5>OUTDATED</h5>
-        This component requires an update to continue.
+        <h5>
+          <span class="icon"><font-awesome-icon icon="info-circle" /></span>
+          <span>OUTDATED</span>
+        </h5>
+
+        It is necessary to download and install the update for this component to continue.
       </div>
 
       <div v-if="$dreampower.version" class="notification">

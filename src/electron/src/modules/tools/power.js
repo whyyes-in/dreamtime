@@ -7,7 +7,9 @@
 //
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
-import { isNil, isString } from 'lodash'
+import {
+  isNil, isString, isEmpty, isArray,
+} from 'lodash'
 import { spawn } from 'child_process'
 import EventBus from 'js-event-bus'
 import semverRegex from 'semver-regex'
@@ -291,11 +293,31 @@ export const getVersion = () => new Promise((resolve) => {
 
   process.on('close', (code) => {
     if (code === 0 || isNil(code)) {
+      if (isEmpty(response)) {
+        resolve({
+          status: false,
+          version: undefined,
+          error: new Error(`DreamPower was unable to respond or returned any error code, this may be due to:
+
+- Corrupt installation. (Please download and install again)
+- Some OS update, recent program installation or external program (such as antivirus) are interfering with DreamPower.`),
+        })
+
+        return
+      }
+
       try {
         response = semverRegex().exec(response)
-        response = `v${response[0]}`
 
-        version = response
+        if (!isArray(response)) {
+          resolve({
+            status: false,
+            version: undefined,
+            error: new Error(response),
+          })
+        }
+
+        version = `v${response[0]}`
 
         resolve({
           status: true,
@@ -310,12 +332,11 @@ export const getVersion = () => new Promise((resolve) => {
           error,
         })
       }
-    } else {
-      resolve({
-        status: false,
-        version: undefined,
-        error: new Error(response),
-      })
     }
+    resolve({
+      status: false,
+      version: undefined,
+      error: new Error(response),
+    })
   })
 })

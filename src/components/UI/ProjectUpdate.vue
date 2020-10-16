@@ -44,11 +44,11 @@
     <div class="update__actions">
       <button v-if="!updater.enabled"
               key="update-disabled"
-              v-tooltip="'This component cannot be updated until the problem above is fixed.'"
+              v-tooltip="'This component cannot be updated until the issue above is fixed.'"
               class="button button--success"
               disabled>
         <span class="icon"><font-awesome-icon icon="sync" /></span>
-        Update
+        <span>Update</span>
       </button>
 
       <button v-else-if="!updater.update.active"
@@ -56,7 +56,7 @@
               class="button button--success"
               @click.prevent="updater.start()">
         <span class="icon"><font-awesome-icon icon="sync" /></span>
-        Update
+        <span>Update</span>
       </button>
 
       <button v-if="updater.update.active"
@@ -64,7 +64,7 @@
               class="button button--danger"
               @click.prevent="updater.cancel()">
         <span class="icon"><font-awesome-icon icon="stop" /></span>
-        Cancel
+        <span>Cancel</span>
       </button>
 
       <button v-if="updater.downloadUrls.length > 0"
@@ -72,7 +72,7 @@
               class="button button--info"
               @click.prevent="$refs.mirrorsDialog.showModal()">
         <span class="icon"><font-awesome-icon icon="link" /></span>
-        Mirrors
+        <span>Mirrors</span>
       </button>
 
       <button v-else
@@ -80,7 +80,7 @@
               class="button button--info"
               disabled>
         <span class="icon"><font-awesome-icon icon="link" /></span>
-        Mirrors
+        <span>Mirrors</span>
       </button>
     </div>
 
@@ -97,9 +97,9 @@
     <!-- Hint -->
     <div class="update__hint">
       <p>
-        <a href="https://time.dreamnet.tech/docs/guide/updater" target="_blank">
-          <font-awesome-icon icon="exclamation-circle" />
-          Troubleshooting
+        <a href="https://time.dreamnet.tech/docs/guide/updater" target="_blank" class="button button--sm">
+          <span class="icon"><font-awesome-icon icon="exclamation-circle" /></span>
+          <span>Troubleshooting</span>
         </a>
       </p>
     </div>
@@ -285,15 +285,7 @@ export default {
 }
 
 .update__hint {
-  @apply text-sm;
 
-  a {
-    @apply text-white;
-
-    &:hover {
-      @apply text-primary;
-    }
-  }
 }
 
 .mirrors {

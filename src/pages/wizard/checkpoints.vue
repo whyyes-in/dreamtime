@@ -21,7 +21,7 @@
     <div class="project__content">
       <div v-if="!requirements.power.checkpoints" class="notification notification--warning">
         <span class="icon"><font-awesome-icon icon="info-circle" /></span>
-        <span>This component needs to be installed to continue.</span>
+        <span>It is necessary to download and install this component to continue.</span>
       </div>
 
       <div v-else class="notification">

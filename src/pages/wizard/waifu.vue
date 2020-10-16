@@ -20,9 +20,12 @@
 
     <div class="project__content">
       <div v-if="requirements.waifu.error" class="notification notification--danger">
-        <h5>CHECK ERROR!</h5>
-        Failed to get the installed {{ $dreampower.name }} version. Please fix this problem before continuing.<br>
-        You can visit our <a href="https://chat.dreamnet.tech" target="_blank">chat</a> to get support.
+        <h5>
+          <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
+          <span>INTERNAL ERROR!</span>
+        </h5>
+
+        {{ $dreamtime.name }} has not been able to verify that {{ $waifu.name }} works correctly, please fix this issue before continuing. Visit <a href="#" target="_blank">the website</a> with the most common problems or our <a href="https://chat.dreamnet.tech" target="_blank">chat</a> for technical support.
         <br><br>
 
         <pre>{{ requirements.waifu.error.stack }}</pre>

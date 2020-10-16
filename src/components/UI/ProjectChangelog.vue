@@ -4,11 +4,13 @@
       v-for="release in releases"
       :key="release.name"
       :title="release.name"
+      :subtitle="toDate(release.published_at)"
       :content="release.body" />
   </div>
 </template>
 
 <script>
+import dayjs from 'dayjs'
 import { take } from 'lodash'
 import * as projects from '~/modules/projects'
 
@@ -42,6 +44,13 @@ export default {
   created() {
     // eslint-disable-next-line import/namespace
     this.data = projects[this.project]
+  },
+
+  methods: {
+    toDate(value) {
+      const date = dayjs(value)
+      return `${date.format('MMMM D, YYYY h:mm A')} (${date.fromNow()})`
+    },
   },
 }
 </script>

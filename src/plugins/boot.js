@@ -10,6 +10,7 @@
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
 import Vue from 'vue'
+import dayjs from 'dayjs'
 import {
   dreamtime, dreampower, checkpoints, community, waifu,
 } from '~/modules/projects'
@@ -20,6 +21,8 @@ import { requirements } from '~/modules/system'
 import { handleError } from '~/modules/consola'
 
 localStorage.debug = 'none'
+
+dayjs.extend(require('dayjs/plugin/relativeTime'))
 
 /**
  *
