@@ -49,6 +49,8 @@ export default {
 <style lang="scss" scoped>
 /* purgecss start ignore */
 .tos {
+  @apply pb-6;
+
   &::v-deep {
     .box__photo {
       height: 160px;

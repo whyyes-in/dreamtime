@@ -55,6 +55,17 @@
         <FontAwesomeIcon icon="save" />
       </button>
 
+      <button
+        v-if="xRays && mask.canShowSave"
+        key="button-transparency"
+        v-tooltip="'X-Rays Tool'"
+        class="button button--primary button--sm"
+        @click="showTransparencyModal()">
+        <span class="icon">
+          <font-awesome-icon icon="spray-can" />
+        </span>
+      </button>
+
       <button v-if="mask.run"
               key="button-terminal"
               v-tooltip="'View terminal'"
@@ -114,12 +125,48 @@
         </div>
       </div>
     </dialog>
+
+    <!-- Transparency Dialog -->
+    <dialog ref="transparencyDialog">
+      <div class="box">
+        <div class="box__content">
+          <canvas ref="transparencyCanvas"
+                  class="transparency"
+                  width="512"
+                  height="512" />
+
+          <MenuItem label="Transparency">
+            <VueSlider v-model="transparency.alpha"
+                       :min="0.05"
+                       :max="0.95"
+                       :interval="0.05" />
+          </MenuItem>
+        </div>
+
+        <div class="box__footer box__footer--buttons">
+          <button
+            class="button button--success"
+            @click.prevent="saveTransparency">
+            <span class="icon">
+              <font-awesome-icon icon="save" />
+            </span>
+            <span>Save</span>
+          </button>
+
+          <button class="button button--danger" @click="closeTransparencyModal">
+            Close
+          </button>
+        </div>
+      </div>
+    </dialog>
   </div>
 </template>
 
 <script>
+import { debounce } from 'lodash'
 import { File } from '~/modules'
 import { DragDropMixin } from '~/mixins'
+import { STEP } from '~/modules/nudify/photo-mask'
 
 export default {
   mixins: [DragDropMixin],
@@ -129,15 +176,29 @@ export default {
       type: Object,
       required: true,
     },
+    xRays: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data: () => ({
     renderPhoto: true,
+    transparency: {
+      alpha: 0.5,
+      nude: undefined,
+      corrected: undefined,
+      canvas: undefined,
+    },
   }),
 
   computed: {
     file() {
       return this.mask.file
+    },
+
+    run() {
+      return this.mask.run
     },
 
     maskClass() {
@@ -148,6 +209,16 @@ export default {
         'mask--finished': this.mask.run?.finished,
       }
     },
+  },
+
+  watch: {
+    'transparency.alpha'() {
+      this.onTransparencyChange()
+    },
+  },
+
+  created() {
+    this.onTransparencyChange = debounce(this.transparencyRefresh, 50, { leading: true })
   },
 
   mounted() {
@@ -233,6 +304,81 @@ export default {
         this.renderPhoto = true
       })
     },
+
+    showTransparencyModal() {
+      this.transparencyRefresh()
+
+      this.$refs.transparencyDialog.showModal()
+    },
+
+    closeTransparencyModal() {
+      this.transparency.canvas = null
+      this.transparency.nude = null
+      this.transparency.corrected = null
+
+      this.$refs.transparencyDialog.close()
+    },
+
+    async transparencyRefresh() {
+      if (!this.file.exists) {
+        throw new Warning('The fake nude has not been created.')
+      }
+
+      const canvas = this.$refs.transparencyCanvas
+
+      if (!canvas) {
+        throw new Warning('An internal problem has occurred, please try again.')
+      }
+
+      const context = canvas.getContext('2d')
+
+      if (!context) {
+        throw new Warning('An internal problem has occurred, please try again.')
+      }
+
+      this.transparency.canvas = canvas
+
+      let correctedSrc = this.mask.photo.file.path
+
+      if (this.mask.id === STEP.NUDE) {
+        // Corrected
+        correctedSrc = this.mask.photo.masks[STEP.CORRECT].file.path
+      }
+
+      if (!this.transparency.nude) {
+        const nude = new Image()
+        nude.src = `${this.file.path}?t=${Date.now()}`
+
+        await new Promise((resolve) => {
+          nude.onload = () => resolve()
+        })
+
+        this.transparency.nude = nude
+      }
+
+      if (!this.transparency.corrected) {
+        const corrected = new Image()
+        corrected.src = `${correctedSrc}?t=${Date.now()}`
+
+        await new Promise((resolve) => {
+          corrected.onload = () => resolve()
+        })
+
+        this.transparency.corrected = corrected
+      }
+
+      context.clearRect(0, 0, canvas.width, canvas.height)
+      context.globalAlpha = 1.0
+      context.drawImage(this.transparency.nude, 0, 0, canvas.width, canvas.height)
+      context.globalAlpha = this.transparency.alpha
+      context.drawImage(this.transparency.corrected, 0, 0, canvas.width, canvas.height)
+    },
+
+    saveTransparency() {
+      this.transparency.canvas.toBlob((blob) => {
+        saveAs(blob, this.run.outputName)
+      })
+    },
   },
 }
 </script>
@@ -270,7 +416,7 @@ export default {
 }
 
 .mask__photo {
-  background-image: url('~@/assets/images/repeated-square-dark.png');
+  background-image: url('~@/assets/images/cubes.png');
   will-change: transform;
   height: 350px;
 }
@@ -302,7 +448,7 @@ export default {
   height: 400px;
 
   li {
-    @apply font-mono text-xs text-generic-100 mb-3 block;
+    @apply font-mono text-xs text-common-light mb-3 block;
 
     &.text-danger {
       @apply text-danger-500;

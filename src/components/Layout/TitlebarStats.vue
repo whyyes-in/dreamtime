@@ -10,14 +10,13 @@
 
     <div v-if="system"
          v-tooltip="'CPU Usage.'"
-         class="device"
-         :class="{ 'device--danger': system.utilizationCpu > 80 }">
+         class="device">
       <FontAwesomeIcon icon="microchip" />
       {{ system.utilizationCpu }}%
     </div>
 
     <div v-if="gpu"
-         v-tooltip="'VRAM Usage. (GPU Memory)'"
+         v-tooltip="'VRAM Usage.'"
          class="device"
          :class="{ 'device--danger': gpu.utilizationMemory > 80 }">
       <FontAwesomeIcon icon="desktop" />
@@ -26,8 +25,7 @@
 
     <div v-if="gpu"
          v-tooltip="'GPU Usage.'"
-         class="device"
-         :class="{ 'device--danger': gpu.utilizationGpu > 80 }">
+         class="device">
       <FontAwesomeIcon icon="running" />
       {{ gpu.utilizationGpu }}%
     </div>
@@ -83,7 +81,7 @@ export default {
 }
 
 .device {
-  @apply text-sm font-bold select-none;
+  @apply text-sm select-none;
   transition: color 0.1s linear;
 
   &.device--danger {

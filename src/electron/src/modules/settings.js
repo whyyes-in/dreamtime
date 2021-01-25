@@ -145,6 +145,7 @@ class Settings {
         user: false,
         telemetry: false,
         waifu: false,
+        settings: false,
       },
 
       achievements: {
@@ -159,6 +160,7 @@ class Settings {
         showAds: true,
         showTips: true,
         showStats: false,
+        trypophobiaMode: false,
         window: {
           width: 1200,
           height: 700,
@@ -651,8 +653,12 @@ class Settings {
     if (this.payload?.version === 14 && this._default.version >= 15) {
       this.payload = merge(this.payload, {
         version: 15,
+        wizard: {
+          settings: false,
+        },
         app: {
           showStats: false,
+          trypophobiaMode: false,
         },
       })
     }

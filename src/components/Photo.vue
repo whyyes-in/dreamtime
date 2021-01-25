@@ -42,7 +42,7 @@ export default {
 
   &::v-deep {
     .box__photo {
-      background-image: url('~@/assets/images/repeated-square-dark.png');
+      background-image: url('~@/assets/images/carbon-fibre-v2.png');
       will-change: transform;
       height: 300px;
     }

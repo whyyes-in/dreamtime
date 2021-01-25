@@ -11,8 +11,6 @@
       <span v-else class="badtime"><img src="~/assets/images/games/sans.png"> i don't like what you are doing.</span>
     </div>
 
-    <TitlebarStats v-if="$settings.app.showStats" class="titlebar__stats" />
-
     <div class="titlebar__empty" />
 
     <!-- Drag -->

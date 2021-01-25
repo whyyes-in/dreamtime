@@ -82,7 +82,7 @@ export default {
   }
 
   .item__description {
-    @apply text-generic-600;
+    @apply text-common;
   }
 }
 </style>

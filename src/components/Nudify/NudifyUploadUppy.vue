@@ -8,7 +8,7 @@ import {
 } from 'uppy'
 import InstagramUrl from '@dreamnet/puppy-instagram-url'
 
-import 'uppy/dist/uppy.min.css'
+// import 'uppy/dist/uppy.min.css'
 
 export default {
   mounted() {

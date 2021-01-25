@@ -107,10 +107,6 @@ export default {
     @apply text-white text-2xl;
   }
 
-  .subtitle {
-    @apply text-lg;
-  }
-
   &::v-deep {
     .is-gold {
       .item__label {

@@ -212,7 +212,17 @@ class System {
       const current = {}
 
       if (device === 'gpu') {
+        if (data.controllers.length === 0) {
+          stop = true
+          continue
+        }
+
         const gpu = data.controllers[settings.processing.gpus[0]]
+
+        if (!gpu) {
+          stop = true
+          continue
+        }
 
         current.utilizationMemory = Math.round((gpu.memoryUsed / gpu.memoryTotal) * 100)
         current.utilizationGpu = gpu.utilizationGpu

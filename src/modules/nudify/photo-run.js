@@ -14,7 +14,7 @@ import {
 } from 'lodash'
 import Swal from 'sweetalert2/dist/sweetalert2'
 import emojiStrip from 'emoji-strip'
-import { ImageMagick } from '../imagemagick'
+import Jimp from 'jimp'
 import { File } from '../file'
 import { Timer } from '../timer'
 import cliErrors from '../config/cli-errors.json'
@@ -474,13 +474,13 @@ export class PhotoRun {
 
     this.algorithmStatus = ALGORITHM.DREAMTIME
 
-    const image = new ImageMagick(input)
+    const image = await Jimp.read(input.path)
 
-    await image.crop(this.photo.geometry.crop)
+    image
+      .crop(this.photo.geometry.crop.x, this.photo.geometry.crop.y, this.photo.geometry.crop.width, this.photo.geometry.crop.height)
+      .resize(512, 512)
 
-    await image.resize(512, 512)
-
-    await image.write(output)
+    await image.writeAsync(output.path)
   }
 
   /**

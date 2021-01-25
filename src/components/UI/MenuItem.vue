@@ -129,7 +129,7 @@ export default {
   min-height: 50px;
 
   &:not(:last-child) {
-    @apply mb-6;
+    @apply mb-3;
   }
 
   &.item--active,
@@ -150,7 +150,7 @@ export default {
 
 .item__icon {
   @apply mr-2 flex items-center justify-center;
-  @apply text-2xl text-generic-500;
+  @apply text-2xl;
   width: 42px;
   min-width: 42px;
 
@@ -162,7 +162,7 @@ export default {
 
 .item__label {
   @apply flex-1 flex flex-col justify-center;
-  @apply text-common;
+  @apply text-snow; // Required in case MenuItem is used without Box
 
   &:not(:last-child) {
     @apply mr-6;
@@ -179,7 +179,7 @@ export default {
   }
 
   .item__description {
-    @apply block text-xs text-common-dark;
+    @apply block text-sm text-snow-darker;
   }
 }
 

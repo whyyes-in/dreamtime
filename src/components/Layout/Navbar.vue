@@ -9,14 +9,7 @@
         <font-awesome-icon icon="caret-right" />
       </button>
 
-      <!--
-      <nuxt-link
-        v-tooltip="'Bad Dream Minigame 🎮'"
-        to="/games/baddream"
-        class="nav__item nav__item--button">
-        B
-      </nuxt-link>
-      -->
+      <TitlebarStats v-if="$settings.app.showStats" class="titlebar__stats" />
     </div>
 
     <div class="nav__center">
@@ -43,23 +36,19 @@
     </div>
 
     <div class="nav__right">
-      <nuxt-link v-tooltip="'Settings'" to="/settings" class="nav__item nav__item--button">
-        <font-awesome-icon icon="cog" />
+      <nuxt-link v-if="isBadTimeAvailable"
+                 v-tooltip="'Bad Time Minigame 🎮'"
+                 to="/games/badtime"
+                 class="nav__item nav__item--button">
+        <img src="~/assets/images/games/sans.png">
       </nuxt-link>
 
       <nuxt-link v-tooltip="'About'" to="/about" class="nav__item nav__item--button">
         <font-awesome-icon icon="info-circle" />
       </nuxt-link>
 
-      <nuxt-link v-tooltip="'Help & Tips'" to="/help" class="nav__item nav__item--button">
-        <font-awesome-icon icon="question-circle" />
-      </nuxt-link>
-
-      <nuxt-link v-if="isBadTimeAvailable"
-                 v-tooltip="'Bad Time Minigame 🎮'"
-                 to="/games/badtime"
-                 class="nav__item nav__item--button">
-        <img src="~/assets/images/games/sans.png">
+      <nuxt-link v-tooltip="'Settings'" to="/settings" class="nav__item nav__item--button">
+        <font-awesome-icon icon="cog" />
       </nuxt-link>
     </div>
   </div>
@@ -135,7 +124,7 @@ export default {
 
 .nav {
   @apply flex z-10;
-  @apply h-full bg-menus border-b border-menus-light shadow px-3;
+  @apply h-full bg-menus border-b border-menus-dark px-3 shadow-lg;
   grid-area: nav;
 
   .nav__left,

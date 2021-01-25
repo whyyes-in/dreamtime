@@ -113,6 +113,7 @@ export default {
 <style lang="scss" scoped>
 .queue {
   @apply bg-menus relative;
+  background-image: url('~@/assets/images/carbon-fibre-v2.png');
 }
 
 .queue__section {

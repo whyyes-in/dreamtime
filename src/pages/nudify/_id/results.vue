@@ -68,13 +68,13 @@
 
       <NudifyMaskPhoto :mask="photo.masks.maskfin" />
 
-      <NudifyMaskPhoto :mask="photo.masks.nude" />
+      <NudifyMaskPhoto :mask="photo.masks.nude" :x-rays="true" />
 
-      <NudifyMaskPhoto v-show="photo.scaleMode === 'overlay'" :mask="photo.masks.overlay" />
+      <NudifyMaskPhoto v-show="photo.scaleMode === 'overlay'" :mask="photo.masks.overlay" :x-rays="true" />
 
-      <NudifyMaskPhoto v-show="photo.useColorPaddingRemoval" :mask="photo.masks.padding" />
+      <NudifyMaskPhoto v-show="photo.useColorPaddingRemoval" :mask="photo.masks.padding" :x-rays="true" />
 
-      <NudifyMaskPhoto v-show="photo.useUpscaling" :mask="photo.masks.scale" />
+      <NudifyMaskPhoto v-show="photo.useUpscaling" :mask="photo.masks.scale" :x-rays="true" />
     </section>
 
     <!-- Results -->

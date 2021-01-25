@@ -14,8 +14,8 @@ import path from 'path'
 import { Queue } from '@dreamnet/queue'
 import EventBus from 'js-event-bus'
 import randomcolor from 'randomcolor'
+import Jimp from 'jimp'
 import { uniqueNamesGenerator, names } from 'unique-names-generator'
-import { ImageMagick } from '../imagemagick'
 import { settings, PMODE } from '../system/settings'
 import { requirements } from '../system'
 import { Consola, handleError } from '../consola'
@@ -706,7 +706,11 @@ export class Photo {
     if (this.preferences.advanced.scaleMode === 'padding') {
       await this.syncColorPadding()
     } else {
-      await this.syncCrop()
+      try {
+        await this.syncJimpCrop()
+      } catch (e) {
+        await this.syncCrop()
+      }
     }
   }
 
@@ -731,20 +735,20 @@ export class Photo {
   }
 
   /**
-   * Create the cropped photo using ImageMagick.
+   * Create the cropped photo using Jimp.
    */
-  async syncImageMagickCrop() {
+  async syncJimpCrop() {
     if (!this.geometry.crop) {
       return
     }
 
-    const image = new ImageMagick(this.inputFile)
+    const image = await Jimp.read(this.inputFile.path)
 
-    await image.crop(this.geometry.crop)
+    image
+      .crop(this.geometry.crop.x, this.geometry.crop.y, this.geometry.crop.width, this.geometry.crop.height)
+      .resize(512, 512)
 
-    await image.resize(512, 512)
-
-    await image.write(this.files.crop)
+    await image.writeAsync(this.files.crop.path)
 
     await this.files.crop.load()
 

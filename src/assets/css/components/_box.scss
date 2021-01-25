@@ -18,9 +18,8 @@
   }
 
   .box__photo {
-    @apply relative;
-    @apply bg-cover bg-center bg-no-repeat;
-    background-image: url('~@/assets/images/repeated-square-dark.png');
+    @apply relative bg-center bg-menus-dark;
+    background-image: url('~@/assets/images/inspiration-geometry.png');
     min-height: 130px;
 
     &:first-child {
@@ -50,15 +49,18 @@
     }
 
     .subtitle {
-      @apply text-sm font-semibold mb-2;
     }
   }
 
   .box__content {
-    @apply flex-1 px-6 py-6 text-sm;
+    @apply flex-1 px-6 py-6 leading-relaxed;
 
     p {
       @apply mb-3;
+    }
+
+    hr {
+      @apply border-menus-light mb-3;
     }
   }
 

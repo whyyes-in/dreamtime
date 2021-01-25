@@ -161,7 +161,7 @@ export default {
     }
 
     &.box__item--active {
-      @apply bg-dark-800 text-generic-100;
+      @apply bg-dark-800 text-common-light;
     }
 
     &:not(:last-child) {
@@ -178,7 +178,7 @@ export default {
       @apply flex-1 flex flex-col justify-center;
 
       .item__label {
-        @apply block font-semibold text-generic-400;
+        @apply block font-semibold text-common;
       }
 
       .item__description {
@@ -190,7 +190,7 @@ export default {
       //@apply flex items-center justify-center;
 
       .item__label {
-        @apply block font-semibold text-sm text-generic-400;
+        @apply block font-semibold text-sm text-common;
       }
 
       &:not(.item__action--full) {

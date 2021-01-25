@@ -148,7 +148,7 @@
         </div>
 
         <div class="dialog__buttons">
-          <button class="button button--danger" @click="$refs.terminalDialog.close()">
+          <button class="button button--danger" @click="closeTransparencyModal">
             Close
           </button>
         </div>
@@ -164,8 +164,7 @@
                   width="512"
                   height="512" />
 
-          <MenuItem
-            label="Transparency">
+          <MenuItem label="Transparency">
             <VueSlider v-model="transparency.alpha"
                        :min="0.05"
                        :max="0.95"
@@ -304,6 +303,14 @@ export default {
       this.$refs.transparencyDialog.showModal()
     },
 
+    closeTransparencyModal() {
+      this.transparency.canvas = null
+      this.transparency.nude = null
+      this.transparency.corrected = null
+
+      this.$refs.transparencyDialog.close()
+    },
+
     async transparencyRefresh() {
       if (!this.run.outputFile.exists) {
         throw new Warning('The fake nude has not been created.')
@@ -329,7 +336,7 @@ export default {
 
       if (!this.transparency.nude) {
         const nude = new Image()
-        nude.src = this.run.outputFile.path
+        nude.src = `${this.run.outputFile.path}?t=${Date.now()}`
 
         await new Promise((resolve) => {
           nude.onload = () => resolve()
@@ -340,7 +347,7 @@ export default {
 
       if (!this.transparency.corrected) {
         const corrected = new Image()
-        corrected.src = this.run.photo.masks[STEP.CORRECT].file.path
+        corrected.src = `${this.run.photo.masks[STEP.CORRECT].file.path}?t=${Date.now()}`
 
         await new Promise((resolve) => {
           corrected.onload = () => resolve()
@@ -385,7 +392,7 @@ export default {
 }
 
 .run__photo {
-  background-image: url('~@/assets/images/repeated-square-dark.png');
+  background-image: url('~@/assets/images/carbon-fibre-v2.png');
   will-change: transform;
   height: 500px;
 }
@@ -444,7 +451,7 @@ export default {
   height: 400px;
 
   li {
-    @apply font-mono text-xs text-generic-100 mb-3 block;
+    @apply font-mono text-xs text-common-light mb-3 block;
 
     &.text-danger {
       @apply text-danger-500;

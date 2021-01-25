@@ -35,7 +35,7 @@ module.exports = {
     link: [
       {
         rel: 'preload',
-        href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Roboto+Slab:wght@300;400;500;600&display=swap',
+        href: 'https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600;800&family=Roboto+Slab:wght@300;400;500;600&display=swap',
         as: 'style',
         onload: 'this.rel = \'stylesheet\'',
       },
@@ -101,7 +101,7 @@ module.exports = {
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
     // Enable thread-loader in webpack building.
-    parallel: false,
+    parallel: true,
 
     // Enables the HardSourceWebpackPlugin for improved caching.
     hardSource: cache,
@@ -151,6 +151,9 @@ module.exports = {
       //
       config.output.publicPath = './assets/'
 
+      // Source maps.
+      config.devtool = 'source-map'
+
       // Don't throw warning when asset created is over 250kb
       config.performance.hints = false
 
@@ -185,9 +188,6 @@ module.exports = {
         test: /\.ya?ml$/,
         use: ['js-yaml-loader'],
       })
-
-      // Source maps.
-      config.devtool = 'source-map'
     },
   },
 }

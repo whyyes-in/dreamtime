@@ -1,5 +1,9 @@
 <template>
   <div ref="intro" class="welcome">
+    <div class="welcome__hi">
+      👋
+    </div>
+
     <h1 class="welcome__title">
       Welcome to {{ $dream.name }}!
     </h1>
@@ -51,15 +55,19 @@ export default {
   @apply flex flex-col justify-center items-center;
 }
 
+.welcome__hi {
+  @apply text-8xl mb-3;
+}
+
 .welcome__title {
-  @apply text-6xl text-white font-bold;
+  @apply text-6xl text-white font-bold leading-relaxed;
 }
 
 .welcome__subtitle {
-  @apply text-4xl text-white font-semibold;
+  @apply text-4xl font-semibold mb-12;
 }
 
 .welcome__message {
-  @apply text-xl my-10 text-center;
+  @apply text-xl text-center leading-relaxed mb-6;
 }
 </style>

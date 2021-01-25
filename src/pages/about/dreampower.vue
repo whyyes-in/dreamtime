@@ -13,8 +13,8 @@
           </div>
 
           <div class="right">
-            <button class="button" @click="$dreampower.openAppFolder()">
-              App Folder
+            <button v-tooltip="'Application folder.'" class="button" @click="$dreampower.openAppFolder()">
+              <FontAwesomeIcon icon="folder-open" />
             </button>
           </div>
         </div>
@@ -53,10 +53,6 @@ export default {
 .project__content {
   .title {
     @apply text-white text-2xl;
-  }
-
-  .subtitle {
-    @apply text-lg;
   }
 }
 

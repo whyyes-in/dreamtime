@@ -84,7 +84,7 @@ export default {
       @apply list-disc;
 
       li {
-        @apply text-sm ml-3;
+        @apply ml-3;
       }
     }
 

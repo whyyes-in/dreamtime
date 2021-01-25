@@ -10,7 +10,7 @@
           <font-awesome-icon icon="tools" />
         </button>
 
-        <button v-show="!photo.running && !photo.waiting && !photo.withCustomMasks" v-tooltip="'Add to Queue'" @click="add">
+        <button v-show="!photo.running && !photo.waiting && !photo.withCustomMasks" v-tooltip="'Add to queue'" @click="add">
           <font-awesome-icon icon="play" />
         </button>
 
@@ -67,7 +67,6 @@ export default {
 <style lang="scss" scoped>
 .photo {
   @apply relative border-2 border-transparent;
-  background-image: url('~@/assets/images/repeated-square-dark.png');
   will-change: transform;
 
   &.photo--running {

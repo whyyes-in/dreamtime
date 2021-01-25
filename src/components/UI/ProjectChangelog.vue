@@ -59,8 +59,8 @@ export default {
 .changelog {
   &::v-deep {
     .box__header {
-      .title {
-        @apply text-xl;
+      .subtitle {
+        @apply text-sm;
       }
     }
 
@@ -77,7 +77,7 @@ export default {
         }
 
         li {
-          @apply text-sm ml-6;
+          @apply ml-6;
 
           &:not(:last-child) {
             @apply mb-1;

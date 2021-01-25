@@ -11,14 +11,14 @@
 
 .button {
   @apply inline-flex items-center justify-center;
-  @apply px-3 rounded bg-button text-white font-semibold;
+  @apply px-3 rounded bg-button text-snow font-semibold shadow;
   @apply outline-none #{!important};
   @include transition('background-color, color');
   height: 35px;
 
   &:hover,
   &:active {
-    @apply bg-button-dark;
+    @apply bg-button-light;
   }
 
   &[disabled],
@@ -43,11 +43,11 @@
 
   &.button--active,
   &.nuxt-link-exact-active {
-    @apply text-white bg-primary-500;
+    @apply bg-primary;
   }
 
   &.button--primary {
-    @apply bg-primary text-black;
+    @apply bg-primary text-night-darker;
 
     &:hover,
     &:active {
@@ -56,16 +56,16 @@
   }
 
   &.button--warning {
-    @apply bg-warning text-black;
+    @apply bg-warning text-night-darker;
 
     &:hover,
     &:active {
-      @apply bg-warning-700;
+      @apply bg-warning-dark;
     }
   }
 
   &.button--danger {
-    @apply bg-danger text-black;
+    @apply bg-danger text-night-darker;
 
     &:hover,
     &:active {
@@ -74,7 +74,7 @@
   }
 
   &.button--success {
-    @apply bg-success text-black;
+    @apply bg-success text-night-darker;
 
     &:hover,
     &:active {
@@ -83,7 +83,7 @@
   }
 
   &.button--info {
-    @apply bg-blue text-black;
+    @apply bg-blue text-night-darker;
 
     &:hover,
     &:active {

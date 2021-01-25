@@ -70,7 +70,7 @@
 
       <div class="wizard__footer">
         <button class="button button--xl" @click="next">
-          Start!
+          Continue
         </button>
       </div>
     </div>
@@ -86,7 +86,7 @@ export default {
   middleware({ redirect, route }) {
     if (!route.query.forced) {
       if (settings.wizard.telemetry) {
-        redirect('/')
+        redirect('/wizard/settings')
       }
     }
   },
@@ -94,7 +94,7 @@ export default {
   methods: {
     next() {
       settings.wizard.telemetry = true
-      this.$router.push('/')
+      this.$router.push('/wizard/settings')
     },
   },
 }

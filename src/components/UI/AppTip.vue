@@ -21,6 +21,7 @@ export default {
 
 <style lang="scss" scoped>
 .tip {
+  @apply text-sm;
   cursor: help;
 }
 </style>

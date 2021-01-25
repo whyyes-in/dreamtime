@@ -76,23 +76,22 @@
           </h2>
 
           <h3 class="subtitle">
-            Upload photos and videos from the web.
-            <span v-tooltip="'Only web addresses that end in: jpg, png, gif, webm or mp4.'" class="help">
-              <font-awesome-icon icon="info-circle" />
-            </span>
+            Open photos and videos from the web.
           </h3>
         </PageHeader>
 
         <div class="method__body text-center">
           <input v-model="webAddress"
                  type="url"
-                 class="input mb-2"
+                 class="input"
                  placeholder="https://"
                  data-private="lipsum">
 
           <button class="button" @click="openUrl">
-            <span>Upload</span>
+            <span>OPEN</span>
           </button>
+
+          <span class="method__note">PNG, JPG, GIF, MP4 and WEBM direct urls only.</span>
         </div>
       </div>
 
@@ -105,7 +104,7 @@
           </h2>
 
           <h3 class="subtitle">
-            Upload photos and videos from any public Instagram profile.
+            Open photos and videos from any public Instagram profile.
           </h3>
         </PageHeader>
 
@@ -118,8 +117,10 @@
 
           <button class="button"
                   @click="openInstagramPhoto">
-            <span>Upload</span>
+            <span>OPEN</span>
           </button>
+
+          <span class="method__note">Make sure the profile is public and you are not using a VPN/Proxy. <AppTip class="ml-2" tooltip="It is only possible to download photos from public profiles. Instagram usually blocks access to public photos if you are using a VPN/Proxy." /></span>
         </div>
       </div>
 
@@ -132,7 +133,7 @@
           </h2>
 
           <h3 class="subtitle">
-            Upload one or more files from your computer.
+            Open one or more files from your computer.
           </h3>
         </PageHeader>
 
@@ -147,8 +148,10 @@
         <div class="method__body text-center">
           <button class="button"
                   @click.prevent="$refs.photo.click()">
-            <span>Open File(s)</span>
+            <span>OPEN</span>
           </button>
+
+          <span class="method__note">PNG, JPG, GIF, MP4 and WEBM files only.</span>
         </div>
       </div>
 
@@ -161,14 +164,14 @@
           </h2>
 
           <h3 class="subtitle">
-            Upload all valid photos and videos from a folder on your computer.
+            Open all valid photos and videos from a folder on your computer.
           </h3>
         </PageHeader>
 
         <div class="method__body text-center">
           <button class="button"
                   @click.prevent="openFolder">
-            <span>Open folder</span>
+            <span>OPEN FOLDER</span>
           </button>
         </div>
       </div>
@@ -299,7 +302,7 @@ export default {
   @apply mb-9;
 
   .title {
-    @apply text-lg font-semibold text-generic-100;
+    @apply text-lg font-semibold text-common-light;
 
     .icon {
       @apply mr-2;
@@ -333,5 +336,12 @@ export default {
     @apply mb-3;
   }
 
+  .button {
+    @apply mb-6;
+  }
+}
+
+.method__note {
+  @apply text-xs block  text-snow-darker;
 }
 </style>

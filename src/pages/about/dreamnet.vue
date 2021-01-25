@@ -79,10 +79,6 @@ export default {
   .title {
     @apply text-white text-2xl;
   }
-
-  .subtitle {
-    @apply text-lg;
-  }
 }
 
 .box__photo {

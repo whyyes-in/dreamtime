@@ -61,4 +61,10 @@ export default function ({ route, redirect }) {
       redirect('/wizard/telemetry')
     }
   }
+
+  if (!wizard.settings) {
+    if (route.path !== '/wizard/settings') {
+      redirect('/wizard/settings')
+    }
+  }
 }

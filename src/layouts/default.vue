@@ -47,6 +47,7 @@ export default {
       return {
         'layout--dragging': this.isDragging,
         'layout--left-queue': this.$settings.app.queuePosition === 'left',
+        'layout--trypophobia': this.$settings.app.trypophobiaMode,
         ...this.globalLayoutClass,
       }
     },
@@ -128,6 +129,14 @@ export default {
     .menu {
       grid-area: queue;
       @apply border-l border-menus-light;
+    }
+  }
+
+  &.layout--trypophobia {
+    &::v-deep {
+      .queue, .box__photo, .nudify__photo {
+        background-image: none;
+      }
     }
   }
 

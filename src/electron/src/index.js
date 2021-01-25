@@ -19,6 +19,7 @@ import { system } from './modules/tools/system'
 import { getPath, getAppPath } from './modules/tools/paths'
 import { settings } from './modules'
 import config from '~/nuxt.config'
+import tailwind from '~/tailwind.config'
 
 const logger = Logger.create('electron')
 
@@ -212,7 +213,7 @@ class DreamApp {
 
     // https://github.com/electron/electron/issues/23757#issuecomment-640146333
     protocol.registerFileProtocol('file', (request, callback) => {
-      const pathname = decodeURI(request.url.replace('file:///', ''))
+      const pathname = decodeURI(request.url.replace('file:///', '').replace(/\?.*$/g, ''))
       callback(pathname)
     })
 
@@ -259,8 +260,7 @@ class DreamApp {
       minWidth: 1200,
       minHeight: 700,
       frame: false,
-      show: false,
-      backgroundColor: '#060709',
+      backgroundColor: tailwind.theme.extend.colors.background,
 
       webPreferences: {
         enableRemoteModule: true,
@@ -286,8 +286,6 @@ class DreamApp {
 
     //
     this.window.webContents.once('dom-ready', () => {
-      this.window.show()
-
       if (settings.get('app.window.maximized', true)) {
         this.window.maximize()
       }

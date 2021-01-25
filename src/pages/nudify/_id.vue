@@ -100,7 +100,7 @@
         <button
           id="nudify-forget"
           v-tooltip="{
-            content: 'Remove the photo from the application and free up memory. (Fake nudes files will not be removed)',
+            content: 'Remove the photo from the application and free up memory. (Nudes will not be removed)',
             placement: 'right',
             boundary: 'viewport'}"
           class="button"
@@ -194,8 +194,8 @@ export default {
 }
 
 .nudify__photo {
-  @apply relative rounded;
-  background-image: url('~@/assets/images/repeated-square-dark.png');
+  @apply relative rounded bg-menus-dark;
+  background-image: url('~@/assets/images/axiom-pattern.png');
   will-change: transform;
   height: 250px;
 }

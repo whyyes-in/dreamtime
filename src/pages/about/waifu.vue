@@ -17,8 +17,11 @@
           </div>
 
           <div class="right buttons">
-            <button v-if="requirements.canUseWaifu" class="button" @click="$waifu.openAppFolder()">
-              App Folder
+            <button v-if="requirements.canUseWaifu"
+                    v-tooltip="'Application folder.'"
+                    class="button"
+                    @click="$waifu.openAppFolder()">
+              <FontAwesomeIcon icon="folder-open" />
             </button>
 
             <nuxt-link v-else to="/wizard/waifu" class="button button--info">
@@ -29,7 +32,7 @@
                v-tooltip="'Install this to use Waifu2X on GPU.'"
                href="https://developer.nvidia.com/cuda-10.2-download-archive"
                target="_blank"
-               class="button button--success">
+               class="button button--warning">
               <span class="icon"><font-awesome-icon icon="external-link-square-alt" /></span>
               <span>CUDA 10.2</span>
             </a>
@@ -80,10 +83,6 @@ export default {
 .project__content {
   .title {
     @apply text-white text-2xl;
-  }
-
-  .subtitle {
-    @apply text-lg;
   }
 }
 

@@ -47,6 +47,8 @@
         <SettingsField field-id="app.duplicates" />
 
         <SettingsField field-id="app.showStats" />
+
+        <SettingsField field-id="app.trypophobiaMode" />
       </div>
     </section>
 

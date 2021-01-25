@@ -1,3 +1,45 @@
+const color = require('tinycolor2')
+
+//
+function lighten(col, amount = 5) {
+  return color(col).lighten(amount).toString()
+}
+
+function darken(col, amount = 5) {
+  return color(col).darken(amount).toString()
+}
+
+//
+const theme = {
+  night: {
+    light: '#353c4a', // UI elements like indent- and wrap guide marker
+    DEFAULT: '#2f3542', // selection- and text highlighting color
+    dark: '#292e39', // elevated, more prominent or focused UI elements
+    darker: '#20242d', // elements background
+  },
+
+  snow: {
+    darker: '#D8DEE9',
+    dark: '#E5E9F0',
+    DEFAULT: '#ECEFF4',
+  },
+
+  frost: {
+    green: '#8FBCBB', // stand out and get more visual attention
+    cyan: '#88C0D0', // primary UI elements with main usage purposes
+    gray: '#81A1C1', // secondary UI elements that also require more visual attention than other elements
+    blue: '#5E81AC', // tertiary UI elements that require more visual attention
+  },
+
+  aurora: {
+    red: '#BF616A', // errors
+    orange: '#D08770', // rarely used for UI elements
+    yellow: '#EBCB8B', // warnings
+    green: '#A3BE8C', // success
+    pink: '#B48EAD', // rarely used for UI elements
+  },
+}
+
 // See DEFAULT config https://github.com/tailwindcss/tailwindcss/blob/master/stubs/DEFAULTConfig.stub.js
 module.exports = {
   theme: {
@@ -34,9 +76,9 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: [
+          'Rubik',
           '-apple-system',
           'BlinkMacSystemFont',
-          'Inter',
           'system-ui',
           'Arial',
           'sans-serif',
@@ -53,40 +95,105 @@ module.exports = {
 
       // https://javisperez.github.io/tailwindcolorshades/
       colors: {
-        generic: {
-          100: '#DCDCE0',
-          200: '#D7D7DB',
-          300: '#D2D2D7',
-          400: '#CDCDD2',
-          500: '#C8C8CE',
-          600: '#B6B6BB',
-          700: '#A4A4A9',
-          800: '#929296',
-          900: '#808084',
-        },
+        // Polar Night
 
-        common: {
-          light: '#e4e4e7',
-          DEFAULT: '#c8c8ce',
-          dark: '#8c8c90',
-        },
+        night: theme.night,
+
+        background: '#191d24',
 
         input: {
-          light: '#242525',
-          DEFAULT: '#18191a',
-          dark: '#161717',
-        },
-
-        menus: {
-          light: '#2b2e33',
-          DEFAULT: '#14171c',
-          dark: '#121519',
+          light: lighten(theme.night.dark),
+          DEFAULT: theme.night.dark,
+          dark: darken(theme.night.dark),
         },
 
         button: {
-          light: '#696a6d',
-          DEFAULT: '#434549',
-          dark: '#36373a',
+          light: lighten(theme.night.DEFAULT),
+          DEFAULT: theme.night.DEFAULT,
+          dark: darken(theme.night.DEFAULT),
+        },
+
+        menus: {
+          light: lighten(theme.night.darker),
+          DEFAULT: theme.night.darker,
+          dark: darken(theme.night.darker),
+        },
+
+        // Snow Storm
+
+        snow: theme.snow,
+
+        // Frost
+
+        frost: theme.frost,
+
+        blue: {
+          light: lighten(theme.frost.blue),
+          DEFAULT: theme.frost.blue,
+          dark: darken(theme.frost.blue),
+        },
+
+        // Aurora
+
+        aurora: theme.aurora,
+
+        danger: {
+          light: lighten(theme.aurora.red),
+          DEFAULT: theme.aurora.red,
+          dark: darken(theme.aurora.red),
+
+          400: lighten(theme.aurora.red),
+          500: theme.aurora.red,
+          600: darken(theme.aurora.red),
+
+          100: '#FEECEB',
+          200: '#FCD0CD',
+          300: '#FBB4AF',
+          700: '#922820',
+          800: '#6E1E18',
+          900: '#491410',
+        },
+
+        success: {
+          light: lighten(theme.aurora.green),
+          DEFAULT: theme.aurora.green,
+          dark: darken(theme.aurora.green),
+
+          400: lighten(theme.aurora.green),
+          500: theme.aurora.green,
+          600: darken(theme.aurora.green),
+
+          100: '#EEF8ED',
+          200: '#D5EDD1',
+          300: '#BCE3B5',
+          700: '#346E2A',
+          800: '#275320',
+          900: '#1A3715',
+        },
+
+        warning: {
+          light: lighten(theme.aurora.yellow),
+          DEFAULT: theme.aurora.yellow,
+          dark: darken(theme.aurora.yellow),
+
+          400: lighten(theme.aurora.yellow),
+          500: theme.aurora.yellow,
+          600: darken(theme.aurora.yellow),
+
+          100: '#F9F2E8',
+          200: '#F0DEC5',
+          300: '#E6CBA2',
+          700: '#744A0D',
+          800: '#57380A',
+          900: '#3A2507',
+        },
+
+        //
+
+        common: {
+          light: '#ECEFF4',
+          DEFAULT: '#E5E9F0',
+          dark: '#D8DEE9',
         },
 
         dark: {
@@ -113,51 +220,6 @@ module.exports = {
           900: '#020204',
         },
 
-        background: '#060709',
-
-        danger: {
-          100: '#FEECEB',
-          200: '#FCD0CD',
-          300: '#FBB4AF',
-          400: '#F77B72',
-          500: '#F44336',
-          light: '#f6695e',
-          DEFAULT: '#F44336',
-          dark: '#c3362b',
-          600: '#DC3C31',
-          700: '#922820',
-          800: '#6E1E18',
-          900: '#491410',
-        },
-
-        success: {
-          100: '#EEF8ED',
-          200: '#D5EDD1',
-          300: '#BCE3B5',
-          400: '#89CD7E',
-          500: '#57B846',
-          light: '#79c66b',
-          DEFAULT: '#57B846',
-          dark: '#469338',
-          600: '#4EA63F',
-          700: '#346E2A',
-          800: '#275320',
-          900: '#1A3715',
-        },
-
-        warning: {
-          100: '#F9F2E8',
-          200: '#F0DEC5',
-          300: '#E6CBA2',
-          400: '#D4A35C',
-          500: '#C17C16',
-          DEFAULT: '#C17C16',
-          600: '#AE7014',
-          700: '#744A0D',
-          800: '#57380A',
-          900: '#3A2507',
-        },
-
         primary: {
           100: '#E5A667',
           200: '#E19A51',
@@ -172,21 +234,8 @@ module.exports = {
           800: '#9C550C',
           900: '#894A0B',
         },
-
-        blue: {
-          light: '#58c7ec',
-          DEFAULT: '#2EB9E7',
-          dark: '#2594b9',
-        },
       },
 
-      boxShadow: {
-        DEFAULT: '0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.56)',
-        md: '0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.56)',
-        lg: '0 10px 15px -3px rgba(0, 0, 0, 0.7), 0 4px 6px -2px rgba(0, 0, 0, 0.55)',
-        xl: '0 20px 25px -5px rgba(0, 0, 0, 0.8), 0 10px 10px -5px rgba(0, 0, 0, 0.54)',
-        '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.85)',
-      },
     },
   },
   variants: {},

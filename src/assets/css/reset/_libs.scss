@@ -17,7 +17,7 @@
   }
 
   a {
-    @apply text-primary-500 underline;
+    @apply text-primary underline;
   }
 }
 
@@ -81,10 +81,14 @@
 }
 
 .tippy-content {
-  @apply px-6 py-3 bg-menus-light shadow;
+  @apply px-6 py-3 bg-primary text-black shadow-lg;
 
-  p {
+  p:not(:last-child) {
     @apply mb-3;
+  }
+
+  code {
+    @apply bg-primary-dark;
   }
 
   ul {
@@ -98,6 +102,10 @@
       }
     }
   }
+}
+
+.tippy-arrow {
+  @apply text-primary;
 }
 
 .vue-slider-dot-tooltip-inner {

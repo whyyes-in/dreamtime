@@ -30,7 +30,7 @@ input[type="checkbox"] {
 }
 
 .input {
-  @apply border border-menus-light bg-black text-common;
+  @apply border border-transparent bg-input text-snow;
   @apply p-2 rounded w-full;
   @include transition('background-color, color, border-color');
   outline: none !important;
@@ -74,11 +74,15 @@ $checkbox-size: 1.5rem;
   }
 
   input[type="checkbox"] + label::before {
-    @apply inline-block rounded border-2 border-menus-light bg-black;
+    @apply inline-block rounded border-2 border-transparent bg-input;
     content: "";
     vertical-align: bottom;
     width: $checkbox-size;
     height: $checkbox-size;
+  }
+
+  input[type="checkbox"]:hover + label::before {
+    @apply border-primary;
   }
 
   input[type="checkbox"]:checked + label::before {

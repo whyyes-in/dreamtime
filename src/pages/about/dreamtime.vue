@@ -15,10 +15,14 @@
             </h2>
           </div>
 
-          <div class="right">
-            <button class="button" @click="$dreamtime.openAppFolder()">
-              App Folder
+          <div class="right buttons">
+            <button v-tooltip="'Application folder.'" class="button" @click="$dreamtime.openAppFolder()">
+              <FontAwesomeIcon icon="folder-open" />
             </button>
+
+            <nuxt-link v-tooltip="'Help & Tips.'" to="/help" class="button button--info">
+              <FontAwesomeIcon icon="question-circle" />
+            </nuxt-link>
           </div>
         </div>
 
@@ -56,10 +60,6 @@ export default {
 .project__content {
   .title {
     @apply text-white text-2xl;
-  }
-
-  .subtitle {
-    @apply text-lg;
   }
 }
 
