@@ -98,7 +98,7 @@ module.exports = {
     '!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}',
     '!**/{appveyor.yml,.travis.yml,circle.yml}',
     '!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}',
-    '!**/{jsconfig.json,electron-builder.js,.eslintrc.js,.env-cmdrc.js,.codeclimate.yml,.babelrc,tailwind.config.js,nucleus.json}',
+    '!**/{jsconfig.json,electron-builder.js,.eslintrc.js,.env-cmdrc.js,.codeclimate.yml,.babelrc,nucleus.json}',
     '!{components,cli,layouts,middleware,mixins,pages,patches,plugins,scripts,store,third,coverage,.nuxt,test,workers}',
     '!{static,assets}',
     '!electron/src',

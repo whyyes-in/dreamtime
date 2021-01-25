@@ -19,7 +19,7 @@
     "start:nuxt": "yarn development nuxt",
     "start:babel": "yarn development babel electron/src --out-dir electron/dist --source-maps --watch --verbose",
     "start:electron": "yarn development electron .",
-    "build:nuxt": "yarn production nuxt build && yarn production nuxt export",
+    "build:nuxt": "yarn production nuxt generate",
     "build:babel": "yarn production babel electron/src --out-dir electron/dist --minified",
     "build:electron": "yarn production electron-builder --publish=never --x64",
     "build:dev": "yarn run clean && yarn run build:nuxt && yarn run build:babel && yarn run build:electron",
@@ -114,7 +114,8 @@
     "uppy": "^1.24.0",
     "uuid": "^8.3.2",
     "vue-slider-component": "^3.2.11",
-    "webtorrent": "^0.112.1"
+    "webtorrent": "^0.112.1",
+    "tailwindcss-alpha": "hacknug/tailwindcss-alpha#feature/tests"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
@@ -167,7 +168,7 @@
     "shx": "^0.3.3",
     "spectron": "^13.0.0",
     "tailwindcss": "2.0.2",
-    "tailwindcss-alpha": "hacknug/tailwindcss-alpha#feature/tests",
+
     "worker-loader": "^3.0.7"
   },
   "author": {

@@ -148,7 +148,7 @@
         </div>
 
         <div class="dialog__buttons">
-          <button class="button button--danger" @click="closeTransparencyModal">
+          <button class="button button--danger" @click="$refs.terminalDialog.close()">
             Close
           </button>
         </div>
@@ -182,7 +182,7 @@
             <span>Save</span>
           </button>
 
-          <button class="button button--danger" @click="$refs.transparencyDialog.close()">
+          <button class="button button--danger" @click="closeTransparencyModal">
             Close
           </button>
         </div>

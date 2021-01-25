@@ -43,9 +43,9 @@
   label: Show stats.
   description: Show system usage statistics at the top.
   tooltip: |-
-    Enabling this option can consume more system resources, especially in Windows.
+    Allows you to check `RAM Usage` or `VRAM Usage`, problems with the algorithm usually occur when one of these is too high.
 
-    Check carefully `RAM Usage` or `VRAM Usage`, problems with the algorithm usually occur when one of these is too high.
+    Enabling this option can consume more system resources, especially in Windows.
   input: checkbox
 
 - id: app.trypophobiaMode
