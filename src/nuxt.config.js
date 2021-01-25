@@ -1,47 +1,37 @@
 /* eslint-disable max-len */
 
+const tailwind = require('./tailwind.config')
+
 const dev = process.env.NODE_ENV === 'development'
 const cache = false
 
 module.exports = {
   dev,
 
-  /**
-   *
-   */
+  // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: false,
 
-  /**
-   * Deployment target
-   */
+  // Target (https://go.nuxtjs.dev/config-target)
   target: 'static',
 
-  /**
-   *
-   */
+  // Nuxt.js router (https://nuxtjs.org/docs/2.x/configuration-glossary/configuration-router)
   router: {
     mode: 'hash',
   },
 
-  /**
-   * Server settings
-   */
+  // Server settings (https://nuxtjs.org/docs/2.x/configuration-glossary/configuration-server)
   server: {
-    port: process.env.SERVER_PORT || 4000,
-    host: process.env.SERVER_HOST || 'localhost',
+    port: process.env.SERVER_PORT || 3000,
+    host: process.env.SERVER_HOST || '127.0.0.1',
   },
 
-  /*
-   ** Headers of the page
-   */
+  // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
     title: process.env.npm_package_displayName || 'DreamTime',
-
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
     ],
-
     link: [
       {
         rel: 'preload',
@@ -50,7 +40,6 @@ module.exports = {
         onload: 'this.rel = \'stylesheet\'',
       },
     ],
-
     script: [
       {
         src: 'https://ads.dreamnet.tech/delivery/asyncjs.php',
@@ -59,22 +48,23 @@ module.exports = {
     ],
   },
 
-  /*
-   ** Customize the progress-bar color
-   */
-  loading: { color: '#D67411' },
+  // Customize the progress-bar color. (https://nuxtjs.org/docs/2.x/configuration-glossary/configuration-loading#customizing-the-progress-bar)
+  loading: { color: tailwind.theme.extend.colors.primary.DEFAULT },
 
-  /*
-   ** Global CSS
-   */
+  // Loading indicator. (https://nuxtjs.org/docs/2.x/configuration-glossary/configuration-loading-indicator)
+  loadingIndicator: {
+    name: 'cube-grid',
+    color: tailwind.theme.extend.colors.primary.DEFAULT,
+    background: tailwind.theme.extend.colors.background,
+  },
+
+  // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [
     '~/assets/css/vendor.scss',
     '~/assets/css/app.scss',
   ],
 
-  /*
-   ** Plugins to load before mounting the App
-   */
+  // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
     '~/plugins/binds.js',
     '~/plugins/boot.js',
@@ -84,93 +74,51 @@ module.exports = {
     '~/plugins/vue-portal.js',
   ],
 
-  /*
-   ** Nuxt.js dev-modules
-   */
+  // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
-    // Doc: https://github.com/nuxt-community/eslint-module
-    // '@nuxtjs/eslint-module',
     // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
     '@nuxtjs/tailwindcss',
     // Doc: https://github.com/nuxt-community/style-resources-module
     '@nuxtjs/style-resources',
   ],
 
-  /*
-   ** Nuxt.js modules
-   */
+  // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [],
 
-  /**
-   *
-   */
+  //
   tailwindcss: {
     cssPath: '~/assets/css/tailwind.scss',
   },
 
-  /**
-   *
-   */
+  // https://github.com/nuxt-community/style-resources-module
   styleResources: {
     scss: '~/assets/css/utilities/all.scss',
   },
 
-  /**
-   * Scan and auto import components.
-   */
-  components: [
-    '~/components/',
-  ],
+  // Auto import components (https://go.nuxtjs.dev/config-components)
+  components: true,
 
-  /*
-   ** Build configuration
-   */
+  // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
-    /**
-     * Enable thread-loader in webpack building.
-     */
-    parallel: true,
+    // Enable thread-loader in webpack building.
+    parallel: false,
 
-    /**
-     * Enables the HardSourceWebpackPlugin for improved caching.
-     */
+    // Enables the HardSourceWebpackPlugin for improved caching.
     hardSource: cache,
 
-    /**
-     * Enable cache of terser-webpack-plugin and cache-loader.
-     */
+    // Enable cache of terser-webpack-plugin and cache-loader.
     cache,
 
-    /**
-     * Enables Common CSS Extraction using Vue Server Renderer guidelines.
-     */
+    // Enables Common CSS Extraction using Vue Server Renderer guidelines.
     extractCSS: false,
 
-    /**
-     *
-     */
+    //
     publicPath: '/assets/',
 
-    /**
-     * Customize options of Nuxt.js integrated webpack loaders.
-     * https://nuxtjs.org/api/configuration-build#loaders
-     */
-    loaders: {
-      imgUrl: {
-        limit: 80 * 1000,
-      },
-    },
-
-    /**
-     * Customize Babel configuration for JavaScript and Vue files.
-     */
+    // Customize Babel configuration for JavaScript and Vue files.
     babel: {
-      sourceType: 'unambiguous',
-
       plugins: [
-        'lodash',
-        '@babel/plugin-proposal-class-properties',
-        '@babel/plugin-proposal-export-default-from',
+        // 'lodash',
         '@babel/plugin-proposal-optional-chaining',
         [
           'transform-inline-environment-variables',
@@ -183,27 +131,19 @@ module.exports = {
         ],
       ],
 
-      presets({ envName }) {
-        const envTargets = {
-          client: { chrome: '85' },
-          server: { node: 'current' },
-        }
-
+      presets({ isServer }) {
         return [
           [
             '@nuxt/babel-preset-app',
             {
-              targets: envTargets[envName],
-              corejs: { version: 3 },
+              targets: isServer ? 'current node' : {},
             },
           ],
         ]
       },
     },
 
-    /*
-     ** You can extend webpack config here.
-     */
+    // You can extend webpack config here.
     extend(config, { isDev }) {
       //
       config.target = 'electron-renderer'
@@ -217,7 +157,7 @@ module.exports = {
       // Disable handling of requires with a single expression.
       config.module.exprContextCritical = false
 
-      //
+      // Worker loader.
       config.module.rules.push({
         test: /\.worker\.js$/,
         use: {
@@ -229,7 +169,7 @@ module.exports = {
         exclude: /(node_modules)/,
       })
 
-      //
+      // Media loader.
       config.module.rules.push({
         test: /\.(ogg|mp3|wav|mpe?g)$/i,
         use: {
@@ -240,7 +180,7 @@ module.exports = {
         },
       })
 
-      //
+      // YAML loader.
       config.module.rules.push({
         test: /\.ya?ml$/,
         use: ['js-yaml-loader'],

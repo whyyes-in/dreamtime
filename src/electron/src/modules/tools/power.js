@@ -28,7 +28,7 @@ export function exec(args, options = {}) {
     // Main script
     args.unshift('main.py')
 
-    // C:\Users\\koles\Anaconda3\envs\dreampower\python.exe
+    // C:\Users\koles\Anaconda3\envs\dreampower\python.exe
     const pythonPath = fs.existsSync(process.env.POWER_PYTHON) ? process.env.POWER_PYTHON : 'python'
 
     logger.debug('[Python] Running:', {

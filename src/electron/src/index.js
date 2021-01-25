@@ -216,6 +216,7 @@ class DreamApp {
       callback(pathname)
     })
 
+    /*
     if (process.env.DEVTOOLS) {
       const { default: installExtension, VUEJS_DEVTOOLS } = require('electron-devtools-installer')
 
@@ -223,6 +224,7 @@ class DreamApp {
         .then((extension) => logger.debug(`Added Extension:  ${extension.name}`))
         .catch((err) => logger.debug('An error occurred: ', err))
     }
+    */
 
     const contextMenu = require('electron-context-menu')
 
@@ -251,15 +253,7 @@ class DreamApp {
   static createWindow() {
     logger.info('Creating window...')
 
-    let icon
-    const iconPath = resolve(config.rootDir, 'dist', 'icon.png')
-
-    if (fs.existsSync(iconPath)) {
-      icon = nativeImage.createFromPath(iconPath)
-    }
-
-    // browser window.
-    this.window = new BrowserWindow({
+    const options = {
       width: settings.get('app.window.width', 1200),
       height: settings.get('app.window.height', 700),
       minWidth: 1200,
@@ -267,16 +261,25 @@ class DreamApp {
       frame: false,
       show: false,
       backgroundColor: '#060709',
-      icon,
 
       webPreferences: {
         enableRemoteModule: true,
         nodeIntegration: true,
         nodeIntegrationInWorker: true,
         webSecurity: false, // Necessary to load filesystem photos.
+        contextIsolation: false, // Legacy
         preload: resolve(app.getAppPath(), 'electron', 'dist', 'provider.js'),
       },
-    })
+    }
+
+    const iconPath = resolve(config.rootDir, 'dist', 'icon.png')
+
+    if (fs.existsSync(iconPath)) {
+      options.icon = nativeImage.createFromPath(iconPath)
+    }
+
+    // browser window.
+    this.window = new BrowserWindow(options)
 
     // disable menu
     this.window.setMenu(null)

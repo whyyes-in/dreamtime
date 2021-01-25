@@ -22,7 +22,7 @@
 
     <iframe
       id="badtime"
-      src="https://badtime.dreamnet.tech"
+      src="https://link.dreamnet.tech/ipfs/QmYbskXAohbuF8THskQyTFut7nrRvvaUwCr2J4rujYcoN6/"
       name="badtime"
       scrolling="no"
       frameborder="0"

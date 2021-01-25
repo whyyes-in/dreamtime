@@ -136,7 +136,7 @@ class Settings {
     const hasGPU = process.platform === 'darwin' ? false : system.graphics.length > 0
 
     this.payload = {
-      version: 14,
+      version: 15,
       user: uuid(),
 
       wizard: {
@@ -158,6 +158,7 @@ class Settings {
         duplicates: false,
         showAds: true,
         showTips: true,
+        showStats: false,
         window: {
           width: 1200,
           height: 700,
@@ -644,6 +645,16 @@ class Settings {
           this.payload.folders.cropped = newLocation
         }
       }
+    }
+
+    // 14 -> 15
+    if (this.payload?.version === 14 && this._default.version >= 15) {
+      this.payload = merge(this.payload, {
+        version: 15,
+        app: {
+          showStats: false,
+        },
+      })
     }
 
     this.save()

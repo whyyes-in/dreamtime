@@ -45,6 +45,8 @@
         <SettingsField field-id="app.uploadMode" />
 
         <SettingsField field-id="app.duplicates" />
+
+        <SettingsField field-id="app.showStats" />
       </div>
     </section>
 

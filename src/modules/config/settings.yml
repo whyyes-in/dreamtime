@@ -32,6 +32,22 @@
     With this you can upload a photo multiple times and set different preferences or crop areas without having to wait, this will also make the photos show a unique identification to be able to differentiate.
   input: checkbox
 
+- id: app.legacyUploader
+  label: Legacy Uploader.
+  description: Use the old uploader instead of Uppy.
+  tooltip: |-
+    The new uploader (Uppy) allows you to upload photos from your Dropbox and Google Drive, as well as view, delete and edit the photos before uploading them. The downside is that it requires an internet connection.
+  input: checkbox
+
+- id: app.showStats
+  label: Show stats.
+  description: Show system usage statistics at the top.
+  tooltip: |-
+    Enabling this option can consume more system resources, especially in Windows.
+
+    Check carefully `RAM Usage` or `VRAM Usage`, problems with the algorithm usually occur when one of these is too high.
+  input: checkbox
+
 - id: app.queuePosition
   label: Queue position.
   description: Change the position of the queue bar.

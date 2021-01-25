@@ -92,7 +92,7 @@ export const requirements = {
 
     // ram
     this.recommended.ram = system.memory.total >= 12884901888 // 12 GB
-    this.recommended.vram = system.graphics[0]?.vram >= 4000 // Win32_VideoController does not scan VRAM above 4GB
+    this.recommended.vram = system.graphics[0]?.vram >= 6000 // 6 GB
 
     // Folders
     this.folders.models = this.isValidFolder(getModelsPath())

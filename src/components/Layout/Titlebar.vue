@@ -1,22 +1,22 @@
 <template>
   <div class="titlebar">
     <!-- Logo -->
-    <div class="titlebar__left">
-      <div class="logo">
-        <span>{{ $dream.name }}</span>
-        <span class="ml-1">{{ $dream.version }}</span>
-      </div>
-
-      <div class="logo__greetings">
-        <span v-if="!isBadTime">{{ greetings }}</span>
-        <span v-else class="badtime"><img src="~/assets/images/games/sans.png"> i don't like what you are doing.</span>
-      </div>
+    <div class="titlebar__logo">
+      <span>{{ $dream.name }}</span>
+      <span class="ml-1">{{ $dream.version }}</span>
     </div>
+
+    <div class="titlebar__greetings">
+      <span v-if="!isBadTime">{{ greetings }}</span>
+      <span v-else class="badtime"><img src="~/assets/images/games/sans.png"> i don't like what you are doing.</span>
+    </div>
+
+    <TitlebarStats v-if="$settings.app.showStats" class="titlebar__stats" />
+
+    <div class="titlebar__empty" />
 
     <!-- Drag -->
-    <div class="titlebar__drag">
-      <div class="titlebar__drag__region" />
-    </div>
+    <div class="titlebar__drag" />
 
     <!-- Window Buttons -->
     <div class="titlebar__buttons">
@@ -126,29 +126,14 @@ export default {
 }
 
 .titlebar {
-  @apply flex justify-end;
+  @apply flex gap-4 justify-end relative;
   @apply bg-black text-white;
   grid-area: title;
   height: 30px;
   z-index: 9999999;
-
-  .topbar__badtime {
-    @apply flex items-center justify-center;
-    @apply lowercase font-bold text-sm;
-    font-family: 'Comic Sans MS', serif;
-
-    img {
-      @apply mr-2;
-      height: 18px;
-    }
-  }
 }
 
-.titlebar__left {
-  @apply flex;
-}
-
-.logo {
+.titlebar__logo {
   @apply flex justify-center items-center;
   @apply text-white text-sm font-bold px-6 select-none;
 
@@ -165,35 +150,36 @@ export default {
   background-size: 200% 100%;
 }
 
-.logo__greetings {
+.titlebar__greetings {
   @apply flex justify-center items-center;
-  @apply text-white text-sm font-light px-3 select-none;
+  @apply text-white text-sm font-light select-none;
 
   img {
     height: 20px;
   }
 
   .badtime {
-    @apply flex items-center;
+    @apply flex items-center font-bold;
+    font-family: 'Comic Sans MS', serif;
 
     img {
-      @apply mr-1;
+      @apply mr-2;
     }
   }
 }
 
-.titlebar__drag {
-  @apply flex-1 relative;
+.titlebar__stats {
+}
 
-  .titlebar__drag__region {
-    @apply block absolute;
-    top: 5px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1;
-    -webkit-app-region: drag;
-  }
+.titlebar__empty {
+  @apply flex-1;
+}
+
+.titlebar__drag {
+  @apply absolute left-0 bottom-0 z-50;
+  top: 5px;
+  right: 150px;
+  -webkit-app-region: drag;
 }
 
 .titlebar__buttons {

@@ -1,4 +1,4 @@
-// See default config https://github.com/tailwindcss/tailwindcss/blob/master/stubs/defaultConfig.stub.js
+// See DEFAULT config https://github.com/tailwindcss/tailwindcss/blob/master/stubs/DEFAULTConfig.stub.js
 module.exports = {
   theme: {
     spacing: {
@@ -67,25 +67,25 @@ module.exports = {
 
         common: {
           light: '#e4e4e7',
-          default: '#c8c8ce',
+          DEFAULT: '#c8c8ce',
           dark: '#8c8c90',
         },
 
         input: {
           light: '#242525',
-          default: '#18191a',
+          DEFAULT: '#18191a',
           dark: '#161717',
         },
 
         menus: {
           light: '#2b2e33',
-          default: '#14171c',
+          DEFAULT: '#14171c',
           dark: '#121519',
         },
 
         button: {
           light: '#696a6d',
-          default: '#434549',
+          DEFAULT: '#434549',
           dark: '#36373a',
         },
 
@@ -122,7 +122,7 @@ module.exports = {
           400: '#F77B72',
           500: '#F44336',
           light: '#f6695e',
-          default: '#F44336',
+          DEFAULT: '#F44336',
           dark: '#c3362b',
           600: '#DC3C31',
           700: '#922820',
@@ -137,7 +137,7 @@ module.exports = {
           400: '#89CD7E',
           500: '#57B846',
           light: '#79c66b',
-          default: '#57B846',
+          DEFAULT: '#57B846',
           dark: '#469338',
           600: '#4EA63F',
           700: '#346E2A',
@@ -151,7 +151,7 @@ module.exports = {
           300: '#E6CBA2',
           400: '#D4A35C',
           500: '#C17C16',
-          default: '#C17C16',
+          DEFAULT: '#C17C16',
           600: '#AE7014',
           700: '#744A0D',
           800: '#57380A',
@@ -165,7 +165,7 @@ module.exports = {
           400: '#DA8126',
           500: '#D67411',
           light: '#de9041',
-          default: '#D67411',
+          DEFAULT: '#D67411',
           dark: '#ab5d0e',
           600: '#C36A0F',
           700: '#AF5F0E',
@@ -175,13 +175,13 @@ module.exports = {
 
         blue: {
           light: '#58c7ec',
-          default: '#2EB9E7',
+          DEFAULT: '#2EB9E7',
           dark: '#2594b9',
         },
       },
 
       boxShadow: {
-        default: '0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.56)',
+        DEFAULT: '0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.56)',
         md: '0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.56)',
         lg: '0 10px 15px -3px rgba(0, 0, 0, 0.7), 0 4px 6px -2px rgba(0, 0, 0, 0.55)',
         xl: '0 20px 25px -5px rgba(0, 0, 0, 0.8), 0 10px 10px -5px rgba(0, 0, 0, 0.54)',
@@ -224,9 +224,5 @@ module.exports = {
   },
   corePlugins: {
     container: false,
-  },
-  future: {
-    removeDeprecatedGapUtilities: true,
-    purgeLayersByDefault: true,
   },
 }

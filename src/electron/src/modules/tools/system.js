@@ -7,12 +7,12 @@
 //
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
-import {
-  filter, isNil,
-} from 'lodash'
+import EventEmitter from 'events'
+import { filter } from 'lodash'
 import fs from 'fs-extra'
 import si from 'systeminformation'
 import isOnline from 'is-online'
+import prettyBytes from 'pretty-bytes'
 import { settings } from '../settings'
 import { AppError } from '../app-error'
 import { getModelsPath, getMasksPath } from './paths'
@@ -26,20 +26,9 @@ class System {
   os
 
   /**
-   * @type {si.Systeminformation.GraphicsData}
+   * @type {si.Systeminformation.GraphicsControllerData[]}
    */
-  _graphics
-
-  /**
-   * @type {Array}
-   */
-  get graphics() {
-    if (isNil(this._graphics)) {
-      return []
-    }
-
-    return filter(this._graphics.controllers, { vendor: 'NVIDIA' })
-  }
+  graphics = []
 
   /**
    * @type {si.Systeminformation.CpuData}
@@ -50,6 +39,12 @@ class System {
    * @type {si.Systeminformation.MemData}
    */
   memory
+
+  /**
+   *
+   *
+   */
+  currentUsage = {}
 
   /**
    * @type {Object}
@@ -116,15 +111,17 @@ class System {
       isOnline(),
     ])
 
-    this._graphics = graphics
+    this.graphics = filter(graphics.controllers, { vendor: 'NVIDIA' })
     this.os = os
     this.cpu = cpu
     this.memory = memory
     this.online = online
 
+    logger.info('OS:', os.distro)
+    logger.info('CPU:', cpu.brand)
     logger.info('GPU:', this.graphics)
-    logger.info(`RAM: ${memory.total} bytes.`)
-    logger.info(`Online: ${online}`)
+    logger.info('RAM:', prettyBytes(memory.total))
+    logger.info(`Online?: ${online}`)
   }
 
   /**
@@ -176,6 +173,67 @@ class System {
         throw new AppError(`Could not create the directory:\n${dir}`, { error })
       }
     })
+  }
+
+  /**
+   *
+   *
+   * @param {'gpu'|'cpu'} [device='gpu']
+   * @param {number} ms
+   * @param {function} callback
+   */
+  observe(device = 'gpu', ms) {
+    const events = new EventEmitter()
+
+    this.observeInternal(device, ms, events)
+
+    return events
+  }
+
+  /**
+   *
+   *
+   * @param {'gpu'|'cpu'} device
+   * @param {number} ms
+   * @param {EventEmitter} events
+   */
+  async observeInternal(device, ms, events) {
+    let stop = false
+    events.on('stop', () => { stop = true })
+
+    let previous = {}
+
+    do {
+      const func = device === 'gpu' ? si.graphics() : si.currentLoad()
+
+      // eslint-disable-next-line no-await-in-loop
+      const data = await Promise.resolve(func)
+
+      const current = {}
+
+      if (device === 'gpu') {
+        const gpu = data.controllers[settings.processing.gpus[0]]
+
+        current.utilizationMemory = Math.round((gpu.memoryUsed / gpu.memoryTotal) * 100)
+        current.utilizationGpu = gpu.utilizationGpu
+      } else {
+        // eslint-disable-next-line no-await-in-loop
+        const mem = await si.mem()
+
+        current.utilizationMemory = Math.round((mem.used / mem.total) * 100)
+        current.utilizationCpu = Math.round(data.currentload)
+      }
+
+      if (JSON.stringify(previous) !== JSON.stringify(current)) {
+        events.emit('change', current)
+        previous = current
+      }
+
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((resolve) => {
+        setTimeout(resolve, ms)
+      })
+    } while (!stop)
   }
 }
 
