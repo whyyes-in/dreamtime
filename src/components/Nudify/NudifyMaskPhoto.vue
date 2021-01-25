@@ -376,7 +376,7 @@ export default {
 
     saveTransparency() {
       this.transparency.canvas.toBlob((blob) => {
-        saveAs(blob, this.run.outputName)
+        saveAs(blob, this.run?.outputName || 'xray.png')
       })
     },
   },

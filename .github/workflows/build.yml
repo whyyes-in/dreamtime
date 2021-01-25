@@ -18,24 +18,24 @@ jobs:
     # (variables for multiple platforms)
     # https://help.github.com/en/articles/workflow-syntax-for-github-actions#jobsjob_idstrategy
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os:
-          - windows-latest
-          - ubuntu-latest
-          - macOS-latest
+          - windows-2019
+          - ubuntu-18.04
+          - macos-10.15
         type:
           - installer
           - portable
 
         include:
-          - os: ubuntu-latest # Ubuntu
+          - os: ubuntu-18.04 # Ubuntu
             platform: ubuntu
             extension: snap
-          - os: windows-latest # Windows
+          - os: windows-2019 # Windows
             platform: windows
             extension: exe
-          - os: macOS-latest # macOS
+          - os: macos-10.15 # macOS
             platform: macos
             extension: dmg
 
@@ -46,9 +46,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
-
-      - name: Install Yarn
-        run: npm install -g yarn
 
       - name: Install Dependencies
         working-directory: src/
