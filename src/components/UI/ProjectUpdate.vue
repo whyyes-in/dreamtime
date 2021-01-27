@@ -1,7 +1,7 @@
 <template>
   <div v-if="isReady" class="update">
+    <!-- Component Information -->
     <div class="update__info">
-      <!-- Logo -->
       <figure>
         <img :src="data.logo">
       </figure>
@@ -22,12 +22,12 @@
 
     <!-- Downloading -->
     <div v-else-if="isDownloading && updater.update.progress >= 0" class="update__status">
-      Downloading ~ <strong>{{ updater.update.progress }}%</strong> ~ {{ updater.update.written | size }}/{{ updater.update.total | size }} MB. <span v-if="updater.update.peers > 0">({{ updater.update.peers }} peers)</span>
+      Downloading · <strong>{{ updater.update.progress }}%</strong> · {{ updater.update.written }}/{{ updater.update.total }} ·  <span v-if="updater.update.peers > 0">{{ updater.update.peers }} peers</span>
     </div>
 
     <!-- Downloading -->
     <div v-else-if="isDownloading" class="update__status">
-      Downloading ~ {{ updater.update.written | size }} MB.
+      Downloading · {{ updater.update.written }}
     </div>
 
     <!-- Installing -->
@@ -45,18 +45,21 @@
       <button v-if="!updater.enabled"
               key="update-disabled"
               v-tooltip="'This component cannot be updated until the issue above is fixed.'"
-              class="button button--success"
+              class="button button--danger"
               disabled>
         <span class="icon"><font-awesome-icon icon="sync" /></span>
-        <span>Update</span>
+        <span>Not available</span>
       </button>
 
       <button v-else-if="!updater.update.active"
               key="update-start"
               class="button button--success"
               @click.prevent="updater.start()">
-        <span class="icon"><font-awesome-icon icon="sync" /></span>
-        <span>Update</span>
+        <span v-if="data.isInstalled" class="icon"><font-awesome-icon icon="sync" /></span>
+        <span v-if="data.isInstalled">Update</span>
+
+        <span v-if="!data.isInstalled" class="icon"><font-awesome-icon icon="download" /></span>
+        <span v-if="!data.isInstalled">Install</span>
       </button>
 
       <button v-if="updater.update.active"
@@ -97,9 +100,9 @@
     <!-- Hint -->
     <div class="update__hint">
       <p>
-        <a href="https://time.dreamnet.tech/docs/guide/updater" target="_blank" class="button button--sm">
-          <span class="icon"><font-awesome-icon icon="exclamation-circle" /></span>
-          <span>Troubleshooting</span>
+        <a href="https://dreamtime.tech/docs/guide/updater" target="_blank" class="button button--sm">
+          <span class="icon"><font-awesome-icon icon="info-circle" /></span>
+          <span>Help</span>
         </a>
       </p>
     </div>
@@ -110,8 +113,8 @@
         <ul class="mirrors">
           <li v-for="(url, index) in updater.downloadAllUrls" :key="index">
             <a v-if="isTorrent(url)" :href="url" target="_blank">Torrent ({{ url | domain }})</a>
-            <a v-else-if="isIPFS(url)" :href="`https://gateway.ipfs.io/ipfs/${url}?filename=${updater.filename}`" target="_blank">IPFS</a>
-            <a v-else :href="url" target="_blank">HTTP ({{ url | domain }})</a>
+            <a v-else-if="isIPFS(url)" :href="`ipfs://${url}?filename=${updater.filename}`" target="_blank">IPFS</a>
+            <a v-else :href="url" target="_blank">{{ url | domain }}</a>
           </li>
         </ul>
 

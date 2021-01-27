@@ -100,7 +100,7 @@
         <button
           id="nudify-forget"
           v-tooltip="{
-            content: 'Remove the photo from the application and free up memory. (Nudes will not be removed)',
+            content: 'Remove the photo from the application and free up memory. (Nudes will not be deleted)',
             placement: 'right',
             boundary: 'viewport'}"
           class="button"

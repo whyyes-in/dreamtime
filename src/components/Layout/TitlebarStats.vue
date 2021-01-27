@@ -15,7 +15,7 @@
       {{ system.utilizationCpu }}%
     </div>
 
-    <div v-if="gpu"
+    <div v-if="gpu && gpu.utilizationMemory"
          v-tooltip="'VRAM Usage.'"
          class="device"
          :class="{ 'device--danger': gpu.utilizationMemory > 80 }">
@@ -23,7 +23,7 @@
       {{ gpu.utilizationMemory }}%
     </div>
 
-    <div v-if="gpu"
+    <div v-if="gpu && gpu.utilizationGpu"
          v-tooltip="'GPU Usage.'"
          class="device">
       <FontAwesomeIcon icon="running" />
@@ -46,7 +46,7 @@ export default {
 
   mounted() {
     if (settings.payload.preferences.advanced.device === 'GPU') {
-      this.gpuEvents = system.observe('gpu', 2500)
+      this.gpuEvents = system.observe('gpu', 1500)
       this.gpuEvents.on('change', this.onGpu.bind(this))
     }
 
@@ -78,10 +78,12 @@ export default {
 <style lang="scss" scoped>
 .stats {
   @apply flex gap-4 justify-center items-center;
+  @apply p-3 bg-menus-light;
 }
 
 .device {
-  @apply text-sm select-none;
+  @apply flex-1 text-sm text-center select-none font-semibold;
+  cursor: help;
   transition: color 0.1s linear;
 
   &.device--danger {

@@ -8,7 +8,7 @@
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
 import {
-  isNil, isArray, isPlainObject, find,
+  isNil, isArray, isPlainObject, isNumber, find,
   startsWith, filter, isEmpty, toNumber, isString,
   endsWith, attempt,
 } from 'lodash'
@@ -512,7 +512,7 @@ export class BaseUpdater {
       this.events.on('progress', (payload) => {
         this._setUpdateProgress('downloading')
 
-        if (payload.total > 0) {
+        if (isNumber(payload.progress)) {
           this.update.progress = toNumber(payload.progress * 100).toFixed(2)
         } else {
           this.update.progress = -1

@@ -10,7 +10,7 @@ module.exports = {
   },
   "development": {
     "NODE_ENV": "development",
-    "DREAMTRACK_HOST": "localhost:50200",
+    "DREAMTRACK_HOST": "track.dreamnet.tech",
     ...development
   },
   "production": {

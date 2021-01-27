@@ -28,8 +28,8 @@
       </AppBox>
 
       <div class="telemetry__boxes">
-        <AppBox title="Analytics." subtitle="Information to generate anonymous statistics.">
-          <ul>
+        <AppBox title="Analytics" subtitle="Information to generate anonymous statistics.">
+          <ul class="mb-3">
             <li>Operating system.</li>
             <li>CPU, RAM and GPU.</li>
             <li>Country.</li>
@@ -39,7 +39,7 @@
           <SettingsField field-id="user" readonly />
         </AppBox>
 
-        <AppBox title="Error report." subtitle="Information about an error.">
+        <AppBox>
           <SettingsField field-id="telemetry.bugs" />
 
           <template #footer>
@@ -51,12 +51,12 @@
           </template>
         </AppBox>
 
-        <AppBox title="Session tracking." subtitle="Detailed information on how you use the application.">
+        <AppBox>
+          <SettingsField field-id="telemetry.dom" />
+
           <p>
             This information helps us make the application more accessible, easy to use and provides additional data to fix errors.
           </p>
-
-          <SettingsField field-id="telemetry.dom" />
 
           <template #footer>
             <div class="box__footer">
@@ -102,6 +102,8 @@ export default {
 
 <style lang="scss" scoped>
 .wizard-user {
+  @apply pb-6;
+
   &::v-deep {
     .box__photo {
       height: 230px;
@@ -124,14 +126,8 @@ export default {
 }
 
 .telemetry__boxes {
-  @apply grid grid-cols-2 gap-6;
-
   ul {
     @apply list-disc ml-6;
-  }
-
-  .item {
-    @apply mt-6;
   }
 }
 </style>

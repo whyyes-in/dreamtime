@@ -11,6 +11,11 @@
       </h3>
 
       <template #right>
+        <button v-if="requirements.power.checkpoints" class="button" @click="$router.replace('/')">
+          <span class="icon"><font-awesome-icon icon="caret-left" /></span>
+          <span>Go back</span>
+        </button>
+
         <button class="button" @click="$dreampower.openAppFolder()">
           <span class="icon"><font-awesome-icon icon="folder-open" /></span>
           <span>{{ $dreampower.name }} Folder</span>
@@ -19,15 +24,18 @@
     </PageHeader>
 
     <div class="project__content">
+      <!-- Is required -->
       <div v-if="!requirements.power.checkpoints" class="notification notification--warning">
         <span class="icon"><font-awesome-icon icon="info-circle" /></span>
-        <span>It is necessary to download and install this component to continue.</span>
+        <span>To continue please install this component.</span>
       </div>
 
+      <!-- Installed version -->
       <div v-else class="notification">
-        Installed version: <strong>{{ $checkpoints.version }}</strong>
+        Installed version: <strong class="text-primary">{{ $checkpoints.version }}</strong>
       </div>
 
+      <!-- CONNECTION ERROR! -->
       <div v-if="updater.error" class="notification notification--danger">
         <h5>CONNECTION ERROR!</h5>
         <span>A problem has occurred when trying to get the information from Github, please make sure you have a stable internet connection and restart the application.</span>
@@ -52,11 +60,11 @@
           label="Download protocol."
           tooltip="- **Any:** Use all protocols if necessary.
 
-- **HTTP:** Fastest and most reliable for most connections.
+- **HTTP:** Fastest and most reliable.
 
 - **Torrent & IPFS:** Download the file from other computers with the option to cancel at any time and resume later. More reliable for unstable and low speed connections. May require a few minutes of preparation before starting the download.">
           <template #description>
-            <span class="item__description">Select the protocol that will be used to download the file.</span>
+            <span class="item__description">Protocol that will be used to download the file.</span>
           </template>
 
           <select v-model="updater.downloadMethod" class="input">

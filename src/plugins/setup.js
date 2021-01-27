@@ -9,6 +9,8 @@
 
 import Vue from 'vue'
 import tippy from 'tippy.js'
+import prettyBytes from 'pretty-bytes'
+import { attempt } from 'lodash'
 import { photos } from '~/modules'
 import { Consola } from '~/modules/consola'
 import { achievements } from '~/modules/system'
@@ -33,6 +35,14 @@ tippy.setDefaultProps({
 })
 
 export default (ctx, inject) => {
+  attempt(() => {
+    consola.info(`OS: ${$provider.system.os.distro}`)
+    consola.info(`RAM: ${prettyBytes($provider.system.memory.total)}`)
+    consola.info(`CPU: ${$provider.system.cpu.brand}`)
+    consola.info(`GPU: ${$provider.system.primaryGpu?.model}`)
+    consola.info(`Online?: ${$provider.system.online}`)
+  })
+
   // User settings.
   ctx.app.$settings = settings
   inject('settings', settings)

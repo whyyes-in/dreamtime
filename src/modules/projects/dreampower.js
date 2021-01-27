@@ -1,3 +1,4 @@
+import { isNil } from 'lodash'
 import { dreampower as updater } from '../updater'
 import { dreamtrack } from '../services'
 import { requirements } from '../system'
@@ -40,6 +41,10 @@ class DreamPower {
 
   get version() {
     return this.updater.currentVersion
+  }
+
+  get isInstalled() {
+    return !isNil(this.version) && this.version !== 'v0.0.0'
   }
 
   async init() {

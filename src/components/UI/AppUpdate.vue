@@ -9,9 +9,11 @@
   <!-- Updated -->
   <MenuItem
     v-else-if="!updater.available"
-    :label="`${project.name} is up to date.`"
+    :label="`${project.name} is up to date!`"
     :description="project.version"
-    icon="thumbs-up" />
+    icon="thumbs-up"
+    :is-link="true"
+    @click="next" />
 
   <!-- Update available -->
   <MenuItem
@@ -45,7 +47,7 @@ export default {
 
   methods: {
     next() {
-      this.$router.push(this.href)
+      this.$router.push(`${this.href}?forced=true`)
     },
   },
 }
@@ -58,7 +60,7 @@ export default {
   }
 
   50% {
-    @apply bg-dark-100;
+    @apply bg-primary-dark;
   }
 
   100% {

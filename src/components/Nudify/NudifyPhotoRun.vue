@@ -97,11 +97,11 @@
       <button
         v-if="run.successful && run.preferences.advanced.useClothTransparencyEffect"
         key="button-transparency"
-        v-tooltip="'X-Rays Tool'"
+        v-tooltip="'X-Ray Tool'"
         class="button button--primary button--sm"
         @click="showTransparencyModal()">
         <span class="icon">
-          <font-awesome-icon icon="spray-can" />
+          <font-awesome-icon icon="hat-wizard" />
         </span>
       </button>
 

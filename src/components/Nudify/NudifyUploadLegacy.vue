@@ -47,7 +47,7 @@
                      :name="`update-dreamtime-${dreamtime.latest.tag_name}`"
                      class="cursor-pointer"
                      @click="$router.push('/wizard/dreamtime')">
-      🎉 <strong>{{ $dream.name }} {{ dreamtime.latest.tag_name }}</strong> is available for download!
+      🎉 <strong>{{ $dream.name }} {{ dreamtime.latest.tag_name }}</strong> is available! Click here to update.
     </AppNotification>
 
     <!-- DreamPower Updater -->
@@ -55,7 +55,7 @@
                      :name="`update-dreampower-${dreampower.latest.tag_name}`"
                      class="cursor-pointer"
                      @click="$router.push('/wizard/power')">
-      🎉 <strong>{{ dreampower.displayName }} {{ dreampower.latest.tag_name }}</strong> is available for download!
+      🎉 <strong>{{ dreampower.displayName }} {{ dreampower.latest.tag_name }}</strong> is available! Click here to update.
     </AppNotification>
 
     <!-- Checkpoints Updater -->
@@ -63,7 +63,7 @@
                      class="notification notification--warning cursor-pointer"
                      :name="`update-checkpoints-${checkpoints.latest.tag_name}`"
                      @click="$router.push('/wizard/checkpoints')">
-      🎉 <strong>{{ checkpoints.displayName }} {{ checkpoints.latest.tag_name }}</strong> is available for download!
+      🎉 <strong>{{ checkpoints.displayName }} {{ checkpoints.latest.tag_name }}</strong> is available! Click here to update.
     </AppNotification>
 
     <div class="uploader__methods">

@@ -8,12 +8,10 @@
       <button v-tooltip="'Go forward'" class="nav__item nav__item--button text-2xl" @click="$router.go(1)">
         <font-awesome-icon icon="caret-right" />
       </button>
-
-      <TitlebarStats v-if="$settings.app.showStats" class="titlebar__stats" />
     </div>
 
     <div class="nav__center">
-      <nuxt-link v-tooltip="'Upload'" to="/" class="nav__item nav__item--link">
+      <nuxt-link v-tooltip="'Open'" to="/" class="nav__item nav__item--link">
         <font-awesome-icon icon="upload" />
       </nuxt-link>
 

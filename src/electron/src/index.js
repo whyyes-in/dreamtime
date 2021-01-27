@@ -198,7 +198,7 @@ class DreamApp {
       })
 
       contents.on('new-window', (event, url) => {
-        if (startsWith(url, 'http') || startsWith(url, 'mailto')) {
+        if (startsWith(url, 'http') || startsWith(url, 'mailto') || startsWith(url, 'ipfs')) {
           event.preventDefault()
           shell.openExternal(url)
           return

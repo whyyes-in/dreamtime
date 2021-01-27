@@ -40,7 +40,7 @@
   input: checkbox
 
 - id: app.showStats
-  label: Show stats.
+  label: Show system stats.
   description: Show system usage statistics at the top.
   tooltip: |-
     Allows you to check `RAM Usage` or `VRAM Usage`, problems with the algorithm usually occur when one of these is too high.
@@ -50,7 +50,7 @@
 
 - id: app.trypophobiaMode
   label: Trypophobia mode.
-  description: Removes visual additives that can trigger trypophobia.
+  description: Removes images that can trigger trypophobia.
   input: checkbox
 
 
@@ -66,7 +66,7 @@
 
 - id: app.showAds
   label: Show ads.
-  description: Show ads at the bottom of the menu.
+  description: Support development and show ads at the bottom of the menu.
   tooltip: The displayed advertisements are selected by DreamNet and allow to support the DreamTime development.
   input: checkbox
 
@@ -77,7 +77,7 @@
 
 - id: preferences.advanced.device
   label: Device.
-  description: GPU is faster but depends on the device VRAM. CPU is slower but uses system RAM.
+  description: GPU is faster but depends on the device VRAM.<br>CPU is slower but uses system RAM.
   tooltip: |-
     Nudification times:
     ---
@@ -92,7 +92,7 @@
       value: GPU
 
 - id: processing.gpus
-  label: GPU.
+  label: GPU Slot.
   description: Graphics card to use.
 
 - id: processing.cores
@@ -138,7 +138,7 @@
     - **Automatic Crop:** The algorithm will crop the photo while maintaining the aspect ratio.
     - **Overlay:** Allows you to select which area of the photo you want to crop, nudify and then restore to the original photo. This tool makes the photos keep their original size.
     - **Crop:** Allows you to crop the photo manually. (Like in DeepNude)
-    - **Color padding:**  This method tricks the algorithm into avoiding the color change that occurs during nudification but sacrificing photo and fake nude quality.
+    - **Color padding:**  This method tricks the algorithm into avoiding the color change that occurs during nudification and in some cases it returns better nudes where the other methods fail.
   input: select
   options:
     - label: None
@@ -213,10 +213,10 @@
   input: checkbox
 
 - id: preferences.advanced.useClothTransparencyEffect
-  label: X-Rays Effect.
-  description: Tool that allows you to create an X-Rays effect with the fake nude.
+  label: X-Ray Effect.
+  description: Tool that allows you to create an X-Ray effect with the fake nude.
   tooltip: |
-    Enable the button to open the X-Rays effect tool that allows you to add the photo with clothes on top of the fake nude and modify the transparency to achieve the effect.
+    Enable the button to open the X-Ray effect tool that allows you to add the photo with clothes on top of the fake nude and modify the transparency to achieve the effect.
 
     - This tool may decrease the quality of some photos.
     - Waifu2X enhancements do not apply to this tool. (Always 512x512)
@@ -262,6 +262,8 @@
   description:
   input: select
   options:
+    - label: Disabled
+      value: 1
     - label: 2x
       value: 2
     - label: 3x

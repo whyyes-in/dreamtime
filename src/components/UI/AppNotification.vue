@@ -35,7 +35,7 @@ export default {
 
   methods: {
     click(e) {
-      if (e.target.nodeName !== 'DIV') {
+      if (e.target.nodeName !== 'DIV' && e.target.nodeName !== 'STRONG') {
         return
       }
 

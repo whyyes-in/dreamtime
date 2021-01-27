@@ -7,10 +7,19 @@
       </h2>
 
       <h3 class="subtitle">
-        {{ $waifu.name }}. Optional algorithm to upscale photos.
+        Optional algorithm to upscale photos.
       </h3>
 
       <template #right>
+        <button v-if="requirements.waifu.installed && requirements.waifu.compatible" class="button" @click="$router.replace('/')">
+          <span class="icon"><font-awesome-icon icon="caret-left" /></span>
+          <span>Go back</span>
+        </button>
+
+        <button v-if="!requirements.waifu.installed" class="button" @click="skip">
+          <span>Skip</span>
+        </button>
+
         <button class="button" @click="$dreamtime.openAppDataFolder()">
           <span class="icon"><font-awesome-icon icon="folder-open" /></span>
           <span>{{ $dreamtime.name }} Folder</span>
@@ -19,6 +28,7 @@
     </PageHeader>
 
     <div class="project__content">
+      <!-- INTERNAL ERROR! -->
       <div v-if="requirements.waifu.error" class="notification notification--danger">
         <h5>
           <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
@@ -31,26 +41,40 @@
         <pre>{{ requirements.waifu.error.stack }}</pre>
       </div>
 
+      <!-- OUTDATED -->
       <div v-else-if="requirements.waifu.installed && !requirements.waifu.compatible" class="notification notification--danger">
-        <h5>OUTDATED</h5>
-        This component requires an update to continue.
+        <h5>
+          <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
+          <span>OUTDATED</span>
+        </h5>
+        To continue please install the update for this component.
       </div>
 
+      <!-- Installed version -->
       <div v-if="$waifu.version" class="notification">
-        Installed version: <strong>{{ $waifu.version }}</strong>
+        Installed version: <strong class="text-primary">{{ $waifu.version }}</strong>
       </div>
 
-      <div v-if="isMacOS" class="notification">
+      <!-- Macos -->
+      <div v-if="isMacOS" class="notification notification--warning">
         You may need to run the command <code>brew install openblas</code> before using Waifu2X.
       </div>
 
-      <div v-if="$settings.preferences.advanced.device === 'GPU'" class="notification">
-        <h5>Waifu2X require CUDA 10.2</h5>
+      <!-- Windows -->
+      <div v-if="$settings.preferences.advanced.device === 'GPU'" class="notification notification--warning">
+        <h5>
+          <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
+          <span>Waifu2X require CUDA 10.2</span>
+        </h5>
         Before using Waifu2X on GPU please <a href="https://developer.nvidia.com/cuda-10.2-download-archive" target="_blank">download and install CUDA 10.2</a>
       </div>
 
+      <!-- CONNECTION ERROR! -->
       <div v-if="updater.error" class="notification notification--danger">
-        <h5>CONNECTION ERROR!</h5>
+        <h5>
+          <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
+          <span>CONNECTION ERROR!</span>
+        </h5>
         <span>A problem has occurred when trying to get the information from Github, please make sure you have a stable internet connection and restart the application.</span>
         <br><br>
 
@@ -71,11 +95,11 @@
           label="Download protocol."
           tooltip="- **Any:** Use all protocols if necessary.
 
-- **HTTP:** Fastest and most reliable for most connections.
+- **HTTP:** Fastest and most reliable.
 
 - **Torrent & IPFS:** Download the file from other computers with the option to cancel at any time and resume later. More reliable for unstable and low speed connections. May require a few minutes of preparation before starting the download.">
           <template #description>
-            <span class="item__description">Select the protocol that will be used to download the file.</span>
+            <span class="item__description">Protocol that will be used to download the file.</span>
           </template>
 
           <select v-model="updater.downloadMethod" class="input">

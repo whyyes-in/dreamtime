@@ -64,6 +64,10 @@
         <nuxt-link to="/wizard/telemetry?forced=true" class="button">
           Telemetry
         </nuxt-link>
+
+        <nuxt-link to="/wizard/settings?forced=true" class="button">
+          Basic settings
+        </nuxt-link>
       </div>
     </section>
   </div>

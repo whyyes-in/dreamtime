@@ -1,3 +1,4 @@
+import { isNil } from 'lodash'
 import { waifu as updater } from '../updater'
 import { dreamtrack } from '../services'
 
@@ -39,6 +40,10 @@ class Waifu {
 
   get version() {
     return this.updater.currentVersion
+  }
+
+  get isInstalled() {
+    return !isNil(this.version) && this.version !== 'v0.0.0'
   }
 
   async init() {

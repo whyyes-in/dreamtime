@@ -48,6 +48,10 @@ class DreamTime {
     return `v${process.env.npm_package_version}`
   }
 
+  get isInstalled() {
+    return !isNil(this.version) && this.version !== 'v0.0.0'
+  }
+
   get isPortable() {
     return !isNil(process.env.BUILD_PORTABLE)
   }

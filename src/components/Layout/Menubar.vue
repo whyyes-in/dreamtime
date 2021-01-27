@@ -1,5 +1,7 @@
 <template>
   <div class="menu">
+    <TitlebarStats v-if="$settings.app.showStats" />
+
     <div class="menu__content">
       <!-- Custom menu -->
       <portal-target name="menu" class="menu__custom" />

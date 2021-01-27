@@ -8,7 +8,7 @@
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
 import EventEmitter from 'events'
-import { filter } from 'lodash'
+import { filter, isNumber } from 'lodash'
 import fs from 'fs-extra'
 import si from 'systeminformation'
 import isOnline from 'is-online'
@@ -71,6 +71,14 @@ class System {
    */
   get hasToCollect() {
     return !fs.existsSync(settings.path)
+  }
+
+  get primaryGpu() {
+    if (this.graphics.length === 0) {
+      return null
+    }
+
+    return this.graphics[settings.processing.gpus[0]]
   }
 
   /**
@@ -224,8 +232,13 @@ class System {
           continue
         }
 
-        current.utilizationMemory = Math.round((gpu.memoryUsed / gpu.memoryTotal) * 100)
-        current.utilizationGpu = gpu.utilizationGpu
+        if (!isNumber(gpu.memoryUsed) || !isNumber(gpu.memoryTotal) || gpu.memoryUsed <= 0 || gpu.memoryTotal <= 0) {
+          current.utilizationMemory = undefined
+        } else {
+          current.utilizationMemory = Math.round((gpu.memoryUsed / gpu.memoryTotal) * 100)
+        }
+
+        current.utilizationGpu = isNumber(gpu.utilizationGpu) ? gpu.utilizationGpu : undefined
       } else {
         // eslint-disable-next-line no-await-in-loop
         const mem = await si.mem()

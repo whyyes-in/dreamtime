@@ -48,12 +48,6 @@ export class File extends EventEmitter {
 
   /**
    * @type {string}
-   *
-   */
-  dataURL
-
-  /**
-   * @type {string}
    */
   mimetype
 
@@ -92,7 +86,6 @@ export class File extends EventEmitter {
   options = {
     deleteIfExists: false,
     asyncLoad: false,
-    storeDataURL: false,
     watch: true,
   }
 
@@ -102,7 +95,7 @@ export class File extends EventEmitter {
    * @readonly
    */
   get url() {
-    return this.dataURL || this.path
+    return this.path
   }
 
   /**
@@ -261,10 +254,6 @@ export class File extends EventEmitter {
     this.exists = metadata.exists
     this.md5 = metadata.md5
     this.birthtime = metadata.birthtime
-
-    if (this.options.storeDataURL && !this.isAnimated) {
-      this.dataURL = metadata.dataURL
-    }
 
     if (this.exists) {
       // consola.debug(`Loaded: ${this.path} (${this.md5})`)

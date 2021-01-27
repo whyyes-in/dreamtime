@@ -21,7 +21,7 @@
 
         <div class="box__content">
           <!-- Updater -->
-          <AppUpdate :project="$dreampower" href="/wizard/dreampower" />
+          <AppUpdate :project="$dreampower" href="/wizard/power" />
 
           <!-- Remote navigation -->
           <MenuItem

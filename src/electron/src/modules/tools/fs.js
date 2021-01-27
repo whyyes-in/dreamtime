@@ -12,6 +12,7 @@ import WebTorrent from 'webtorrent'
 import IpfsCtl from 'ipfsd-ctl'
 import toStream from 'it-to-stream'
 import all from 'it-all'
+import prettyBytes from 'pretty-bytes'
 import { EventEmitter } from 'events'
 import { getAppResourcesPath, getPath } from './paths'
 
@@ -172,8 +173,8 @@ export async function downloadFromHttp(url, options, events, writeStream) {
   readStream.on('data', () => {
     events.emit('progress', {
       progress: (writeStream.bytesWritten / contentLength),
-      written: (writeStream.bytesWritten / 1048576).toFixed(2),
-      total: (contentLength / 1048576).toFixed(2),
+      written: prettyBytes(writeStream.bytesWritten),
+      total: prettyBytes(contentLength),
     })
   })
 
@@ -207,29 +208,30 @@ export async function downloadFromIPFS(cid, options, events, writeStream) {
         node = null
       }
     })
+
+    // Always make sure to delete this file.
+    fs.removeSync(getPath('temp', 'dreamtime-ipfs', 'api'))
   })
 
   // Utility functions
   const createNode = async function () {
-    const ipfsBin = require('go-ipfs-dep').path().replace('app.asar', 'app.asar.unpacked')
+    const ipfsBin = require('go-ipfs').path().replace('app.asar', 'app.asar.unpacked')
+    const ipfsRepo = getPath('temp', 'dreamtime-ipfs')
 
     logger.debug('Creating IPFS node...')
-    logger.debug(ipfsBin)
+    logger.debug(`Bin: ${ipfsBin}`)
+    logger.debug(`Repo: ${ipfsRepo}`)
 
-    fs.ensureDirSync(getPath('temp', 'ipfs'))
+    fs.ensureDirSync(ipfsRepo)
 
     node = await IpfsCtl.createController({
       ipfsHttpModule: require('ipfs-http-client'),
       ipfsBin,
       ipfsOptions: {
-        repo: getPath('temp', 'ipfs'),
-        start: true,
-        init: true,
+        repo: ipfsRepo,
       },
       remote: false,
       disposable: false,
-      test: false,
-      type: 'go',
     })
 
     await node.init()
@@ -240,6 +242,8 @@ export async function downloadFromIPFS(cid, options, events, writeStream) {
       logger.debug(node)
       throw new Error('The IPFS node was not created correctly.')
     }
+
+    logger.debug('Created!')
   }
 
   const connectToProviders = async function () {
@@ -264,9 +268,9 @@ export async function downloadFromIPFS(cid, options, events, writeStream) {
       return
     }
 
-    logger.debug(`Obtaining download information... (${cid})`)
+    logger.debug(`Obtaining file ${cid} information...`)
 
-    stats = await node.api.object.stat(cid, { timeout: 30000 })
+    stats = await node.api.object.stat(cid, { timeout: 3 * 60 * 1000 })
 
     // eslint-disable-next-line no-console
     console.log(stats)
@@ -280,7 +284,7 @@ export async function downloadFromIPFS(cid, options, events, writeStream) {
   }
 
   // eslint-disable-next-line promise/always-return
-  all(node.api.dht.findProvs(cid, { timeout: 30000 })).then((provs) => {
+  all(node.api.dht.findProvs(cid, { timeout: 60 * 1000 })).then((provs) => {
     events.emit('peers', provs.length)
   }).catch(() => { })
 
@@ -293,8 +297,8 @@ export async function downloadFromIPFS(cid, options, events, writeStream) {
 
     events.emit('progress', {
       progress,
-      written: (writeStream.bytesWritten / 1048576).toFixed(2),
-      total: (stats.CumulativeSize / 1048576).toFixed(2),
+      written: prettyBytes(writeStream.bytesWritten),
+      total: prettyBytes(stats.CumulativeSize),
     })
   })
 
@@ -366,8 +370,8 @@ export function downloadFromTorrent(magnetURI, options, events, writeStream) {
   torrent.on('download', () => {
     events.emit('progress', {
       progress: torrent.progress,
-      written: (torrent.downloaded / 1048576).toFixed(2),
-      total: (torrent.length / 1048576).toFixed(2),
+      written: prettyBytes(torrent.downloaded),
+      total: prettyBytes(torrent.length),
     })
   })
 

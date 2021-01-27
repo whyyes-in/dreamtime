@@ -353,6 +353,11 @@ export class PhotoRun {
           },
         })
 
+        if (text.includes('UserWarning')) {
+          // Just a warning
+          return
+        }
+
         this.cli.error += `${text}\n`
       })
 
@@ -441,6 +446,11 @@ export class PhotoRun {
             'text-danger': true,
           },
         })
+
+        if (text.includes('UserWarning')) {
+          // Just a warning
+          return
+        }
 
         this.cli.error += `${text}\n`
       })
@@ -566,6 +576,7 @@ export class PhotoRun {
 
     const extra = {
       terminal: terminalText,
+      terminalError: errorMessage,
     }
 
     for (const payload of cliErrors) {

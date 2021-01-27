@@ -138,7 +138,7 @@ export const Nudify = {
     const multiple = metadatas.length > 1
 
     metadatas.forEach((metadata) => {
-      const file = File.fromMetadata(metadata, { storeDataURL: true })
+      const file = File.fromMetadata(metadata)
 
       try {
         this.add(file)
