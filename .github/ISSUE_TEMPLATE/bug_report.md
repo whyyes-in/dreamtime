@@ -24,10 +24,11 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Enviroment (please complete the following information):**
- - DreamTime Version [e.g. 1.4.0]
+ - DreamTime Version [e.g. 1.5.11]
  - OS: [e.g. Windows 10 1803]
  - RAM: [e.g. 8 GB]
+ - CPU: [e.g. Ryzen 5 2600]
  - GPU: [e.g. RTX 2070 8 GB VRAM]
 
-**Additional context**
-Add any other context about the problem here.
+**Additional information**
+Add any other information about the problem here.

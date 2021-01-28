@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://time.dreamnet.tech">
+  <a href="https://dreamtime.tech">
     <img src="assets/dreamtime.png" alt="DreamTime">
   </a>
   
@@ -37,18 +37,17 @@
 
 ## Download
 
-[Download the latest version of DreamTime here!](https://time.dreamnet.tech/docs/installation)
+[Download the latest version of DreamTime here!](https://dreamtime.tech/docs/installation)
 
 You can also visit the [Releases](https://github.com/dreamnettech/dreamtime/releases) page.
 
-[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-white.svg)](https://snapcraft.io/dreamtimetech)
-
 ## Development
 
-Visit the [Getting Started](https://time.dreamnet.tech/docs/development/getting-started) page to start hacking DreamTime. 👩‍💻
+Visit the [Getting Started](https://dreamtime.tech/docs/development/getting-started) page to start hacking DreamTime. 👩‍💻
 
 ## Community
 
+- [Discussions](https://forum.dreamtime.tech)
 - [Chat](https://chat.dreamnet.tech)
 - [Twitter](https://twitter.com/DreamNetTechno)
 - [Facebook](https://web.facebook.com/DreamNetTechnology)
