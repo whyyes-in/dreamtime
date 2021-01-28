@@ -7,9 +7,10 @@
 //
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
+import EventEmitter from 'events'
 import fs from 'fs-extra'
 import {
-  cloneDeep, isNil, isEmpty, isPlainObject, get, set, merge, omit,
+  cloneDeep, isNil, isEmpty, isPlainObject, get, set, merge, omit, debounce,
 } from 'lodash'
 import { AppError } from './app-error'
 import { paths, system } from './tools'
@@ -19,7 +20,7 @@ const logger = require('@dreamnet/logplease').create('settings')
 /**
  * User settings.
  */
-class Settings {
+class Settings extends EventEmitter {
   /**
    * the payload.
    * a proxy will be used to get or set this information.
@@ -34,12 +35,6 @@ class Settings {
   _default = {}
 
   /**
-   *
-   *
-   */
-  isSaving = false
-
-  /**
    * file where to save the payload.
    *
    * @type {string}
@@ -50,6 +45,11 @@ class Settings {
     }
 
     return paths.getPath('userData', 'settings.json')
+  }
+
+  constructor() {
+    super()
+    this.save = debounce(this._save, 800)
   }
 
   /**
@@ -73,19 +73,13 @@ class Settings {
    * Save the settings file.
    * This function is called automatically.
    */
-  async save() {
-    if (this.isSaving) {
-      return
-    }
-
+  async _save() {
     try {
-      this.isSaving = true
       fs.writeJsonSync(this.path, this.payload, { spaces: 2 })
       logger.debug('Settings saved!')
+      this.emit('change', this.payload)
     } catch (error) {
       logger.warn('An error occurred while saving the settings.', error)
-    } finally {
-      this.isSaving = false
     }
   }
 
@@ -136,7 +130,7 @@ class Settings {
     const hasGPU = process.platform === 'darwin' ? false : system.graphics.length > 0
 
     this.payload = {
-      version: 15,
+      version: 16,
       user: uuid(),
 
       wizard: {
@@ -168,6 +162,11 @@ class Settings {
         },
       },
 
+      community: {
+        enabled: false,
+        shareComponents: false,
+      },
+
       notifications: {
         run: false,
         allRuns: true,
@@ -179,6 +178,7 @@ class Settings {
         models: process.platform === 'linux' ? paths.getPath('pictures', 'DreamTime') : paths.getPath('userData', 'Pictures'),
         cli: process.platform === 'linux' ? paths.getPath('documents', 'DreamTime', 'dreampower') : paths.getPath('userData', 'dreampower'),
         waifu: process.platform === 'linux' ? paths.getPath('documents', 'DreamTime', 'waifu2x') : paths.getPath('userData', 'waifu2x'),
+        ipfs: process.platform === 'linux' ? paths.getPath('documents', 'DreamTime', 'ipfs') : paths.getPath('userData', 'ipfs'),
       },
 
       telemetry: {
@@ -659,6 +659,20 @@ class Settings {
         app: {
           showStats: false,
           trypophobiaMode: false,
+        },
+      })
+    }
+
+    // 15 -> 16
+    if (this.payload?.version === 15 && this._default.version >= 16) {
+      this.payload = merge(this.payload, {
+        version: 16,
+        community: {
+          enabled: false,
+          shareComponents: false,
+        },
+        folders: {
+          ipfs: process.platform === 'linux' ? paths.getPath('documents', 'DreamTime', 'ipfs') : paths.getPath('userData', 'ipfs'),
         },
       })
     }

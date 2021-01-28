@@ -19,7 +19,8 @@
           "LOG",
           "DEVTOOLS",
           "POWER_PYTHON",
-          "POWER_PATH"
+          "POWER_PATH",
+          "DREAMTIME_COMMUNITY_INIT"
         ]
       }
     ],

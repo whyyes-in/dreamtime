@@ -19,11 +19,9 @@
         <font-awesome-icon icon="images" />
       </nuxt-link>
 
-      <!--
-      <nuxt-link v-tooltip="'Community'" to="/social" class="nav__item nav__item--link">
+      <nuxt-link v-tooltip="'Community'" to="/community" class="nav__item nav__item--link">
         <font-awesome-icon icon="users" />
       </nuxt-link>
-      -->
 
       <nuxt-link v-if="isDev"
                  v-tooltip="'Dev Garden'"

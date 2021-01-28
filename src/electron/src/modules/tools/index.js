@@ -22,4 +22,6 @@ export { power }
 export { instagram }
 export { waifu }
 export { system } from './system'
+export { ipfs } from './ipfs'
+
 export utils from 'electron-util'

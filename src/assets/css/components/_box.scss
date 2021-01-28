@@ -55,12 +55,12 @@
   .box__content {
     @apply flex-1 px-6 py-6 leading-relaxed;
 
-    p {
+    p, ul, hr {
       @apply mb-3;
     }
 
     hr {
-      @apply border-menus-light mb-3;
+      @apply border-menus-light;
     }
   }
 

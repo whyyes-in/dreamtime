@@ -16,6 +16,7 @@ import Logger from '@dreamnet/logplease'
 import fs from 'fs-extra'
 import { AppError } from './modules/app-error'
 import { system } from './modules/tools/system'
+import { ipfs } from './modules/tools'
 import { getPath, getAppPath } from './modules/tools/paths'
 import { settings } from './modules'
 import config from '~/nuxt.config'
@@ -239,6 +240,9 @@ class DreamApp {
 
     // user settings.
     await settings.setup()
+
+    // IPFS
+    await ipfs.init()
   }
 
   /**
@@ -246,6 +250,8 @@ class DreamApp {
    */
   static async shutdown() {
     logger.debug('Shutting down services...')
+
+    await ipfs.stop()
   }
 
   /**

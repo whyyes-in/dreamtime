@@ -364,3 +364,15 @@
     - Console log.
     - Actions inside the application. (Photos and sensitive information are censored.)
   input: checkbox
+
+- id: community.enabled
+  label: Community.
+  description: Starts an IPFS node to activate the community features.
+  tooltip: |-
+    The community features include:
+
+    - Option to share nudes with other DreamTime users.
+    - Upload nudes to the "Community" section so that users can vote for the best creations.
+
+    Please note that these features work on the decentralized IPFS network, this can produce large bandwith and storage expenses. For more information click on the button "What is this?"
+  input: checkbox

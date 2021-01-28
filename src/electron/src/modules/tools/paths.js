@@ -162,3 +162,15 @@ export const getMasksPath = (...args) => {
 
   return join(folder, ...args)
 }
+
+export const getIpfsPath = (...args) => {
+  let folder
+
+  if (process.env.BUILD_PORTABLE) {
+    folder = getAppPath('AppData', 'ipfs')
+  } else {
+    folder = settings.folders.ipfs
+  }
+
+  return join(folder, ...args)
+}

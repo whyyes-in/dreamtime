@@ -9,6 +9,11 @@
           href="/settings/app" />
 
         <MenuItem
+          label="Community"
+          icon="users"
+          href="/settings/community" />
+
+        <MenuItem
           label="Processing"
           icon="cogs"
           href="/settings/processing" />
@@ -19,7 +24,7 @@
           href="/settings/preferences" />
 
         <MenuItem
-          label="Share"
+          label="Share Preferences"
           icon="share-alt"
           href="/settings/share" />
 
@@ -50,12 +55,12 @@
 import { cloneDeep } from 'lodash'
 
 export default {
-
   middleware: ({ route, redirect }) => {
     if (route.fullPath === '/settings') {
       redirect('/settings/app')
     }
   },
+
   data: () => ({
     settings: {},
   }),
