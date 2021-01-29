@@ -12,7 +12,7 @@
 
         <SettingsField v-if="value$.mode >= 1 && value$.advanced.scaleMode === 'padding'" v-model="value$" field-id="preferences.advanced.useColorPaddingStrip" />
 
-        <SettingsField v-if="value$.mode >= 1" v-model="value$" field-id="preferences.advanced.useClothTransparencyEffect" />
+        <SettingsField v-if="value$.mode >= 1 && !animated" v-model="value$" field-id="preferences.advanced.useClothTransparencyEffect" />
       </div>
     </section>
 

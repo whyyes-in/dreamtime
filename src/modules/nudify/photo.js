@@ -629,6 +629,7 @@ export class Photo {
       forced = {
         advanced: {
           scaleMode: this.scaleMode,
+          useClothTransparencyEffect: false,
           waifu: {
             enabled: false,
           },
