@@ -29,7 +29,7 @@
                  v-tooltip="'Dev Garden'"
                  to="/garden"
                  class="nav__item nav__item--link">
-        <font-awesome-icon icon="house-damage" />
+        <font-awesome-icon icon="code" />
       </nuxt-link>
     </div>
 
@@ -39,6 +39,10 @@
                  to="/games/badtime"
                  class="nav__item nav__item--button">
         <img src="~/assets/images/games/sans.png">
+      </nuxt-link>
+
+      <nuxt-link v-tooltip="'Status'" to="/status" class="nav__item nav__item--button">
+        <font-awesome-icon icon="rocket" />
       </nuxt-link>
 
       <nuxt-link v-tooltip="'About'" to="/about" class="nav__item nav__item--button">

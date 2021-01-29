@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import ImageEditor from 'tui-image-editor/dist/tui-image-editor.min'
+import ImageEditor from 'tui-image-editor'
 import { tutorial } from '~/modules'
 import { blackTheme } from '~/modules/editor.theme'
 
@@ -38,7 +38,7 @@ export default {
       this.photo.editor = new ImageEditor(this.$refs.imageEditor, {
         includeUI: {
           loadImage: {
-            path: this.photo.file.path,
+            path: this.photo.file.url,
             name: this.photo.file.name,
           },
           theme: blackTheme,

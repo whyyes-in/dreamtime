@@ -40,14 +40,8 @@ export class PhotoMask {
    */
   file
 
-  /**
-   *
-   *
-   */
-  fileTime
-
   get url() {
-    return `${this.file.url}?t=${this.fileTime}`
+    return this.file.url
   }
 
   /**
@@ -247,10 +241,6 @@ export class PhotoMask {
 
     this.file = photo.createFile(stepToFilename[id], {
       deleteIfExists: true,
-    })
-
-    this.file.on('loaded', () => {
-      this.fileTime = Date.now()
     })
   }
 

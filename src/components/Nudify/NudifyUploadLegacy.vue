@@ -34,13 +34,13 @@
     </portal>
 
     <!-- Global alert -->
-    <div v-if="alert" class="notification">
+    <AppNotification v-if="alert && alert.message" :name="alert.id" :color="alert.color">
       <h5>
         <font-awesome-icon icon="exclamation-triangle" />
-        NOTIFICATION
+        {{ alert.title || 'ALERT' }}
       </h5>
-      <div v-html="alert" />
-    </div>
+      <div v-html="alert.message" />
+    </AppNotification>
 
     <!-- DreamTime Updater -->
     <AppNotification v-if="dreamtime.available"
@@ -206,7 +206,7 @@ export default {
 
   computed: {
     alert() {
-      return dreamtrack.get('alerts.index')
+      return dreamtrack.get('alert')
     },
   },
 

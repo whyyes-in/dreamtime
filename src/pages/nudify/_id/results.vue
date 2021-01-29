@@ -161,15 +161,19 @@ export default {
 .results__masks {
   @apply grid grid-cols-3 gap-6;
 
-  @screen sm {
+  @screen md {
     @apply grid-cols-2;
+  }
+
+  @screen sm {
+    @apply grid-cols-1;
   }
 }
 
 .results__runs {
   @apply grid grid-cols-2 gap-6;
 
-  @screen sm {
+  @screen md {
     @apply grid-cols-1;
   }
 

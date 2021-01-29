@@ -62,6 +62,10 @@
     hr {
       @apply border-menus-light mb-3;
     }
+
+    a:not(.button) {
+      @apply text-primary;
+    }
   }
 
   .box__footer {
@@ -69,14 +73,10 @@
     @apply border-t border-menus-light;
 
     &.box__footer--buttons {
-      @apply flex;
+      @apply flex gap-3;
 
       .button {
         @apply flex-1;
-
-        &:not(:last-child) {
-          @apply mr-2;
-        }
       }
     }
   }

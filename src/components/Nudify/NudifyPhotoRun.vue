@@ -336,7 +336,7 @@ export default {
 
       if (!this.transparency.nude) {
         const nude = new Image()
-        nude.src = `${this.run.outputFile.path}?t=${Date.now()}`
+        nude.src = this.run.outputFile.url
 
         await new Promise((resolve) => {
           nude.onload = () => resolve()
@@ -347,7 +347,7 @@ export default {
 
       if (!this.transparency.corrected) {
         const corrected = new Image()
-        corrected.src = `${this.run.photo.masks[STEP.CORRECT].file.path}?t=${Date.now()}`
+        corrected.src = this.run.photo.masks[STEP.CORRECT].file.url
 
         await new Promise((resolve) => {
           corrected.onload = () => resolve()

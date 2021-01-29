@@ -1,5 +1,8 @@
 <template>
-  <div v-if="canShow" class="notification" @click="click">
+  <div v-if="canShow"
+       class="notification"
+       :class="style"
+       @click="click">
     <span class="close-icon" @click="close()">
       <FontAwesomeIcon icon="times-circle" />
     </span>
@@ -17,6 +20,10 @@ export default {
       type: String,
       required: true,
     },
+    color: {
+      type: String,
+      default: null,
+    },
   },
 
   data: () => ({
@@ -25,11 +32,25 @@ export default {
 
   computed: {
     canShow() {
+      if (!this.name) {
+        return false
+      }
+
       if (!isNil(localStorage.getItem(`notification_${this.name}`))) {
         return false
       }
 
       return !this.closed
+    },
+
+    style() {
+      if (!this.color) {
+        return {}
+      }
+
+      return {
+        [`notification--${this.color}`]: true,
+      }
     },
   },
 

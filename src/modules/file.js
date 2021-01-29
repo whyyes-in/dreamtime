@@ -57,6 +57,11 @@ export class File extends EventEmitter {
   size = -1
 
   /**
+   * @type {Number}
+   */
+  fileTime = Date.now()
+
+  /**
    * @type {boolean}
    */
   exists = false
@@ -95,7 +100,7 @@ export class File extends EventEmitter {
    * @readonly
    */
   get url() {
-    return `media://${encodeURI(this.path)}`
+    return `media://${encodeURI(this.path)}?t=${this.fileTime}`
   }
 
   /**
@@ -233,6 +238,8 @@ export class File extends EventEmitter {
     this.setMetadata(metadata)
 
     this.emit('loaded')
+
+    this.fileTime = Date.now()
 
     this.loading = false
 

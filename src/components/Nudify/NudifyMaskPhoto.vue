@@ -30,14 +30,13 @@
       @change="change">
 
     <div class="box__footer buttons">
-      <!--
       <button v-if="mask.canShowEdit"
               key="edit"
-              v-tooltip="'Edit with the photo editor.'"
-              class="button button--sm">
+              v-tooltip="'Photo editor.'"
+              class="button button--sm button--primary"
+              @click="openEditor">
         <FontAwesomeIcon icon="paint-brush" />
       </button>
-      -->
 
       <button v-if="mask.canShowUpload"
               key="upload"
@@ -159,15 +158,36 @@
         </div>
       </div>
     </dialog>
+
+    <!-- Editor -->
+    <dialog ref="editorDialog" class="editordialog">
+      <AppBox class="editorbox">
+        <div ref="editor" data-private />
+
+        <template #footer>
+          <div class="box__footer box__footer--buttons">
+            <button class="button flex-1 button--success" @click="applyEditor">
+              Apply
+            </button>
+
+            <button class="button flex-1 button--danger" @click="$refs.editorDialog.close()">
+              Dismiss
+            </button>
+          </div>
+        </template>
+      </AppBox>
+    </dialog>
   </div>
 </template>
 
 <script>
 import { debounce } from 'lodash'
+import ImageEditor from 'tui-image-editor'
 import { saveAs } from 'file-saver'
 import { File } from '~/modules'
 import { DragDropMixin } from '~/mixins'
 import { STEP } from '~/modules/nudify/photo-mask'
+import { blackTheme } from '~/modules/editor.theme'
 
 export default {
   mixins: [DragDropMixin],
@@ -191,6 +211,7 @@ export default {
       corrected: undefined,
       canvas: undefined,
     },
+    editor: null,
   }),
 
   computed: {
@@ -237,6 +258,47 @@ export default {
   },
 
   methods: {
+    /**
+     *
+     */
+    createEditor() {
+      if (!this.editor) {
+        this.editor = new ImageEditor(this.$refs.editor, {
+          includeUI: {
+            loadImage: {
+              path: this.file.url,
+              name: this.file.name,
+            },
+            theme: blackTheme,
+            initMenu: 'draw',
+            menu: ['draw', 'shape', 'flip', 'rotate', 'filter', 'mask'],
+            menuBarPosition: 'left',
+          },
+          usageStatistics: false,
+        })
+      } else {
+        this.editor.loadImageFromURL(this.file.url, this.file.name)
+      }
+    },
+
+    openEditor() {
+      this.createEditor()
+      this.$refs.editorDialog.showModal()
+    },
+
+    async applyEditor() {
+      const dataURL = this.editor.toDataURL({
+        format: this.file.extension,
+        quality: 1,
+        multiplier: 1,
+      })
+
+      await this.file.writeDataURL(dataURL)
+      await this.file.load()
+
+      this.$refs.editorDialog.close()
+    },
+
     async change(event) {
       const { files } = event.target
 
@@ -339,16 +401,16 @@ export default {
 
       this.transparency.canvas = canvas
 
-      let correctedSrc = this.mask.photo.file.path
+      let correctedSrc = this.mask.photo.file.url
 
       if (this.mask.id === STEP.NUDE) {
         // Corrected
-        correctedSrc = this.mask.photo.masks[STEP.CORRECT].file.path
+        correctedSrc = this.mask.photo.masks[STEP.CORRECT].file.url
       }
 
       if (!this.transparency.nude) {
         const nude = new Image()
-        nude.src = `${this.file.path}?t=${Date.now()}`
+        nude.src = this.file.url
 
         await new Promise((resolve) => {
           nude.onload = () => resolve()
@@ -359,7 +421,7 @@ export default {
 
       if (!this.transparency.corrected) {
         const corrected = new Image()
-        corrected.src = `${correctedSrc}?t=${Date.now()}`
+        corrected.src = correctedSrc
 
         await new Promise((resolve) => {
           corrected.onload = () => resolve()
@@ -455,5 +517,18 @@ export default {
       @apply text-danger-500;
     }
   }
+}
+
+.editordialog {
+  @apply justify-center items-center top-0 bottom-0;
+
+  &[open] {
+    @apply flex;
+  }
+}
+
+.editorbox {
+  width: 80vw;
+  height: 80vh;
 }
 </style>
