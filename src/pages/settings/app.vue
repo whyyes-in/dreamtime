@@ -24,20 +24,6 @@
       </template>
     </PageHeader>
 
-    <div class="alerts">
-      <!-- Models Folder -->
-      <div v-if="!requirements.folders.models" class="notification notification--danger">
-        <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
-        <span v-if="!$dream.isPortable">
-          The <strong>Models</strong> folder has <strong>invalid characters</strong>. <nuxt-link to="/settings/folders">Please change the location of the folder.</nuxt-link>
-        </span>
-        <span v-else>
-          The place where you have extracted {{ $dream.name }} has <strong>invalid characters</strong>.
-          Please move the application to another place.
-        </span>
-      </div>
-    </div>
-
     <section class="box">
       <div class="box__content">
         <SettingsField field-id="app.hardwareAcceleration" />

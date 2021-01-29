@@ -91,7 +91,7 @@ export const requirements = {
     this.waifu.compatible = await this._hasCompatibleWaifu()
 
     // ram
-    this.recommended.ram = system.memory.total >= 12884901888 // 12 GB
+    this.recommended.ram = system.memory.total >= 8589934592 // 8 GB
     this.recommended.vram = system.graphics[0]?.vram >= 6000 // 6 GB
 
     // Folders

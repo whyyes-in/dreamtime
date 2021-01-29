@@ -1,5 +1,5 @@
 import {
-  attempt, startsWith, merge, endsWith,
+  attempt, startsWith, merge, endsWith, toNumber,
 } from 'lodash'
 import { basename, join } from 'path'
 import fs from 'fs-extra'
@@ -164,7 +164,7 @@ export async function downloadFromHttp(url, options, events, writeStream) {
     })
   })
 
-  const contentLength = headers['content-length'] || -1
+  const contentLength = toNumber(headers['content-length'] || -1)
 
   readStream.on('error', (err) => {
     events.emit('error', err)
@@ -172,9 +172,9 @@ export async function downloadFromHttp(url, options, events, writeStream) {
 
   readStream.on('data', () => {
     events.emit('progress', {
-      progress: (writeStream.bytesWritten / contentLength),
+      progress: contentLength > 0 ? (writeStream.bytesWritten / contentLength) : null,
       written: prettyBytes(writeStream.bytesWritten),
-      total: prettyBytes(contentLength),
+      total: contentLength > 0 ? prettyBytes(contentLength) : null,
     })
   })
 
