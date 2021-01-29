@@ -32,14 +32,6 @@ module.exports = {
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
     ],
-    link: [
-      {
-        rel: 'preload',
-        href: 'https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600;800&family=Roboto+Slab:wght@300;400;500;600&display=swap',
-        as: 'style',
-        onload: 'this.rel = \'stylesheet\'',
-      },
-    ],
     script: [
       {
         src: 'https://ads.dreamnet.tech/delivery/asyncjs.php',
@@ -69,7 +61,7 @@ module.exports = {
     '~/plugins/binds.js',
     '~/plugins/boot.js',
     '~/plugins/setup.js',
-    '~/plugins/fontawesome.js',
+    // '~/plugins/fontawesome.js',
     '~/plugins/vue-slider.js',
     '~/plugins/vue-portal.js',
   ],
@@ -80,6 +72,12 @@ module.exports = {
     '@nuxtjs/tailwindcss',
     // Doc: https://github.com/nuxt-community/style-resources-module
     '@nuxtjs/style-resources',
+    // https://github.com/nuxt-community/google-fonts-module
+    '@nuxtjs/google-fonts',
+    // https://github.com/nuxt-community/fontawesome-module
+    '@nuxtjs/fontawesome',
+    // https://marquez.co/docs/nuxt-optimized-images
+    '@aceforth/nuxt-optimized-images',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
@@ -95,11 +93,106 @@ module.exports = {
     scss: '~/assets/css/utilities/all.scss',
   },
 
+  // https://github.com/nuxt-community/google-fonts-module
+  googleFonts: {
+    families: {
+      Rubik: [400, 600, 700],
+      'Roboto+Slab': [400, 600, 700],
+    },
+    download: true,
+  },
+
+  // https://github.com/nuxt-community/fontawesome-module
+  fontawesome: {
+    icons: {
+      solid: [
+        'faExclamationTriangle',
+        'faCheckCircle',
+        'faInfoCircle',
+        'faUsers',
+        'faQuestionCircle',
+        'faCaretLeft',
+        'faCaretRight',
+        'faUpload',
+        'faImages',
+        'faHouseDamage',
+        'faCog',
+        'faMinus',
+        'faTimes',
+        'faMemory',
+        'faMicrochip',
+        'faDesktop',
+        'faRunning',
+        'faPaintBrush',
+        'faFileUpload',
+        'faSave',
+        'faHatWizard',
+        'faTerminal',
+        'faStop',
+        'faPlay',
+        'faRetweet',
+        'faHeart',
+        'faClock',
+        'faGlobe',
+        'faFile',
+        'faFolder',
+        'faFolderOpen',
+        'faTrashAlt',
+        'faClipboardList',
+        'faClipboardCheck',
+        'faSignOutAlt',
+        'faTools',
+        'faToolbox',
+        'faFlask',
+        'faExpand',
+        'faTimesCircle',
+        'faRocket',
+        'faThumbsUp',
+        'faFireAlt',
+        'faSync',
+        'faDownload',
+        'faLink',
+        'faCloudShowersHeavy',
+        'faWindowMaximize',
+        'faWindowClose',
+        'faSlidersH',
+        'faShareAlt',
+        'faBell',
+        'faPaperPlane',
+        'faBook',
+        'faExternalLinkSquareAlt',
+        'faCrop',
+        'faMagic',
+        'faCompressArrowsAlt',
+        'faMask',
+        'faCloudSunRain',
+        'faCloudMoon',
+        'faCode',
+      ],
+      regular: [
+        'faSquare',
+      ],
+      brands: [
+        'faPatreon',
+        'faInstagram',
+        'faSteam',
+      ],
+    },
+  },
+
+  // https://marquez.co/docs/nuxt-optimized-images
+  optimizedImages: {
+  },
+
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: true,
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
+    analyze: {
+      analyzerMode: 'static',
+    },
+
     // Enable thread-loader in webpack building.
     parallel: true,
 
@@ -118,7 +211,7 @@ module.exports = {
     // Customize Babel configuration for JavaScript and Vue files.
     babel: {
       plugins: [
-        // 'lodash',
+        'lodash',
         '@babel/plugin-proposal-optional-chaining',
         [
           'transform-inline-environment-variables',
@@ -126,6 +219,8 @@ module.exports = {
             exclude: [
               'LOG',
               'DEVTOOLS',
+              'POWER_PYTHON',
+              'POWER_PATH',
             ],
           },
         ],
@@ -140,6 +235,19 @@ module.exports = {
             },
           ],
         ]
+      },
+    },
+
+    //
+    terser: {
+      extractComments: false, // default was LICENSES
+    },
+
+    //
+    html: {
+      minify: {
+        minifyCSS: false,
+        minifyJS: false,
       },
     },
 
@@ -166,7 +274,7 @@ module.exports = {
         use: {
           loader: 'worker-loader',
           options: {
-            name: () => (isDev ? '[name].[ext]' : 'workers/[contenthash:7].[ext]'),
+            filename: () => (isDev ? '[name].[ext]' : 'workers/[contenthash:7].[ext]'),
           },
         },
         exclude: /(node_modules)/,
@@ -181,12 +289,14 @@ module.exports = {
             name: () => (isDev ? '[name].[ext]' : 'sounds/[contenthash:7].[ext]'),
           },
         },
+        exclude: /(node_modules)/,
       })
 
       // YAML loader.
       config.module.rules.push({
         test: /\.ya?ml$/,
         use: ['js-yaml-loader'],
+        exclude: /(node_modules)/,
       })
     },
   },

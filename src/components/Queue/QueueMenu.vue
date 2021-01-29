@@ -89,7 +89,7 @@
             v-tooltip="'Rerun all'"
             class="button button--info button--xs"
             @click.prevent="$nudify.addAll('finished')">
-            <font-awesome-icon icon="undo" />
+            <font-awesome-icon icon="retweet" />
           </button>
         </div>
       </div>

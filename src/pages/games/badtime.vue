@@ -15,7 +15,7 @@
 
         <menu-item
           label="Open in Browser"
-          icon="external-link-alt"
+          icon="external-link-square-alt"
           href="https://badtime.dreamnet.tech" />
       </section>
     </portal>

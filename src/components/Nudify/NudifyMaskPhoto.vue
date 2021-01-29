@@ -164,6 +164,7 @@
 
 <script>
 import { debounce } from 'lodash'
+import { saveAs } from 'file-saver'
 import { File } from '~/modules'
 import { DragDropMixin } from '~/mixins'
 import { STEP } from '~/modules/nudify/photo-mask'

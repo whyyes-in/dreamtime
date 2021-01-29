@@ -15,7 +15,7 @@
 
         <menu-item
           label="Open in Browser"
-          icon="external-link-alt" />
+          icon="external-link-square-alt" />
       </section>
     </portal>
 

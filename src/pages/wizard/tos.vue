@@ -12,11 +12,12 @@
     </PageHeader>
 
     <div class="tos__content">
-      <AppBox v-for="(item, index) in tos"
-              :key="index"
-              :photo="item.photo"
-              :title="item.title"
-              :content="item.content" />
+      <AppBox
+        v-for="(item, index) in tos"
+        :key="index"
+        :photo="item.photo"
+        :title="item.title"
+        :content="item.content" />
     </div>
 
     <div class="wizard__footer">
@@ -47,7 +48,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/* purgecss start ignore */
 .tos {
   @apply pb-6;
 
@@ -85,5 +85,4 @@ export default {
 .tos__content {
   @apply grid grid-cols-2 gap-6;
 }
-/* purgecss end ignore */
 </style>

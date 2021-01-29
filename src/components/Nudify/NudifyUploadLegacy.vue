@@ -36,7 +36,7 @@
     <!-- Global alert -->
     <div v-if="alert" class="notification">
       <h5>
-        <font-awesome-icon icon="exclamation-circle" />
+        <font-awesome-icon icon="exclamation-triangle" />
         NOTIFICATION
       </h5>
       <div v-html="alert" />

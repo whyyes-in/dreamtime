@@ -95,7 +95,7 @@ export class File extends EventEmitter {
    * @readonly
    */
   get url() {
-    return this.path
+    return `media://${encodeURI(this.path)}`
   }
 
   /**

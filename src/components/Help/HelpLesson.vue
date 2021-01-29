@@ -1,19 +1,21 @@
 <template>
-  <AppBox class="lesson"
-          :class="{ 'lesson--small': small }"
-          :photo="`photo--${lesson.photo}`"
-          :title="lesson.title"
-          :content="content"
-          @click="$emit('click')">
+  <AppBox
+    class="lesson"
+    :class="{ 'lesson--small': small }"
+    :photo="`photo--${lesson.photo}`"
+    :title="lesson.title"
+    :content="content"
+    @click="$emit('click')">
     <template #footer>
       <div v-if="!small" class="box__footer text-center">
-        <a v-for="(button,key) in lesson.buttons"
-           :key="key"
-           :href="button.href"
-           :data-href="button.href"
-           target="_blank"
-           class="button button--sm"
-           @click="onButtonClick">
+        <a
+          v-for="(button, key) in lesson.buttons"
+          :key="key"
+          :href="button.href"
+          :data-href="button.href"
+          target="_blank"
+          class="button button--sm"
+          @click="onButtonClick">
           {{ button.text }}
         </a>
       </div>
@@ -63,7 +65,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/* purgecss start ignore */
 .lesson {
   &::v-deep {
     &.lesson--small {
@@ -147,5 +148,4 @@ export default {
     @apply mr-2;
   }
 }
-/* purgecss end ignore */
 </style>

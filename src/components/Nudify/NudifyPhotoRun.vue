@@ -68,7 +68,7 @@
 
       <div v-else-if="run.failed" key="button-status" class="button button--danger button--sm">
         <span class="icon">
-          <font-awesome-icon icon="exclamation-circle" />
+          <font-awesome-icon icon="exclamation-triangle" />
         </span>
         <span>Error!</span>
       </div>

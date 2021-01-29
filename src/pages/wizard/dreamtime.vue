@@ -2,7 +2,7 @@
   <div class="wizard-project">
     <PageHeader>
       <h2 class="title">
-        <span class="icon"><font-awesome-icon icon="sync-alt" /></span>
+        <span class="icon"><font-awesome-icon icon="sync" /></span>
         <span>Updater</span>
       </h2>
 

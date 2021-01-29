@@ -7,16 +7,127 @@
 //
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
+/* eslint-disable */
+
 import Vue from 'vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { fab } from '@fortawesome/free-brands-svg-icons'
-import { fas } from '@fortawesome/free-solid-svg-icons'
-import { far } from '@fortawesome/free-regular-svg-icons'
+import {
+  faPatreon,
+  faInstagram,
+  faSteam,
+} from '@fortawesome/free-brands-svg-icons'
+import {
+  faExclamationTriangle,
+  faCheckCircle,
+  faInfoCircle,
+  faUsers,
+  faQuestionCircle,
+  faCaretLeft,
+  faCaretRight,
+  faUpload,
+  faImages,
+  faHouseDamage,
+  faCog,
+  faMinus,
+  faTimes,
+  faMemory,
+  faMicrochip,
+  faDesktop,
+  faRunning,
+  faPaintBrush,
+  faFileUpload,
+  faSave,
+  faHatWizard,
+  faTerminal,
+  faStop,
+  faPlay,
+  faRetweet,
+  faHeart,
+  faClock,
+  faGlobe,
+  faFile,
+  faFolder,
+  faFolderOpen,
+  faTrashAlt,
+  faClipboardList,
+  faClipboardCheck,
+  faSignOutAlt,
+  faTools,
+  faToolbox,
+  faFlask,
+  faExpand,
+  faTimesCircle,
+  faRocket,
+  faThumbsUp,
+  faFireAlt,
+  faSync,
+  faDownload,
+  faLink,
+  faCloudShowersHeavy,
+  faWindowMaximize,
+  faWindowClose,
+  faSlidersH,
+  faShareAlt,
+  faBell,
+  faPaperPlane,
+  faBook,
+  faExternalLinkSquareAlt,
+  faCrop,
+  faMagic,
+  faCompressArrowsAlt,
+  faMask,
+  faCloudSunRain,
+  faCloudMoon,
+  faCode,
+} from '@fortawesome/free-solid-svg-icons'
+import {
+  faSquare,
+} from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(far, fas, fab)
+library.add(
+  faExclamationTriangle,
+  faCheckCircle,
+  faInfoCircle,
+  faUsers,
+  faQuestionCircle,
+  faCaretLeft,
+  faCaretRight,
+  faUpload,
+  faImages,
+  faHouseDamage,
+  faCog,
+  faMinus,
+  faTimes,
+  faMemory,
+  faMicrochip,
+  faDesktop,
+  faRunning,
+  faPaintBrush,
+  faFileUpload,
+  faSave,
+  faHatWizard,
+  faTerminal,
+  faStop,
+  faPlay,
+  faRetweet,
+  faHeart,
+  faClock,
+  faGlobe,
+  faFile,
+  faFolder,
+  faFolderOpen,
+  faTrashAlt,
+  faClipboardList,
+  faClipboardCheck,
+  faSignOutAlt,
+  faTools,
+  faToolbox,
+  faFlask,
+  faExpand,
+  faTimesCircle,
+)
 
-// Vue.component('FontAwesomeIcon', FontAwesomeIcon)
 Vue.component('FontAwesomeIcon', FontAwesomeIcon)
 
 Vue.config.productionTip = false

@@ -212,9 +212,11 @@ class DreamApp {
     })
 
     // https://github.com/electron/electron/issues/23757#issuecomment-640146333
-    protocol.registerFileProtocol('file', (request, callback) => {
-      const pathname = decodeURI(request.url.replace('file:///', '').replace(/\?.*$/g, ''))
-      callback(pathname)
+    protocol.registerFileProtocol('media', (request, callback) => {
+      const pathname = decodeURI(request.url.replace('media://', ''))
+      const parts = pathname.split('?')
+
+      callback(parts[0])
     })
 
     /*
