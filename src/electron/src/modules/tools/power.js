@@ -107,15 +107,12 @@ export const transform = (run) => {
 
   logger.debug(preferences)
 
-  // input
-  const inputFilepath = photo.finalFile.path
-
   // Steps
   let start = 0
   let end = 5
 
   // CLI Args
-  const args = ['run', '--input', inputFilepath]
+  const args = ['run', '--input', photo.finalFile.path]
 
   if (run.isMaskGeneration) {
     //
@@ -161,7 +158,7 @@ export const transform = (run) => {
   const {
     useColorTransfer, useArtifactsInpaint, scaleMode, compress, imageSize, device,
   } = preferences.advanced
-  const { geometry } = photo
+  const { overlayData } = photo.crop
 
   // Device
   if (device === 'CPU') {
@@ -177,7 +174,7 @@ export const transform = (run) => {
   if (scaleMode === 'overlay') {
     args.push(
       '--overlay',
-      `${geometry.overlay.startX},${geometry.overlay.startY}:${geometry.overlay.endX},${geometry.overlay.endY}`,
+      `${overlayData.startX},${overlayData.startY}:${overlayData.endX},${overlayData.endY}`,
     )
   } else if (scaleMode !== 'none' && scaleMode !== 'cropjs' && scaleMode !== 'padding') {
     args.push(`--${scaleMode}`)

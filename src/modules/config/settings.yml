@@ -53,6 +53,25 @@
   description: Removes images that can trigger trypophobia.
   input: checkbox
 
+- id: app.resultsColumns
+  label: Results columns.
+  description: How many columns display on the results page.
+  input: select
+  options:
+    - label: Automatic
+      value: auto
+    - label: 1
+      value: 1
+    - label: 2
+      value: 2
+    - label: 3
+      value: 3
+    - label: 4
+      value: 4
+    - label: 5
+      value: 5
+    - label: 6
+      value: 6
 
 - id: app.queuePosition
   label: Queue position.
@@ -132,13 +151,13 @@
   label: Scale method.
   description: Indicates how the photo will be scaled to a size compatible with the algorithm.
   tooltip: |-
-    - **None:** The algorithm will be forced to process the photo using an approximation of its original size. Please note that this option can considerably increase memory consumption and return worse results.
-    - **Automatic Resize:** The algorithm will resize the photo without maintaining the aspect ratio.
-    - **Automatic Padding:** The algorithm will resize the photo while maintaining the aspect ratio.
-    - **Automatic Crop:** The algorithm will crop the photo while maintaining the aspect ratio.
-    - **Overlay:** Allows you to select which area of the photo you want to crop, nudify and then restore to the original photo. This tool makes the photos keep their original size.
-    - **Crop:** Allows you to crop the photo manually. (Like in DeepNude)
-    - **Color padding:**  This method tricks the algorithm into avoiding the color change that occurs during nudification and in some cases it returns better nudes where the other methods fail.
+    - **None:** The algorithm will be forced to process the photo using an approximation of its original size. This option can considerably increase memory consumption and return worse results.
+    - **Automatic Resize:** Automatic resize **without** maintaining the aspect ratio.
+    - **Automatic Padding:** Automatic resize maintaining the aspect ratio.
+    - **Automatic Crop:** Automatic crop maintaining the aspect ratio.
+    - **Overlay:** Allows you to select the area of the photo you want to nudify keeping the original size of the photo.
+    - **Crop:** Allows you to crop the area of the photo you want to nudify. (Like in DeepNude)
+    - **Color padding:**  Add a black and white padding that avoids color change and can return much better fake nude in some photos.
   input: select
   options:
     - label: None
@@ -216,10 +235,10 @@
   label: X-Ray Effect.
   description: Tool that allows you to create an X-Ray effect with the fake nude.
   tooltip: |
-    Enable the button to open the X-Ray effect tool that allows you to add the photo with clothes on top of the fake nude and modify the transparency to achieve the effect.
+    Enable the `X-Ray Tool` on the nude, allows you to add the photo with clothes on top of the fake nude and modify the transparency to achieve the effect.
 
-    - This tool may decrease the quality of some photos.
-    - Waifu2X enhancements do not apply to this tool. (Always 512x512)
+    - The photo exported from this tool may have lower quality than the nude.
+    - The photo will be exported in the size indicated by the `Image size` option. (Size by Waifu2X are ignored.)
   input: checkbox
 
 - id: preferences.advanced.imageSize

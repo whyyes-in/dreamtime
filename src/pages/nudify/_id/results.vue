@@ -1,6 +1,6 @@
 <template>
   <!-- Results -->
-  <div class="results">
+  <div class="results" :class="resultsStyle">
     <PageHeader v-if="photo.withCustomMasks">
       <h2 class="title">
         <span class="icon"><font-awesome-icon icon="mask" /></span>
@@ -49,11 +49,9 @@
       </template>
     </PageHeader>
 
-    <div v-if="photo.isScaleModeCorrected && !photo.pending && photo.preferences.mode > 1" class="notification notification--warning">
+    <div v-if="photo.isScaleModeCorrected && photo.preferences.mode > 1" class="notification notification--warning">
       <span class="icon"><font-awesome-icon icon="exclamation-triangle" /></span>
-      The <strong>{{ photo.scaleModeName }}</strong> scale method has been selected but the tool has not been used, this will generate lower quality fake nudes. <nuxt-link :to="photo.scaleModeURL">
-        Please use the tool
-      </nuxt-link>.
+      The <strong>{{ photo.scaleModeName }}</strong> scale method has been selected but the tool has not been used, this will generate lower quality fake nudes.
     </div>
 
     <!-- Custom Masks -->
@@ -77,7 +75,7 @@
       <NudifyMaskPhoto v-show="photo.useUpscaling" :mask="photo.masks.scale" :x-rays="true" />
     </section>
 
-    <!-- Results -->
+    <!-- Normal results -->
     <section v-else-if="photo.started" class="results__runs">
       <NudifyPhotoRun v-for="(run, index) in validRuns"
                       :key="index"
@@ -133,6 +131,10 @@ export default {
     validRuns() {
       return this.photo.runs.filter((item) => !item.isMaskGeneration)
     },
+
+    resultsStyle() {
+      return `results--${this.$settings.app.resultsColumns}`
+    },
   },
 
   mounted() {
@@ -158,30 +160,76 @@ export default {
   @apply h-full;
 }
 
-.results__masks {
-  @apply grid grid-cols-3 gap-6;
+.results--auto {
+  .results__masks {
+    @apply grid-cols-3;
 
-  @screen md {
-    @apply grid-cols-2;
+    @screen md {
+      @apply grid-cols-2;
+    }
+
+    @screen sm {
+      @apply grid-cols-1;
+    }
   }
 
-  @screen sm {
+  .results__runs {
+    @apply grid-cols-2;
+
+    @screen md {
+      @apply grid-cols-1;
+    }
+  }
+}
+
+.results--1 {
+  .results__masks,
+  .results__runs {
     @apply grid-cols-1;
   }
 }
 
+.results--2 {
+  .results__masks,
+  .results__runs {
+    @apply grid-cols-2;
+  }
+}
+
+.results--3 {
+  .results__masks,
+  .results__runs {
+    @apply grid-cols-3;
+  }
+}
+
+.results--4 {
+  .results__masks,
+  .results__runs {
+    @apply grid-cols-4;
+  }
+}
+
+.results--5 {
+  .results__masks,
+  .results__runs {
+    @apply grid-cols-5;
+  }
+}
+
+.results--6 {
+  .results__masks,
+  .results__runs {
+    @apply grid-cols-6;
+  }
+}
+
+.results__masks {
+  @apply grid gap-6;
+}
+
 .results__runs {
-  @apply grid grid-cols-2 gap-6;
-
-  @screen md {
-    @apply grid-cols-1;
-  }
-
-  .run {
-    @media (min-height: 1280px) {
-      height: 1024px;
-    }
-  }
+  @apply grid gap-6;
 }
 
 .results__status {

@@ -1,11 +1,16 @@
 <template>
-  <div class="preview" :style="photoURL" data-private>
+  <div class="preview"
+       :style="photoURL"
+       data-private
+       @click="file.openItem()">
+    <!-- Video (if) -->
     <video v-if="isVideo"
            :src="file.url"
            :autoplay="autoplay"
            muted
            loop />
 
+    <!-- Name badge -->
     <NudifyPhotoBadge v-if="badge && $settings.app.duplicates" :photo="photo" />
   </div>
 </template>
@@ -40,7 +45,7 @@ export default {
     },
 
     file() {
-      return this.live ? this.photo.previewFile : this.photo.file
+      return this.live ? this.photo.previewFile : this.photo.finalPreviewFile
     },
 
     photoURL() {
@@ -59,7 +64,7 @@ export default {
 <style lang="scss" scoped>
 .preview {
   @apply absolute top-0 bottom-0 left-0 right-0 z-10;
-  @apply bg-contain bg-no-repeat bg-center;
+  @apply bg-contain bg-no-repeat bg-center cursor-pointer;
 
   video {
     @apply h-full w-full overflow-hidden;

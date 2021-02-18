@@ -34,7 +34,7 @@
               key="edit"
               v-tooltip="'Photo editor.'"
               class="button button--sm button--primary"
-              @click="openEditor">
+              @click="$refs.editor.open()">
         <FontAwesomeIcon icon="paint-brush" />
       </button>
 
@@ -59,7 +59,7 @@
         key="button-transparency"
         v-tooltip="'X-Ray Tool'"
         class="button button--primary button--sm"
-        @click="showTransparencyModal()">
+        @click="$refs.xray.open()">
         <span class="icon">
           <font-awesome-icon icon="hat-wizard" />
         </span>
@@ -125,69 +125,26 @@
       </div>
     </dialog>
 
-    <!-- Transparency Dialog -->
-    <dialog ref="transparencyDialog">
-      <div class="box">
-        <div class="box__content">
-          <canvas ref="transparencyCanvas"
-                  class="transparency"
-                  width="512"
-                  height="512" />
+    <!-- X-Ray tool -->
+    <LazyDialogXRay v-if="xRays && mask.canShowSave"
+                    ref="xray"
+                    :cloth-file="clothFile"
+                    :nude-file="file"
+                    :output-name="run.outputName"
+                    :image-size="mask.photo.imageSize" />
 
-          <MenuItem label="Transparency">
-            <VueSlider v-model="transparency.alpha"
-                       :min="0.05"
-                       :max="0.95"
-                       :interval="0.05" />
-          </MenuItem>
-        </div>
-
-        <div class="box__footer box__footer--buttons">
-          <button
-            class="button button--success"
-            @click.prevent="saveTransparency">
-            <span class="icon">
-              <font-awesome-icon icon="save" />
-            </span>
-            <span>Save</span>
-          </button>
-
-          <button class="button button--danger" @click="closeTransparencyModal">
-            Close
-          </button>
-        </div>
-      </div>
-    </dialog>
-
-    <!-- Editor -->
-    <dialog ref="editorDialog" class="editordialog">
-      <AppBox class="editorbox">
-        <div ref="editor" data-private />
-
-        <template #footer>
-          <div class="box__footer box__footer--buttons">
-            <button class="button flex-1 button--success" @click="applyEditor">
-              Apply
-            </button>
-
-            <button class="button flex-1 button--danger" @click="$refs.editorDialog.close()">
-              Dismiss
-            </button>
-          </div>
-        </template>
-      </AppBox>
-    </dialog>
+    <!-- Editor tool -->
+    <LazyDialogEditor v-if="mask.canShowEdit"
+                      ref="editor"
+                      :file="file"
+                      :output-file="file" />
   </div>
 </template>
 
 <script>
-import { debounce } from 'lodash'
-import ImageEditor from 'tui-image-editor'
-import { saveAs } from 'file-saver'
 import { File } from '~/modules'
 import { DragDropMixin } from '~/mixins'
 import { STEP } from '~/modules/nudify/photo-mask'
-import { blackTheme } from '~/modules/editor.theme'
 
 export default {
   mixins: [DragDropMixin],
@@ -204,14 +161,6 @@ export default {
   },
 
   data: () => ({
-    renderPhoto: true,
-    transparency: {
-      alpha: 0.5,
-      nude: undefined,
-      corrected: undefined,
-      canvas: undefined,
-    },
-    editor: null,
   }),
 
   computed: {
@@ -231,74 +180,23 @@ export default {
         'mask--finished': this.mask.run?.finished,
       }
     },
-  },
 
-  watch: {
-    'transparency.alpha'() {
-      this.onTransparencyChange()
+    clothFile() {
+      if (this.mask.id === STEP.NUDE) {
+        return this.mask.photo.masks.correct.file
+      }
+
+      return this.mask.photo.file
     },
-  },
-
-  created() {
-    this.onTransparencyChange = debounce(this.transparencyRefresh, 50, { leading: true })
   },
 
   mounted() {
     if (this.mask.isReadOnly) {
       this.isDragEnabled = false
     }
-
-    this.file.on('loading', this.onLoadingPhoto, this)
-    this.file.on('loaded', this.onLoadedPhoto, this)
-  },
-
-  beforeDestroy() {
-    this.file.off('loading', this.onLoadingPhoto, this)
-    this.file.off('loaded', this.onLoadedPhoto, this)
   },
 
   methods: {
-    /**
-     *
-     */
-    createEditor() {
-      if (!this.editor) {
-        this.editor = new ImageEditor(this.$refs.editor, {
-          includeUI: {
-            loadImage: {
-              path: this.file.url,
-              name: this.file.name,
-            },
-            theme: blackTheme,
-            initMenu: 'draw',
-            menu: ['draw', 'shape', 'flip', 'rotate', 'filter', 'mask'],
-            menuBarPosition: 'left',
-          },
-          usageStatistics: false,
-        })
-      } else {
-        this.editor.loadImageFromURL(this.file.url, this.file.name)
-      }
-    },
-
-    openEditor() {
-      this.createEditor()
-      this.$refs.editorDialog.showModal()
-    },
-
-    async applyEditor() {
-      const dataURL = this.editor.toDataURL({
-        format: this.file.extension,
-        quality: 1,
-        multiplier: 1,
-      })
-
-      await this.file.writeDataURL(dataURL)
-      await this.file.load()
-
-      this.$refs.editorDialog.close()
-    },
-
     async change(event) {
       const { files } = event.target
 
@@ -356,91 +254,6 @@ export default {
 
     openPreview() {
       this.mask.file.openItem()
-    },
-
-    onLoadingPhoto() {
-      this.renderPhoto = false
-    },
-
-    onLoadedPhoto() {
-      this.$nextTick(() => {
-        this.renderPhoto = true
-      })
-    },
-
-    showTransparencyModal() {
-      this.transparencyRefresh()
-
-      this.$refs.transparencyDialog.showModal()
-    },
-
-    closeTransparencyModal() {
-      this.transparency.canvas = null
-      this.transparency.nude = null
-      this.transparency.corrected = null
-
-      this.$refs.transparencyDialog.close()
-    },
-
-    async transparencyRefresh() {
-      if (!this.file.exists) {
-        throw new Warning('The fake nude has not been created.')
-      }
-
-      const canvas = this.$refs.transparencyCanvas
-
-      if (!canvas) {
-        throw new Warning('An internal problem has occurred, please try again.')
-      }
-
-      const context = canvas.getContext('2d')
-
-      if (!context) {
-        throw new Warning('An internal problem has occurred, please try again.')
-      }
-
-      this.transparency.canvas = canvas
-
-      let correctedSrc = this.mask.photo.file.url
-
-      if (this.mask.id === STEP.NUDE) {
-        // Corrected
-        correctedSrc = this.mask.photo.masks[STEP.CORRECT].file.url
-      }
-
-      if (!this.transparency.nude) {
-        const nude = new Image()
-        nude.src = this.file.url
-
-        await new Promise((resolve) => {
-          nude.onload = () => resolve()
-        })
-
-        this.transparency.nude = nude
-      }
-
-      if (!this.transparency.corrected) {
-        const corrected = new Image()
-        corrected.src = correctedSrc
-
-        await new Promise((resolve) => {
-          corrected.onload = () => resolve()
-        })
-
-        this.transparency.corrected = corrected
-      }
-
-      context.clearRect(0, 0, canvas.width, canvas.height)
-      context.globalAlpha = 1.0
-      context.drawImage(this.transparency.nude, 0, 0, canvas.width, canvas.height)
-      context.globalAlpha = this.transparency.alpha
-      context.drawImage(this.transparency.corrected, 0, 0, canvas.width, canvas.height)
-    },
-
-    saveTransparency() {
-      this.transparency.canvas.toBlob((blob) => {
-        saveAs(blob, this.run?.outputName || 'xray.png')
-      })
     },
   },
 }
@@ -517,18 +330,5 @@ export default {
       @apply text-danger-500;
     }
   }
-}
-
-.editordialog {
-  @apply justify-center items-center top-0 bottom-0;
-
-  &[open] {
-    @apply flex;
-  }
-}
-
-.editorbox {
-  width: 80vw;
-  height: 80vh;
 }
 </style>

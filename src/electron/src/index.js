@@ -82,6 +82,7 @@ class DreamApp {
 
     // https://pracucci.com/electron-slow-background-performances.html
     app.commandLine.appendSwitch('disable-renderer-backgrounding')
+    app.commandLine.appendSwitch('enable-features', 'ImpulseScrollAnimations,SmoothScrolling')
 
     if (process.env.BUILD_PORTABLE) {
       this.bootPortable()

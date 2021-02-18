@@ -8,13 +8,12 @@
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
 import {
-  cloneDeep, isNil, merge, isError, random, round,
+  cloneDeep, isNil, merge, isError, random,
 } from 'lodash'
 import path from 'path'
 import { Queue } from '@dreamnet/queue'
-import EventBus from 'js-event-bus'
+import EventEmitter from 'events'
 import randomcolor from 'randomcolor'
-import Jimp from 'jimp'
 import { uniqueNamesGenerator, names } from 'unique-names-generator'
 import { settings, PMODE } from '../system/settings'
 import { requirements } from '../system'
@@ -25,7 +24,6 @@ import { PhotoRun } from './photo-run'
 import { PhotoMask, STEP } from './photo-mask'
 import { File } from '../file'
 import { Timer } from '../timer'
-import { events } from '../events'
 import { closestNumber } from '../helpers'
 
 const { getCurrentWindow } = require('electron').remote
@@ -53,14 +51,14 @@ const { dialog } = $provider.api
  * @property {PhotoMask} PhotoMask.scale
 */
 
-export class Photo {
+export class Photo extends EventEmitter {
   /**
    * @type {string}
    */
   id
 
   /**
-   * Visual identification.
+   * Identification.
    * With this we can identify duplicate photos.
    */
   avatar = {
@@ -74,13 +72,13 @@ export class Photo {
   time
 
   /**
-   * Original photo.
+   * Original file.
    * @type {File}
    */
   file
 
   /**
-   * Additional photos.
+   * Additional files.
    * @type {PhotoFiles}
    */
   files = {
@@ -115,11 +113,6 @@ export class Photo {
   }
 
   /**
-   * @type {EventBus}
-   */
-  events = new EventBus()
-
-  /**
    * @type {string}
    */
   model
@@ -135,7 +128,7 @@ export class Photo {
 
   set status(value) {
     this._status = value
-    events.emit('nudify.update')
+    this.emit('nudify.update')
   }
 
   /**
@@ -159,16 +152,6 @@ export class Photo {
   timer = new Timer()
 
   /**
-   * @type {import('cropperjs').default}
-   */
-  cropper
-
-  /**
-   * @type {import('tui-image-editor')}
-   */
-  editor
-
-  /**
    * @typedef {object} CropBoxData
    * @property {number} CropBoxData.left
    * @property {number} CropBoxData.top
@@ -176,47 +159,35 @@ export class Photo {
    * @property {number} CropBoxData.height
   */
   /**
+   * @typedef {object} CanvasData
+   * @property {number} CanvasData.left
+   * @property {number} CanvasData.top
+   * @property {number} CanvasData.width
+   * @property {number} CanvasData.height
+   * @property {number} CanvasData.naturalWidth
+   * @property {number} CanvasData.naturalHeight
+  */
+  /**
+   * @typedef {object} OverlayData
+   * @property {number} OverlayData.startX
+   * @property {number} OverlayData.startY
+   * @property {number} OverlayData.endX
+   * @property {number} OverlayData.endY
+  */
+  /**
    * @typedef {object} CropData
-   * @property {number} CropData.x
-   * @property {number} CropData.y
-   * @property {number} CropData.width
-   * @property {number} CropData.height
+   * @property {CropBoxData} CropData.cropBoxData
+   * @property {CanvasData} CropData.canvasData
+   * @property {OverlayData} CropData.overlayData
   */
   /**
-   * @typedef {object} ImageData
-   * @property {number} ImageData.left
-   * @property {number} ImageData.top
-   * @property {number} ImageData.width
-   * @property {number} ImageData.height
-   * @property {number} ImageData.naturalWidth
-   * @property {number} ImageData.naturalHeight
+  * @type {CropData}
   */
-  /**
-   * @typedef {object} Geometry
-   * @property {CropBoxData} Geometry.cropBox
-   * @property {CropData} Geometry.crop
-   * @property {ImageData} Geometry.image
-  */
-  /**
-   *
-   * @type {Geometry}
-   */
-  geometry = {
-    cropBox: null,
-    crop: null,
-    image: null,
-    get overlay() {
-      if (!this.crop) {
-        return null
-      }
-
-      return {
-        startX: round(this.crop.x),
-        startY: round(this.crop.y),
-        endX: round(this.crop.x) + round(this.crop.width),
-        endY: round(this.crop.y) + round(this.crop.height),
-      }
-    },
+  crop = {
+    cropData: null,
+    cropBoxData: null,
+    canvasData: null,
+    overlayData: null,
   }
 
   /**
@@ -309,7 +280,7 @@ export class Photo {
 
   /**
    * Indicates if the photo can be modified
-   * with the crop/editor/etc tools.
+   * with the tools.
    *
    * @type {boolean}
    * @readonly
@@ -383,6 +354,7 @@ export class Photo {
 
   /**
    * Indicates if the scale mode is different from the one selected by the user.
+   * TODO: Rename
    *
    * @type {boolean}
    * @readonly
@@ -408,6 +380,7 @@ export class Photo {
     }
   }
 
+  // TODO: Remove
   get scaleModeURL() {
     switch (this.preferences.advanced.scaleMode) {
       case 'overlay':
@@ -465,8 +438,8 @@ export class Photo {
         return 'auto-rescale'
       }
 
-      if (isNil(this.geometry.overlay)) {
-        // Overlay tool has not been used.
+      if (!this.files.crop.exists) {
+        // Crop tool has not been used.
         return 'auto-rescale'
       }
     }
@@ -475,7 +448,7 @@ export class Photo {
   }
 
   /**
-   * Final file to process.
+   * File that will be sent to the algorithm.
    *
    * @type {File}
    */
@@ -505,22 +478,40 @@ export class Photo {
   }
 
   /**
-   *
+   * File for the preview of the tools used.
+   */
+  get finalPreviewFile() {
+    const { crop, editor } = this.files
+
+    if (this.scaleMode === 'cropjs' || this.scaleMode === 'padding' || this.scaleMode === 'overlay') {
+      if (crop.exists) {
+        return crop
+      }
+    }
+
+    if (editor.exists) {
+      return editor
+    }
+
+    return this.file
+  }
+
+  /**
+   * File to preview the result.
+   * (Original or Nude)
    *
    * @readonly
    */
   get previewFile() {
-    let file = this.inputFile
-
     if (this.finished && this.runs.length > 0) {
       const [run] = this.runs
 
-      if (run.outputFile && run.outputFile.exists) {
-        file = run.outputFile
+      if (run.outputFile?.exists) {
+        return run.outputFile
       }
     }
 
-    return file
+    return this.file
   }
 
   /**
@@ -528,6 +519,7 @@ export class Photo {
    * @param {File} file
    */
   constructor(file) {
+    super()
     this.time = Date.now() + random(1, 10)
 
     if (settings.app.duplicates) {
@@ -554,6 +546,10 @@ export class Photo {
       crop: this.createFile('Crop'),
     }
 
+    if (this.canModify) {
+      this.file.copyToFile(this.files.editor)
+    }
+
     this.masks = {
       correct: new PhotoMask(STEP.CORRECT, this),
       mask: new PhotoMask(STEP.MASK, this),
@@ -576,6 +572,8 @@ export class Photo {
   }
 
   /**
+   * Create an {File} instance inside the photo folder.
+   * (Doesn't actually create the file on disk)
    *
    * @returns {File}
    */
@@ -699,150 +697,6 @@ export class Photo {
   }
 
   /**
-   * Synchronize and create all necessary files before nudification.
-   */
-  async sync() {
-    await this.syncEditor()
-
-    if (this.preferences.advanced.scaleMode === 'padding') {
-      await this.syncColorPadding()
-    } else {
-      try {
-        await this.syncJimpCrop()
-      } catch (e) {
-        await this.syncCrop()
-      }
-    }
-  }
-
-  /**
-   * Create the photo with the editor changes.
-   */
-  async syncEditor() {
-    if (isNil(this.editor)) {
-      return
-    }
-
-    const dataURL = this.editor.toDataURL({
-      format: this.file.extension,
-      quality: 1,
-      multiplier: 1,
-    })
-
-    await this.files.editor.writeDataURL(dataURL)
-    await this.files.editor.load()
-
-    this.consola.debug('Saved editor changes.')
-  }
-
-  /**
-   * Create the cropped photo using Jimp.
-   */
-  async syncJimpCrop() {
-    if (!this.geometry.crop) {
-      return
-    }
-
-    const image = await Jimp.read(this.inputFile.path)
-
-    image
-      .crop(this.geometry.crop.x, this.geometry.crop.y, this.geometry.crop.width, this.geometry.crop.height)
-      .resize(512, 512)
-
-    await image.writeAsync(this.files.crop.path)
-
-    await this.files.crop.load()
-
-    this.consola.debug('Saved crop changes.')
-  }
-
-  /**
-   * Create the cropped photo using HTMLCanvas.
-   * This method can produce poor quality results.
-   */
-  async syncCrop() {
-    if (!this.cropper) {
-      return
-    }
-
-    const { imageSize } = this
-
-    const canvas = this.cropper.getCroppedCanvas({
-      width: imageSize,
-      height: imageSize,
-      minWidth: imageSize,
-      minHeight: imageSize,
-      maxWidth: imageSize,
-      maxHeight: imageSize,
-      fillColor: 'white',
-      imageSmoothingEnabled: true,
-      imageSmoothingQuality: 'high',
-    })
-
-    if (!canvas) {
-      throw new Warning('The cropper has failed.', 'There was a problem with the cropper, please open the tool and try again.')
-    }
-
-    const dataURL = canvas.toDataURL(this.file.mimetype, 1)
-
-    await this.files.crop.writeDataURL(dataURL)
-
-    await this.files.crop.load()
-
-    this.consola.debug('Saved legacy crop changes.')
-  }
-
-  /**
-   * Create the photo with the color padding mask.
-   */
-  async syncColorPadding() {
-    if (!this.geometry.image || !this.geometry.crop) {
-      return
-    }
-
-    const PaddingMask = require('~/assets/images/masks/1.jpg')
-
-    const canvas = document.createElement('canvas')
-    const context = canvas.getContext('2d')
-
-    const mask = new Image()
-    const image = new Image()
-
-    const { image: imageData, crop: cropData } = this.geometry
-
-    canvas.width = imageData.naturalWidth
-    canvas.height = imageData.naturalHeight
-
-    context.imageSmoothingEnabled = true
-    context.imageSmoothingQuality = 'high'
-
-    await Promise.all([
-      new Promise((resolve) => {
-        image.onload = () => {
-          resolve()
-        }
-
-        image.src = this.inputFile.path
-      }),
-      new Promise((resolve) => {
-        mask.onload = () => {
-          resolve()
-        }
-
-        mask.src = PaddingMask
-      }),
-    ])
-
-    context.drawImage(mask, 0, 0, canvas.width, canvas.height)
-    context.drawImage(image, cropData.x, cropData.y, cropData.width, cropData.height)
-
-    const dataURL = canvas.toDataURL(this.file.mimetype, 1)
-
-    await this.files.crop.writeDataURL(dataURL)
-    await this.files.crop.load()
-  }
-
-  /**
    * Save the results of all runs.
    */
   saveAll() {
@@ -939,10 +793,10 @@ export class Photo {
    */
   async start() {
     if (this.withCustomMasks) {
-      await this.generateMask(this.nextMask)
-    } else {
-      await this.generateNudes()
+      return
     }
+
+    await this.generateNudes()
   }
 
   /**
@@ -951,10 +805,6 @@ export class Photo {
    * @param {string} mask
    */
   async generateMask(mask) {
-    if (mask === STEP.MASK) {
-      await this.sync()
-    }
-
     const run = new PhotoRun(1, this, mask)
 
     this.masks[mask].run = run
@@ -978,11 +828,9 @@ export class Photo {
       return
     }
 
-    await this.sync()
-
     consola.track('DREAM_START', { mode: this.preferences.mode })
 
-    // X-Rays effect requires the "Corrected" mask.
+    // X-Ray effect requires the "corrected" mask.
     if (this.preferences.advanced.useClothTransparencyEffect) {
       const xrayRun = new PhotoRun('xray', this, STEP.CORRECT)
 
@@ -1054,7 +902,7 @@ export class Photo {
 
     this.status = 'running'
 
-    this.events.emit('start')
+    this.emit('start')
   }
 
   /**
@@ -1075,7 +923,7 @@ export class Photo {
 
     this.sendNotification()
 
-    this.events.emit('finish')
+    this.emit('finish')
   }
 
   /**

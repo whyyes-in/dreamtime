@@ -82,7 +82,12 @@ export class PhotoRun {
   /**
    * @type {string}
    */
-  frameStatus
+  frameCount
+
+  /**
+   * @type {string}
+   */
+  framePath
 
   /**
    * @type {Boolean}
@@ -178,7 +183,7 @@ export class PhotoRun {
       photo: {
         finalFile: this.photo.finalFile,
         scaleMode: this.photo.scaleMode,
-        geometry: this.photo.geometry,
+        crop: this.photo.crop,
         withCustomMasks: this.photo.withCustomMasks,
         masksPath: this.photo.getFilesPath(),
       },
@@ -293,9 +298,6 @@ export class PhotoRun {
         }
       }
     }
-
-    this.algorithmStatus = ALGORITHM.NONE
-    this.frameStatus = undefined
   }
 
   runNudification() {
@@ -327,11 +329,21 @@ export class PhotoRun {
         output.forEach((text) => {
           text = trim(toString(text))
 
+          // Frame count detection
           if (this.photo.file.isAnimated && text.includes('Multiple Image Processing')) {
-            const frameDetect = text.match(/^(.*) : ([0-9]*)\/([0-9]*)$/)
+            const payload = text.match(/^(.*) : ([0-9]*)\/([0-9]*)$/)
 
-            if (frameDetect && frameDetect[2] && frameDetect[3]) {
-              this.frameStatus = `${frameDetect[2]}/${frameDetect[3]}`
+            if (payload && payload[2] && payload[3]) {
+              this.frameCount = `${payload[2]}/${payload[3]}`
+            }
+          }
+
+          // Frame path detection
+          if (this.photo.file.isAnimated && text.includes('Created')) {
+            const payload = text.match(/^(.*) (.*) Created$/)
+
+            if (payload && payload[2]) {
+              this.framePath = `media://${encodeURI(payload[2])}`
             }
           }
 
@@ -484,11 +496,18 @@ export class PhotoRun {
 
     this.algorithmStatus = ALGORITHM.DREAMTIME
 
+    const { cropData } = this.photo.crop
+    const { imageSize } = this.photo
+
+    // The color padding image is 512x512
+    // so we need this cheap scale hack.
+    const scale = imageSize / 512
+
     const image = await Jimp.read(input.path)
 
     image
-      .crop(this.photo.geometry.crop.x, this.photo.geometry.crop.y, this.photo.geometry.crop.width, this.photo.geometry.crop.height)
-      .resize(512, 512)
+      .crop(cropData.x * scale, cropData.y * scale, cropData.width * scale, cropData.height * scale)
+      .resize(imageSize, imageSize)
 
     await image.writeAsync(output.path)
   }
@@ -539,6 +558,10 @@ export class PhotoRun {
 
     this.sendNotification()
     achievements.probability()
+
+    this.algorithmStatus = ALGORITHM.NONE
+    this.frameCount = undefined
+    this.framePath = undefined
   }
 
   /**
@@ -550,6 +573,10 @@ export class PhotoRun {
     this.timer.stop()
 
     this.status = 'finished'
+
+    this.algorithmStatus = ALGORITHM.NONE
+    this.frameCount = undefined
+    this.framePath = undefined
   }
 
   /**

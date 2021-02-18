@@ -195,10 +195,10 @@ export class File extends EventEmitter {
     if (this.options.watch) {
       fs.chokidar.watch(this.path, {
         disableGlobbing: true,
-        awaitWriteFinish: true,
+        // awaitWriteFinish: true,
         useFsEvents: false,
       }).on('all', () => {
-        this.load()
+        this.load(null, true)
       })
 
       // consola.debug(`Watching: ${this.path}`)
@@ -220,8 +220,12 @@ export class File extends EventEmitter {
    *
    * @param {string} filepath
    */
-  async load(filepath) {
+  async load(filepath, forced = false) {
     if (this.loading) {
+      return this
+    }
+
+    if (!forced && this.options.watch) {
       return this
     }
 
@@ -375,6 +379,24 @@ export class File extends EventEmitter {
     this.emit('copied')
 
     consola.debug(`Copied: ${this.path} -> ${destination}`)
+
+    return this
+  }
+
+  /**
+   *
+   *
+   * @param {File} file
+   * @returns
+   */
+  async copyToFile(file) {
+    if (!this.exists) {
+      return this
+    }
+
+    fs.copySync(this.path, file.path)
+
+    await file.load()
 
     return this
   }

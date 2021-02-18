@@ -2,9 +2,9 @@
   <div v-if="photo" class="nudify">
     <!-- Menu -->
     <portal to="menu">
-      <!-- Original Preview -->
+      <!-- Preview -->
       <section class="nudify__photo">
-        <NudifyPhotoPreview :photo="photo" />
+        <NudifyPhotoPreview v-tooltip="{ content: 'Preview of what will be sent to the algorithm.', placement: 'right' }" :photo="photo" />
       </section>
 
       <!-- Menu -->
@@ -18,25 +18,29 @@
           v-show="photo.canShowEditor"
           label="Editor"
           icon="paint-brush"
-          :href="`/nudify/${photo.id}/editor`" />
+          :is-link="true"
+          @click="$refs.editor.open()" />
 
         <MenuItem
           v-show="photo.canShowCropTool"
           label="Crop"
           icon="crop"
-          :href="`/nudify/${photo.id}/crop`" />
+          :is-link="true"
+          @click="$refs.cropper.open()" />
 
         <MenuItem
           v-show="photo.canShowOverlayTool"
           label="Overlay"
           icon="magic"
-          :href="`/nudify/${photo.id}/overlay`" />
+          :is-link="true"
+          @click="$refs.cropper.open()" />
 
         <MenuItem
           v-show="photo.canShowPaddingTool"
           label="Color Padding"
           icon="compress-arrows-alt"
-          :href="`/nudify/${photo.id}/padding`" />
+          :is-link="true"
+          @click="$refs.cropper.open()" />
 
         <MenuItem
           v-show="!photo.withCustomMasks"
@@ -112,6 +116,17 @@
     </portal>
 
     <nuxt-child keep-alive />
+
+    <!-- Editor tool -->
+    <DialogEditor ref="editor"
+                  :file="photo.file"
+                  :output-file="photo.files.editor"
+                  :crop-watch="true" />
+
+    <!-- Crop tool -->
+    <DialogCrop ref="cropper"
+                :photo="photo"
+                :type="cropType" />
   </div>
 </template>
 
@@ -148,6 +163,20 @@ export default {
   data: () => ({
     photo: null,
   }),
+
+  computed: {
+    cropType() {
+      if (this.photo.canShowPaddingTool) {
+        return 'color'
+      }
+
+      if (this.photo.canShowOverlayTool) {
+        return 'overlay'
+      }
+
+      return 'crop'
+    },
+  },
 
   created() {
     const { params } = this.$route

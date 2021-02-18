@@ -2,7 +2,7 @@
   <div class="box run" :class="previewClass">
     <!-- Preview -->
     <div class="box__photo run__photo">
-      <video v-if="file.exists && isVideo"
+      <video v-if="isVideo && file.exists"
              :src="file.url"
              class="run__video__preview"
              autoplay
@@ -10,6 +10,11 @@
              loop
              data-private
              @click="openPreview" />
+
+      <div v-else-if="isVideo && run.framePath"
+           class="run__photo__preview"
+           :style="{ backgroundImage: `url('${run.framePath}')` }"
+           data-private />
 
       <div v-else-if="file.exists"
            class="run__photo__preview"
@@ -23,7 +28,7 @@
         </span>
         <span v-if="run.algorithmStatus === ALGORITHM.WAIFU2X" key="waifu2x" v-tooltip="'The photo is being upscaled by Waifu2X.'">Upscaling</span>
         <span v-if="run.algorithmStatus === ALGORITHM.DREAMTIME" key="dreamtime" v-tooltip="'The photo is being prepared by DreamTime.'">Other</span>
-        <span v-if="run.frameStatus" v-tooltip="'Video frame.'"> ({{ run.frameStatus }})</span>
+        <span v-if="run.frameCount" v-tooltip="'Video frame.'"> ({{ run.frameCount }})</span>
       </div>
     </div>
 
@@ -99,7 +104,7 @@
         key="button-transparency"
         v-tooltip="'X-Ray Tool'"
         class="button button--primary button--sm"
-        @click="showTransparencyModal()">
+        @click="$refs.xrayDialog.open()">
         <span class="icon">
           <font-awesome-icon icon="hat-wizard" />
         </span>
@@ -155,55 +160,28 @@
       </div>
     </dialog>
 
-    <!-- Transparency Dialog -->
-    <dialog ref="transparencyDialog">
-      <div class="box">
-        <div class="box__content">
-          <canvas ref="transparencyCanvas"
-                  class="transparency"
-                  width="512"
-                  height="512" />
-
-          <MenuItem label="Transparency">
-            <VueSlider v-model="transparency.alpha"
-                       :min="0.05"
-                       :max="0.95"
-                       :interval="0.05" />
-          </MenuItem>
-        </div>
-
-        <div class="box__footer box__footer--buttons">
-          <button
-            class="button button--success"
-            @click.prevent="saveTransparency">
-            <span class="icon">
-              <font-awesome-icon icon="save" />
-            </span>
-            <span>Save</span>
-          </button>
-
-          <button class="button button--danger" @click="closeTransparencyModal">
-            Close
-          </button>
-        </div>
-      </div>
-    </dialog>
+    <!-- X-Ray tool -->
+    <LazyDialogXRay v-if="run.successful && run.preferences.advanced.useClothTransparencyEffect"
+                    ref="xrayDialog"
+                    :cloth-file="clothFile"
+                    :nude-file="run.outputFile"
+                    :output-name="run.outputName"
+                    :image-size="run.photo.imageSize" />
   </div>
 </template>
 
 <script>
-import { debounce } from 'lodash'
-import { saveAs } from 'file-saver'
-import { dreamtrack } from '~/modules/services'
 import { Nudify } from '~/modules/nudify'
 import { ALGORITHM } from '~/modules/nudify/photo-run'
 import { STEP } from '~/modules/nudify/photo-mask'
 
 export default {
   filters: {
+    /*
     size(value) {
       return Number.parseFloat(value).toFixed(2)
     },
+    */
 
     fixedValue(value) {
       return Number(value).toFixed(2)
@@ -219,12 +197,6 @@ export default {
 
   data: () => ({
     ALGORITHM,
-    transparency: {
-      alpha: 0.5,
-      nude: undefined,
-      corrected: undefined,
-      canvas: undefined,
-    },
   }),
 
   computed: {
@@ -236,14 +208,16 @@ export default {
       return this.run.outputFile
     },
 
-    previewStyle() {
-      if (!this.run.finished) {
-        return {}
+    clothFile() {
+      if (this.run.mask === STEP.PADDING || this.run.useColorPaddingRemoval) {
+        return this.run.photo.file
       }
 
-      const url = encodeURI(this.run.outputFile.path)
+      if (!this.run.photo.masks.correct.file.exists) {
+        return this.run.photo.file
+      }
 
-      return { backgroundImage: `url(${url})` }
+      return this.run.photo.masks.correct.file
     },
 
     previewClass() {
@@ -253,23 +227,6 @@ export default {
         'run--finished': this.run.finished,
       }
     },
-
-    manualURL() {
-      return dreamtrack.get(
-        'urls.docs.manual',
-        'https://time.dreamnet.tech/docs/guide/upload',
-      )
-    },
-  },
-
-  watch: {
-    'transparency.alpha'() {
-      this.onTransparencyChange()
-    },
-  },
-
-  created() {
-    this.onTransparencyChange = debounce(this.transparencyRefresh, 50, { leading: true })
   },
 
   methods: {
@@ -295,78 +252,6 @@ export default {
 
     saveMask() {
       this.run.maskfinFile.save(`maskfin-${this.run.outputName}`)
-    },
-
-    showTransparencyModal() {
-      this.transparencyRefresh()
-
-      this.$refs.transparencyDialog.showModal()
-    },
-
-    closeTransparencyModal() {
-      this.transparency.canvas = null
-      this.transparency.nude = null
-      this.transparency.corrected = null
-
-      this.$refs.transparencyDialog.close()
-    },
-
-    async transparencyRefresh() {
-      if (!this.run.outputFile.exists) {
-        throw new Warning('The fake nude has not been created.')
-      }
-
-      if (!this.run.photo.masks[STEP.CORRECT].exists) {
-        throw new Warning('The "Corrected" mask has not been created.')
-      }
-
-      const canvas = this.$refs.transparencyCanvas
-
-      if (!canvas) {
-        throw new Warning('An internal problem has occurred, please try again.')
-      }
-
-      const context = canvas.getContext('2d')
-
-      if (!context) {
-        throw new Warning('An internal problem has occurred, please try again.')
-      }
-
-      this.transparency.canvas = canvas
-
-      if (!this.transparency.nude) {
-        const nude = new Image()
-        nude.src = this.run.outputFile.url
-
-        await new Promise((resolve) => {
-          nude.onload = () => resolve()
-        })
-
-        this.transparency.nude = nude
-      }
-
-      if (!this.transparency.corrected) {
-        const corrected = new Image()
-        corrected.src = this.run.photo.masks[STEP.CORRECT].file.url
-
-        await new Promise((resolve) => {
-          corrected.onload = () => resolve()
-        })
-
-        this.transparency.corrected = corrected
-      }
-
-      context.clearRect(0, 0, canvas.width, canvas.height)
-      context.globalAlpha = 1.0
-      context.drawImage(this.transparency.nude, 0, 0, canvas.width, canvas.height)
-      context.globalAlpha = this.transparency.alpha
-      context.drawImage(this.transparency.corrected, 0, 0, canvas.width, canvas.height)
-    },
-
-    saveTransparency() {
-      this.transparency.canvas.toBlob((blob) => {
-        saveAs(blob, this.run.outputName)
-      })
     },
   },
 }
@@ -457,10 +342,5 @@ export default {
       @apply text-danger-500;
     }
   }
-}
-
-.transparency {
-  width: 512px;
-  height: 512px;
 }
 </style>

@@ -53,9 +53,9 @@
   }
 
   .box__content {
-    @apply flex-1 px-6 py-6 leading-relaxed;
+    @apply flex-1 p-6 leading-relaxed;
 
-    p {
+    p:not(:last-child) {
       @apply mb-3;
     }
 

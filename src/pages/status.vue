@@ -41,12 +41,14 @@
         <h4>+6 GB of VRAM</h4>
         <h5>Your graphics card has <b>{{ (system.primaryGpu.vram * 1000000) | bytes }}</b> VRAM</h5>
 
-        <p v-if="requirements.recommended.vram">
+        <p v-if="!requirements.recommended.vram">
           😁 Perfect! Your graphics card should be able to perform nudifications without problems.
         </p>
 
         <p v-else>
-          😓 You have less VRAM than recommended and it is very possible that you have problems with the nudification. Please upgrade your GPU.
+          😓 You have less VRAM than recommended and it is very possible that you have problems with the nudification. Please upgrade your GPU <NuxtLink to="/settings/processing">
+            or use CPU nudification
+          </NuxtLink>.
         </p>
       </div>
     </AppBox>
@@ -86,7 +88,7 @@
 
     <AppBox title="No special characters" class="requirement">
       <div class="requirement__description">
-        <p>As in "Models folder", the algorithm does not like special characters in general, please make sure to work only with photos and folders that only have English alphabet characters preferably.</p>
+        <p>The algorithm does not like special characters in general, please make sure to work only with photos and folders that have English alphabet characters preferably.</p>
       </div>
     </AppBox>
 

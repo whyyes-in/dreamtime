@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable mocha/no-hooks-for-single-case */
 /* eslint-disable mocha/no-top-level-hooks */
 // DreamTime.
@@ -33,7 +34,6 @@ async function setupRemote() {
     rollbar.setup(),
     logrocket.setup(),
   ]).catch((error) => {
-    // eslint-disable-next-line no-console
     console.warn(error)
   })
 
@@ -45,7 +45,6 @@ async function setupRemote() {
     checkpoints.init(),
     community.init(),
   ]).catch((error) => {
-    // eslint-disable-next-line no-console
     console.warn(error)
   })
 }
@@ -56,13 +55,12 @@ async function setupRemote() {
  */
 async function setup() {
   // Analytics & Remote settings.
-  await dreamtrack.setup()
+  await dreamtrack.setup().catch((error) => console.warn(error))
 
   // Requirements check.
   await requirements.setup()
 
   if (!requirements.canNudify) {
-    // DreamTrack is necessary for the wizard.
     await setupRemote()
   } else {
     setupRemote()

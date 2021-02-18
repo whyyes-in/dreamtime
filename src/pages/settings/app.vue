@@ -35,6 +35,8 @@
         <SettingsField field-id="app.showStats" />
 
         <SettingsField field-id="app.trypophobiaMode" />
+
+        <SettingsField field-id="app.resultsColumns" />
       </div>
     </section>
 

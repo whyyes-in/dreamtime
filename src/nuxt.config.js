@@ -40,9 +40,6 @@ module.exports = {
     ],
   },
 
-  // Customize the progress-bar color. (https://nuxtjs.org/docs/2.x/configuration-glossary/configuration-loading#customizing-the-progress-bar)
-  loading: { color: tailwind.theme.extend.colors.primary.DEFAULT },
-
   // Loading indicator. (https://nuxtjs.org/docs/2.x/configuration-glossary/configuration-loading-indicator)
   loadingIndicator: {
     name: 'cube-grid',
@@ -200,10 +197,6 @@ module.exports = {
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
-    analyze: {
-      analyzerMode: 'static',
-    },
-
     // Enable thread-loader in webpack building.
     parallel: true,
 
@@ -243,6 +236,7 @@ module.exports = {
             '@nuxt/babel-preset-app',
             {
               targets: isServer ? 'current node' : {},
+              corejs: { version: 3 },
             },
           ],
         ]

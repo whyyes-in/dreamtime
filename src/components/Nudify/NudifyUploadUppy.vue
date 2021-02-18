@@ -3,6 +3,7 @@
 </template>
 
 <script>
+/*
 import {
   Core, Dashboard, Dropbox, GoogleDrive, Url, ImageEditor,
 } from 'uppy'
@@ -59,6 +60,7 @@ export default {
     })
   },
 }
+*/
 </script>
 
 <style lang="scss" scoped>

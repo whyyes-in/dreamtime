@@ -136,7 +136,7 @@ class Settings {
     const hasGPU = process.platform === 'darwin' ? false : system.graphics.length > 0
 
     this.payload = {
-      version: 15,
+      version: 16,
       user: uuid(),
 
       wizard: {
@@ -161,6 +161,7 @@ class Settings {
         showTips: true,
         showStats: false,
         trypophobiaMode: false,
+        resultsColumns: 'auto',
         window: {
           width: 1200,
           height: 700,
@@ -659,6 +660,16 @@ class Settings {
         app: {
           showStats: false,
           trypophobiaMode: false,
+        },
+      })
+    }
+
+    // 15 -> 16
+    if (this.payload?.version === 15 && this._default.version >= 16) {
+      this.payload = merge(this.payload, {
+        version: 16,
+        app: {
+          resultsColumns: 'auto',
         },
       })
     }

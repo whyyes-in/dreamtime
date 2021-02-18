@@ -4,13 +4,7 @@ on:
   push:
     tags:
       - v*
-
-env:
-  DEPLOY_DREAMTRACK_HOST: https://track.dreamnet.tech
-  DEPLOY_GITHUB_OWNER: dreamnettech
-  DEPLOY_TEKNIK_OWNER: dreamnet
-  DEPLOY_MEGA_FOLDER: "/Projects/DreamTime/Releases/"
-
+      
 jobs:
   build:
     name: ${{ matrix.platform }} (${{ matrix.type }})
@@ -21,7 +15,6 @@ jobs:
     # https://help.github.com/en/articles/workflow-syntax-for-github-actions#jobsjob_idstrategy
     strategy:
       fail-fast: true
-      max-parallel: 2
       matrix:
         os:
           - windows-2019
@@ -97,14 +90,24 @@ jobs:
           GITHUB_REF: ${{ github.ref }}
           BUILD_PLATFORM: ${{ matrix.platform }}
           BUILD_EXTENSION: ${{ matrix.extension }}
+          DREAMTRACK_HOST: https://track.dreamnet.tech
+          DREAMTRACK_KEY: ${{ secrets.DREAMTRACK_KEY }}
           DEPLOY_ENCRYPT_KEY: ${{ secrets.DEPLOY_ENCRYPT_KEY }}
           DEPLOY_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEPLOY_GITHUB_OWNER: dreamnettech
           DEPLOY_TEKNIK_TOKEN: ${{ secrets.DEPLOY_TEKNIK_TOKEN }}
-          DEPLOY_PINATA_KEY: ${{ secrets.DEPLOY_PINATA_KEY }}
-          DEPLOY_PINATA_SECRET: ${{ secrets.DEPLOY_PINATA_SECRET }}
+          DEPLOY_TEKNIK_OWNER: dreamnet
+          DEPLOY_PINATA_TOKEN: ${{ secrets.DEPLOY_PINATA_TOKEN }}
           DEPLOY_MEGA_EMAIL: ${{ secrets.DEPLOY_MEGA_EMAIL }}
           DEPLOY_MEGA_PASSWORD: ${{ secrets.DEPLOY_MEGA_PASSWORD }}
-          DREAMTRACK_KEY: ${{ secrets.DREAMTRACK_KEY }}
+          DEPLOY_MEGA_FOLDER: /Projects/DreamTime/Releases/
+          DEPLOY_MINIO_ADDRESS: /dns4/s3.dreamnet.tech/tcp/443/https
+          DEPLOY_MINIO_BUCKET: dreamtime
+          DEPLOY_MINIO_KEY: ${{ secrets.DEPLOY_MINIO_KEY }}
+          DEPLOY_MINIO_SECRET: ${{ secrets.DEPLOY_MINIO_SECRET }}
+          DEPLOY_MINIO_GATEWAY: https://s3.dreamnet.tech
+          DEPLOY_DREAMLINKCLUSTER_USERNAME: dreamnet
+          DEPLOY_DREAMLINKCLUSTER_PASSWORD: ${{ secrets.DEPLOY_DREAMLINKCLUSTER_PASSWORD }}
         run: yarn run deploy
 
       - name: Deploy to Snapcraft
