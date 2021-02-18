@@ -4,7 +4,7 @@
   "displayName": "DreamTime",
   "description": "Application that uses artificial intelligence to generate fake nudes.",
   "version": "1.6.0",
-  "homepage": "https://dreamtime.tech",
+  "homepage": "https://www.dreamtime.tech",
   "main": "electron/dist/index.js",
   "license": "GPL-3.0",
   "scripts": {
