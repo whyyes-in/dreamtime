@@ -2,18 +2,23 @@
 
 const pkg = require('./package.json')
 
+if (!process.env.BUILD_FORMAT || process.env.BUILD_FORMAT === 'default') {
+  process.env.BUILD_FORMAT = 'snap'
+}
+
 /**
  * Windows Release
  */
 const windows = {
   win: {
-    target: process.env.BUILD_PORTABLE ? 'zip' : 'nsis',
-    artifactName: process.env.BUILD_PORTABLE ? '${productName}-v${version}-windows-portable.${ext}' : '${productName}-v${version}-windows-installer.${ext}',
+    target: {
+      target: process.env.BUILD_PORTABLE ? '7z' : 'nsis',
+      arch: 'x64',
+    },
+    artifactName: process.env.BUILD_PORTABLE
+      ? '${productName}-v${version}-windows-portable.${ext}'
+      : '${productName}-v${version}-windows-installer.${ext}',
     extraResources: [
-      {
-        from: 'node_modules/regedit/vbs',
-        to: 'vbs',
-      },
       {
         from: 'node_modules/7zip-bin/win/x64',
         to: '7zip-bin',
@@ -36,8 +41,13 @@ const windows = {
  */
 const linux = {
   linux: {
-    target: process.env.BUILD_PORTABLE ? 'zip' : 'snap',
-    artifactName: process.env.BUILD_PORTABLE ? '${productName}-v${version}-ubuntu-portable.${ext}' : '${productName}-v${version}-ubuntu-installer.${ext}',
+    target: {
+      target: process.env.BUILD_PORTABLE ? '7z' : process.env.BUILD_FORMAT,
+      arch: 'x64',
+    },
+    artifactName: process.env.BUILD_PORTABLE
+      ? '${productName}-v${version}-linux-portable.${ext}'
+      : '${productName}-v${version}-linux-installer.${ext}',
     executableName: 'dreamtimetech',
     synopsis: pkg.description,
     category: 'Graphics',
@@ -58,8 +68,13 @@ const linux = {
  */
 const macos = {
   mac: {
-    target: process.env.BUILD_PORTABLE ? 'zip' : 'dmg',
-    artifactName: process.env.BUILD_PORTABLE ? '${productName}-v${version}-macos-portable.${ext}' : '${productName}-v${version}-macos-installer.${ext}',
+    target: {
+      target: process.env.BUILD_PORTABLE ? '7z' : 'dmg',
+      arch: 'universal',
+    },
+    artifactName: process.env.BUILD_PORTABLE
+      ? '${productName}-v${version}-macos-portable.${ext}'
+      : '${productName}-v${version}-macos-installer.${ext}',
     darkModeSupport: true,
     category: 'public.app-category.graphics-design',
     minimumSystemVersion: '10.15.0',
@@ -72,7 +87,7 @@ const macos = {
   },
   dmg: {
     title: '${productName}',
-    backgroundColor: '#000',
+    backgroundColor: '#191d24',
   },
 }
 
@@ -91,23 +106,17 @@ module.exports = {
     '!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}',
     '!**/node_modules/*.d.ts',
     '!**/node_modules/.bin',
-    '!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj,vscode,env.example,eslintrc.json,prettierrc,tgz}',
-    '!.editorconfig',
     '!**/._*',
-    '!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}',
-    '!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}',
-    '!**/{appveyor.yml,.travis.yml,circle.yml}',
-    '!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}',
-    '!**/{jsconfig.json,electron-builder.js,.eslintrc.js,.env-cmdrc.js,.codeclimate.yml,.babelrc,nucleus.json}',
+    '!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj,vs,vscode,idea,log,lock}',
+    '!**/*.{nyc_output,flowconfig,env.example,eslintrc,prettierrc,tgz,editorconfig}',
+    '!**/*.{git,hg,svn,gitignore,gitattributes,travis.yml,yarn-integrity,DS_Store,yarn-integrity}',
+    '!**/*.{yarn-metadata.json,jsconfig.json,electron-builder.js,eslintrc.json,eslintrc.js,env-cmdrc.js}',
+    '!**/*.{codeclimate.yml,babelrc}',
+    '!**/{CVS,RCS,SCCS,eslintrc.json,thumbs.db,appveyor.yml,circle.yml}',
     '!{components,cli,layouts,middleware,mixins,pages,patches,plugins,scripts,store,third,coverage,.nuxt,test,workers}',
-    '!{static,assets}',
-    '!electron/src',
+    '!{static,assets,electron/src}',
   ],
   extraFiles: [
-    {
-      from: '.env',
-      to: '.env',
-    },
     {
       from: 'package.min.json',
       to: 'package.json',

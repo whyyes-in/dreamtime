@@ -6,7 +6,7 @@
     {
       "label": "Build: Nuxt",
       "type": "npm",
-      "script": "start:nuxt",
+      "script": "dev:nuxt",
       "isBackground": true,
       "presentation": {
         "reveal": "always",
@@ -25,7 +25,7 @@
     {
       "label": "Build: Electron",
       "type": "npm",
-      "script": "start:babel",
+      "script": "dev:babel",
       "isBackground": true,
       "presentation": {
         "reveal": "always",
@@ -44,11 +44,6 @@
           "endsPattern": "Successfully compiled"
         }
       }
-    },
-    {
-      "label": "kill",
-      "type": "process",
-      "command": "${command:workbench.action.terminal.kill}"
     },
     {
       "label": "Build",

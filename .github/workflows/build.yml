@@ -17,7 +17,7 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.platform }} (${{ matrix.type }})
+    name: "${{ matrix.os }}: ${{ matrix.type }} (${{ matrix.format }})"
     runs-on: ${{ matrix.os }}
 
     # Strategy
@@ -26,24 +26,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - windows-2019
-          - ubuntu-18.04
-          - macos-10.15
-        type:
-          - installer
-          - portable
+        os: [windows-2019, ubuntu-18.04, macos-10.15]
+        type: [installer, portable]
+        format: [default]
 
         include:
-          - os: ubuntu-18.04 # Ubuntu
-            platform: ubuntu
-            extension: snap
-          - os: windows-2019 # Windows
-            platform: windows
-            extension: exe
-          - os: macos-10.15 # macOS
-            platform: macos
-            extension: dmg
+          - format: AppImage # Linux: AppImage
+            os: ubuntu-18.04
+            type: installer
+          - format: rpm # Red Hat, Suse and Fedora Linux
+            os: ubuntu-18.04
+            type: installer
+          - format: pacman # Arch Linux
+            os: ubuntu-18.04
+            type: installer
 
     steps:
       - uses: actions/checkout@v1
@@ -62,6 +58,7 @@ jobs:
         if: matrix.type == 'installer'
         env:
           GITHUB_SHA: ${{ github.sha }}
+          BUILD_FORMAT: ${{ matrix.format }}
         run: yarn run build
 
       - name: Build Portable
@@ -70,13 +67,17 @@ jobs:
         env:
           GITHUB_SHA: ${{ github.sha }}
           BUILD_PORTABLE: true
+          BUILD_FORMAT: ${{ matrix.format }}
         run: yarn run build
 
       - uses: actions/upload-artifact@v2
         with:
-          name: dreamtime-${{ matrix.platform }}-${{ matrix.type }}
+          name: dreamtime-${{ matrix.os }}-${{ matrix.type }}-${{ matrix.format }}
           path: |
-            dist/*.zip
+            dist/*.7z
             dist/*.exe
             dist/*.snap
+            dist/*.AppImage
+            dist/*.rpm
+            dist/*.pacman
             dist/*.dmg

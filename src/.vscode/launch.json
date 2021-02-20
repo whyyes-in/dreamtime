@@ -10,8 +10,7 @@
       "name": "Main Process",
       "runtimeExecutable": "yarn",
       "runtimeArgs": [
-        "start:electron",
-        //"--remote-debugging-port=9223",
+        "dev:electron",
         "--inspect-brk=9222"
       ],
       "outputCapture": "std",
@@ -22,8 +21,7 @@
       "sourceMaps": true,
       "sourceMapPathOverrides": {
         "electron/dist/*": "${webRoot}/electron/src/*"
-      },
-      //"preLaunchTask": "Build: Electron"
+      }
     },
     {
       "type": "chrome",
@@ -36,7 +34,6 @@
         "webpack:///./*": "${webRoot}/*",
         "webpack:///*": "${webRoot}/*"
       },
-      //"preLaunchTask": "Build: Nuxt"
     }
   ],
   "compounds": [
