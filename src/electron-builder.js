@@ -1,10 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 
 const pkg = require('./package.json')
-
-if (!process.env.BUILD_FORMAT || process.env.BUILD_FORMAT === 'default') {
-  process.env.BUILD_FORMAT = 'snap'
-}
+require('dotenv').config()
 
 /**
  * Windows Release
@@ -12,12 +9,10 @@ if (!process.env.BUILD_FORMAT || process.env.BUILD_FORMAT === 'default') {
 const windows = {
   win: {
     target: {
-      target: process.env.BUILD_PORTABLE ? '7z' : 'nsis',
+      target: process.env.BUILD_TARGET,
       arch: 'x64',
     },
-    artifactName: process.env.BUILD_PORTABLE
-      ? '${productName}-v${version}-windows-portable.${ext}'
-      : '${productName}-v${version}-windows-installer.${ext}',
+    artifactName: process.env.BUILD_FILENAME,
     extraResources: [
       {
         from: 'node_modules/7zip-bin/win/x64',
@@ -42,12 +37,10 @@ const windows = {
 const linux = {
   linux: {
     target: {
-      target: process.env.BUILD_PORTABLE ? '7z' : process.env.BUILD_FORMAT,
+      target: process.env.BUILD_TARGET,
       arch: 'x64',
     },
-    artifactName: process.env.BUILD_PORTABLE
-      ? '${productName}-v${version}-linux-portable.${ext}'
-      : '${productName}-v${version}-linux-installer.${ext}',
+    artifactName: process.env.BUILD_FILENAME,
     executableName: 'dreamtimetech',
     synopsis: pkg.description,
     category: 'Graphics',
@@ -69,12 +62,10 @@ const linux = {
 const macos = {
   mac: {
     target: {
-      target: process.env.BUILD_PORTABLE ? '7z' : 'dmg',
-      arch: 'universal',
+      target: process.env.BUILD_TARGET,
+      arch: 'x64', // TODO: universal/arm64
     },
-    artifactName: process.env.BUILD_PORTABLE
-      ? '${productName}-v${version}-macos-portable.${ext}'
-      : '${productName}-v${version}-macos-installer.${ext}',
+    artifactName: process.env.BUILD_FILENAME,
     darkModeSupport: true,
     category: 'public.app-category.graphics-design',
     minimumSystemVersion: '10.15.0',
@@ -117,6 +108,10 @@ module.exports = {
     '!{static,assets,electron/src}',
   ],
   extraFiles: [
+    {
+      from: '.env',
+      to: '.env',
+    },
     {
       from: 'package.min.json',
       to: 'package.json',

@@ -13,17 +13,6 @@
     "@babel/plugin-proposal-export-default-from",
     "@babel/plugin-proposal-optional-chaining",
     [
-      "transform-inline-environment-variables",
-      {
-        "exclude": [
-          "LOG",
-          "DEVTOOLS",
-          "POWER_PYTHON",
-          "POWER_PATH"
-        ]
-      }
-    ],
-    [
       "module-resolver",
       {
         "root": [

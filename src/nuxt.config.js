@@ -65,6 +65,8 @@ module.exports = {
 
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
+    // Doc: https://github.com/nuxt-community/dotenv-module
+    '@nuxtjs/dotenv',
     // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
     '@nuxtjs/tailwindcss',
     // Doc: https://github.com/nuxt-community/style-resources-module
@@ -217,17 +219,6 @@ module.exports = {
       plugins: [
         'lodash',
         '@babel/plugin-proposal-optional-chaining',
-        [
-          'transform-inline-environment-variables',
-          {
-            exclude: [
-              'LOG',
-              'DEVTOOLS',
-              'POWER_PYTHON',
-              'POWER_PATH',
-            ],
-          },
-        ],
       ],
 
       presets({ isServer }) {

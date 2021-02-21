@@ -21,6 +21,8 @@ import { settings } from './modules'
 import config from '~/nuxt.config'
 import tailwind from '~/tailwind.config'
 
+require('dotenv').config()
+
 const logger = Logger.create('electron')
 
 // NuxtJS root directory

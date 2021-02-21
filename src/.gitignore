@@ -93,3 +93,6 @@ sw.*
 
 # Personal settings
 .vscode/settings.json
+
+#
+.env
