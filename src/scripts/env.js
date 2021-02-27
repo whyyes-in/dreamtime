@@ -60,11 +60,9 @@ const payload = pickBy({
   // Node
   NODE_ENV: process.env.NODE_ENV,
 
-  // Debugging
-  LOG: process.env.LOG,
-
   // Servers
   DREAMTRACK_HOST: process.env.DREAMTRACK_HOST,
+  DOWNLOADS_API: process.env.DOWNLOADS_API,
 
   // Build
   GITHUB_SHA: process.env.GITHUB_SHA,

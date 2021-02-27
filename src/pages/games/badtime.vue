@@ -17,6 +17,11 @@
           label="Open in Browser"
           icon="external-link-square-alt"
           href="https://badtime.dreamnet.tech" />
+
+        <menu-item
+          label="Source code"
+          :icon="['fab', 'github']"
+          href="https://github.com/jcw87/c2-sans-fight/" />
       </section>
     </portal>
 

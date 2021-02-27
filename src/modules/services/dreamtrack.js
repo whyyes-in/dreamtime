@@ -255,6 +255,10 @@ export class DreamTrackService extends BaseService {
     // Create snapshot.
     const snapshot = await system.takeSnapshot(requirements.values)
 
+    if (!snapshot) {
+      return null
+    }
+
     // Server response promise.
     const responsePromise = new Promise((resolve) => {
       const timeout = setTimeout(resolve, SNAPSHOT_TIMEOUT)

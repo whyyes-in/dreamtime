@@ -4,18 +4,19 @@ const development = {
 }
 
 module.exports = {
-  "default": {
-    "SERVER_HOST": "localhost",
-    "SERVER_PORT": 4000
-  },
+  "default": {},
   "development": {
     "NODE_ENV": "development",
-    "DREAMTRACK_HOST": "track.dreamnet.tech",
+    "SERVER_HOST": "localhost",
+    "SERVER_PORT": 4000,
+    "DREAMTRACK_HOST": "127.0.0.1:30200",
+    "DOWNLOADS_API": "http://127.0.0.1:30200/downloads",
     ...development
   },
   "production": {
     "NODE_ENV": "production",
-    "DREAMTRACK_HOST": "track.dreamnet.tech"
+    "DREAMTRACK_HOST": "track.dreamnet.tech",
+    "DOWNLOADS_API": "https://downloads.dreamnet.tech"
   },
   "test": {
     "NODE_ENV": "test",

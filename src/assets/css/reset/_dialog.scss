@@ -10,6 +10,30 @@
  */
 
 dialog {
+  @apply p-0 bg-transparent top-0 bottom-0;
+  /*@apply justify-center items-center;*/
+  max-width: 95vw;
+
+  /*
+  &[open] {
+    @apply flex;
+  }
+
+  &::v-deep {
+    .box {
+      width: 95vw;
+      height: 95vh;
+    }
+
+    .cropper {
+      @apply h-full;
+    }
+  }
+  */
+}
+
+/*
+dialog {
   @apply m-auto p-0 bg-transparent;
   max-width: 80vw;
 
@@ -30,6 +54,7 @@ dialog {
     }
   }
 }
+*/
 
 dialog::backdrop {
   background: rgba(0,0,0, 0.90);

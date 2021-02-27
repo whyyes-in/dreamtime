@@ -135,7 +135,10 @@ class System {
   /**
    *
    */
+  /* eslint-disable-next-line no-unused-vars */
   async takeSnapshot(requirements = {}) {
+    return undefined
+    /*
     logger.info('Taking snapshot...')
 
     const [load, cpuSpeed, cpuTemperature, memory] = await Promise.all([
@@ -162,6 +165,7 @@ class System {
     // logger.info('Memory:', memory)
 
     return this.snapshot
+    */
   }
 
   /**

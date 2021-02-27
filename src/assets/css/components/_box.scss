@@ -38,17 +38,18 @@
   }
 
   .box__header {
-    @apply px-6 pt-6;
+    @apply px-4 py-3 bg-menus-dark rounded-tr rounded-tl;
 
     &:not(:first-child) {
       @apply pt-3;
     }
 
     .title {
-      @apply font-bold text-lg text-white;
+      @apply font-bold text-white font-title;
     }
 
     .subtitle {
+      @apply font-title;
     }
   }
 

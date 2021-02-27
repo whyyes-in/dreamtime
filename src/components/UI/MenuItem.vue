@@ -169,7 +169,11 @@ export default {
   }
 
   .item__title {
-    @apply block font-semibold;
+    @apply block;
+
+    span {
+      @apply font-semibold;
+    }
   }
 
   &::v-deep {

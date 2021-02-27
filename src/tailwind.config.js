@@ -54,6 +54,15 @@ module.exports = {
       fontFamily: {
         sans: [
           'Rubik',
+          'Inter',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'system-ui',
+          'Arial',
+          'sans-serif',
+        ],
+        title: [
+          'Inter',
           '-apple-system',
           'BlinkMacSystemFont',
           'system-ui',
@@ -61,7 +70,6 @@ module.exports = {
           'sans-serif',
         ],
         serif: [
-          'Roboto Slab',
           'Georgia',
           'Cambria',
           '"Times New Roman"',

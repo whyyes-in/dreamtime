@@ -41,7 +41,7 @@
         <h4>+6 GB of VRAM</h4>
         <h5>Your graphics card has <b>{{ (system.primaryGpu.vram * 1000000) | bytes }}</b> VRAM</h5>
 
-        <p v-if="!requirements.recommended.vram">
+        <p v-if="requirements.recommended.vram">
           😁 Perfect! Your graphics card should be able to perform nudifications without problems.
         </p>
 

@@ -7,8 +7,6 @@
 //
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2020.
 
-import { isNil } from 'lodash'
-
 const { getAppPath, getPowerPath, getPath } = $provider.paths
 const { shell } = $provider.api
 
@@ -36,7 +34,7 @@ export default {
   /**
    * @type {boolean}
    */
-  isPortable: !isNil(process.env.BUILD_PORTABLE),
+  isPortable: process.env.BUILD_ARCH === 'portable',
 
   /**
    *

@@ -96,7 +96,7 @@ module.exports = {
   googleFonts: {
     families: {
       Rubik: [400, 600, 700],
-      'Roboto+Slab': [400, 600, 700],
+      Inter: [400, 600, 700],
     },
     download: true,
   },
@@ -173,6 +173,9 @@ module.exports = {
         'faComments',
         'faCoffee',
         'faDonate',
+        'faExclamationCircle',
+        'faCubes',
+        'faWrench',
       ],
       regular: [
         'faSquare',

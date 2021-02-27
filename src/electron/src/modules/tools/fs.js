@@ -172,9 +172,9 @@ export async function downloadFromHttp(url, options, events, writeStream) {
 
   readStream.on('data', () => {
     events.emit('progress', {
-      progress: contentLength > 0 ? (writeStream.bytesWritten / contentLength) : null,
+      progress: contentLength > 0 ? toNumber((writeStream.bytesWritten / contentLength) * 100).toFixed(2) : -1,
       written: prettyBytes(writeStream.bytesWritten),
-      total: contentLength > 0 ? prettyBytes(contentLength) : null,
+      total: contentLength > 0 ? prettyBytes(contentLength) : -1,
     })
   })
 
@@ -293,10 +293,8 @@ export async function downloadFromIPFS(cid, options, events, writeStream) {
   })
 
   readStream.on('data', () => {
-    const progress = writeStream.bytesWritten / stats.CumulativeSize
-
     events.emit('progress', {
-      progress,
+      progress: toNumber((writeStream.bytesWritten / stats.CumulativeSize) * 100).toFixed(2),
       written: prettyBytes(writeStream.bytesWritten),
       total: prettyBytes(stats.CumulativeSize),
     })
@@ -378,14 +376,6 @@ export function downloadFromTorrent(magnetURI, options, events, writeStream) {
   torrent.on('wire', () => {
     events.emit('peers', torrent.numPeers)
   })
-
-  /*
-  torrent.on('done', () => {
-    // Finish & Close
-    events.emit('finish', options.filepath)
-    events.emit('close')
-  })
-  */
 }
 
 /**
@@ -405,7 +395,9 @@ export function download(url, options = {}) {
     filename: basename(url).split('?')[0].split('#')[0],
   }, options)
 
-  options.filepath = join(options.directory, options.filename)
+  if (!options.filepath) {
+    options.filepath = join(options.directory, options.filename)
+  }
 
   if (options.showSaveAs) {
     options.filepath = dialog.showSaveDialogSync({
