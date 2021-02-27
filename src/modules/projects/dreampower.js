@@ -13,7 +13,7 @@ class DreamPower {
     },
     about: {
       title: 'DreamPower',
-      description: 'Deep learning algorithm to create fake nudes.',
+      description: 'Nudification algorithm. Transform the photo of a woman with clothes into a fake nude.',
       logo: 'https://link.dreamnet.tech/ipfs/QmXNNcW85FC2QQcrBEsk88Ahs6na9D5q72cm3pJAEg857A?filename=dreampower-logo-512x512.png',
       navigation: [
         {
@@ -40,7 +40,7 @@ class DreamPower {
   }
 
   get version() {
-    return this.updater.currentVersion
+    return this.updater.version
   }
 
   get isInstalled() {

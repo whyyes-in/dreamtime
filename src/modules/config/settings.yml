@@ -3,6 +3,29 @@
   description: Anonymous identification for your session.
   input: input
 
+- id: updater.protocol
+  label: Download protocol.
+  description: Protocol that will be used for the download.
+  tooltip: |-
+    - **Any:** Use all protocols if necessary.
+    - **HTTP:** Fastest and most reliable.
+    - **IPFS:** Most reliable for unstable or low speed connections. Download the file from other computers with the option to cancel at any time and resume later. May require a few minutes of preparation before starting the download.
+  input: select
+  options:
+    - label: Any
+      value: any
+    - label: HTTP
+      value: http
+    - label: IPFS
+      value: ipfs
+
+- id: updater.showPasswordProtected
+  label: Show protected versions.
+  description: Allows to select and download a password-protected release.
+  tooltip: |-
+    These early-access releases are usually exclusive to Patreons.
+  input: checkbox
+
 - id: app.hardwareAcceleration
   label: Hardware acceleration.
   description: Can improve performance on some devices.<br>* Requires restart to take effect.
@@ -383,3 +406,15 @@
     - Console log.
     - Actions inside the application. (Photos and sensitive information are censored.)
   input: checkbox
+
+# Custom
+
+- id: custom.updater.version
+  label: Version.
+  description: Select the version to download and install.
+
+- id: custom.updater.password
+  label: Password.
+  description: Enter the password for the release.
+  tooltip: |-
+    Check the releases on Patreon for the password.

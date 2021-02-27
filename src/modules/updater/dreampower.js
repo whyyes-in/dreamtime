@@ -30,68 +30,19 @@ class DreamPowerUpdater extends BaseUpdater {
   /**
    * @type {string}
    */
-  get githubRepo() {
-    return super.githubRepo || 'dreamnettech/dreampower'
+  get repo() {
+    return super.repo || 'dreamnettech/dreampower'
   }
 
-  /**
-   * @type {string}
-   */
-  get platform() {
-    let platform = super.platform
-
-    if (platform === 'macos' || settings.preferences.advanced.device === 'CPU') {
-      platform = `${platform}-cpuonly`
-    } else {
-      platform = `${platform}-any`
-    }
-
-    return platform
+  get arch() {
+    return this.platform === 'macos' || settings.preferences.advanced.device === 'CPU' ? 'cpuonly' : 'any'
   }
 
   /**
    * @return {string}
    */
-  async _getCurrentVersion() {
+  async getVersion() {
     return requirements.power.version
-  }
-
-  /**
-   *
-   * @param {*} releases
-   */
-  _getLatestCompatible(releases) {
-    const currentVersion = `v${process.env.npm_package_version}`
-
-    const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'minimum'], 'v1.2.10')
-    const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'dreampower', 'maximum'])
-
-    if (!minimum) {
-      return null
-    }
-
-    for (const release of releases) {
-      if (compareVersions.compare(release.tag_name, minimum, '<')) {
-        continue
-      }
-
-      if (!isNil(maximum) && compareVersions.compare(release.tag_name, maximum, '>')) {
-        continue
-      }
-
-      return release
-    }
-
-    return null
-  }
-
-  /**
-   *
-   */
-  async setup(required = false) {
-    this._currentVersion = await this._getCurrentVersion()
-
-    await super.setup(required)
   }
 
   /**

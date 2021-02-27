@@ -30,27 +30,9 @@ export default function ({ route, redirect }) {
     return
   }
 
-  if (!requirements.power.installed || !requirements.power.compatible) {
-    if (route.path !== '/wizard/power') {
-      redirect('/wizard/power')
-    }
-
-    return
-  }
-
-  if (!requirements.power.checkpoints) {
-    if (route.path !== '/wizard/checkpoints') {
-      redirect('/wizard/checkpoints')
-    }
-
-    return
-  }
-
-  if (
-    (!wizard.waifu && !requirements.waifu.installed)
-    || (requirements.waifu.installed && !requirements.waifu.compatible)) {
-    if (route.path !== '/wizard/waifu') {
-      redirect('/wizard/waifu')
+  if (!requirements.canNudify) {
+    if (route.path !== '/wizard/updater') {
+      redirect('/wizard/updater')
     }
 
     return
@@ -60,6 +42,8 @@ export default function ({ route, redirect }) {
     if (route.path !== '/wizard/telemetry') {
       redirect('/wizard/telemetry')
     }
+
+    return
   }
 
   if (!wizard.settings) {

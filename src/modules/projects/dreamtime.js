@@ -17,12 +17,12 @@ class DreamTime {
       navigation: [
         {
           icon: 'star',
-          href: 'https://time.dreamnet.tech',
+          href: 'https://www.dreamtime.tech',
           label: 'Website',
         },
         {
           icon: 'comment',
-          href: 'https://time.dreamnet.tech/docs/support/feedback',
+          href: 'https://www.dreamtime.tech/docs/support/feedback',
           label: 'Feedback',
           description: 'Help us improve DreamTime!',
         },

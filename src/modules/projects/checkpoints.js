@@ -34,7 +34,7 @@ class Checkpoints {
   }
 
   get version() {
-    return this.updater.currentVersion
+    return this.updater.version
   }
 
   get isInstalled() {

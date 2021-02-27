@@ -7,10 +7,10 @@
       </figure>
 
       <h1 class="title">
-        {{ data.name }} <span v-tooltip="'Latest version'">{{ updater.latestCompatible.tag_name }}</span>
+        {{ data.name }} <span v-tooltip="'Latest version'">{{ updater.latest.tag_name }}</span>
       </h1>
 
-      <h2 v-if="!updater.update.active" class="subtitle">
+      <h2 v-if="!updater.status.active" class="subtitle">
         {{ data.description }}
       </h2>
     </div>
@@ -21,13 +21,13 @@
     </div>
 
     <!-- Downloading -->
-    <div v-else-if="isDownloading && updater.update.progress >= 0" class="update__status">
-      Downloading · <strong>{{ updater.update.progress }}%</strong> · {{ updater.update.written }}/{{ updater.update.total }} ·  <span v-if="updater.update.peers > 0">{{ updater.update.peers }} peers</span>
+    <div v-else-if="isDownloading && updater.status.progress >= 0" class="update__status">
+      Downloading · <strong>{{ updater.status.progress }}%</strong> · {{ updater.status.written }}/{{ updater.status.total }} ·  <span v-if="updater.status.peers > 0">{{ updater.status.peers }} peers</span>
     </div>
 
     <!-- Downloading -->
     <div v-else-if="isDownloading" class="update__status">
-      Downloading · {{ updater.update.written }}
+      Downloading · {{ updater.status.written }}
     </div>
 
     <!-- Installing -->
@@ -36,8 +36,8 @@
     </div>
 
     <!-- Download Progress -->
-    <div v-if="isDownloading && updater.update.progress >= 0" class="update__progressbar">
-      <progress min="0" max="100" :value="updater.update.progress" />
+    <div v-if="isDownloading && updater.status.progress >= 0" class="update__progressbar">
+      <progress min="0" max="100" :value="updater.status.progress" />
     </div>
 
     <!-- Actions -->
@@ -51,7 +51,7 @@
         <span>Not available</span>
       </button>
 
-      <button v-else-if="!updater.update.active"
+      <button v-else-if="!updater.status.active"
               key="update-start"
               class="button button--success"
               @click.prevent="updater.start()">
@@ -62,7 +62,7 @@
         <span v-if="!data.isInstalled">Install</span>
       </button>
 
-      <button v-if="updater.update.active"
+      <button v-if="updater.status.active"
               key="update-cancel"
               class="button button--danger"
               @click.prevent="updater.cancel()">
@@ -70,7 +70,7 @@
         <span>Cancel</span>
       </button>
 
-      <button v-if="updater.downloadUrls.length > 0"
+      <button v-if="updater.urls.length > 0"
               v-tooltip="'List of links to download the update manually.'"
               class="button button--info"
               @click.prevent="$refs.mirrorsDialog.showModal()">
@@ -111,10 +111,10 @@
     <dialog ref="mirrorsDialog">
       <div class="dialog__content">
         <ul class="mirrors">
-          <li v-for="(url, index) in updater.downloadAllUrls" :key="index">
+          <li v-for="(url, index) in updater.urls" :key="index">
             <a v-if="isTorrent(url)" :href="url" target="_blank">Torrent ({{ url | domain }})</a>
             <a v-else-if="isIPFS(url)" :href="`ipfs://${url}?filename=${updater.filename}`" target="_blank">IPFS</a>
-            <a v-else :href="url" target="_blank">{{ url | domain }}</a>
+            <a v-else :href="url" target="_blank">{{ url }}</a>
           </li>
         </ul>
 
@@ -174,19 +174,19 @@ export default {
     },
 
     currentVersion() {
-      return this.updater?.currentVersion || 'v0.0.0'
+      return this.updater?.version
     },
 
     isPreparing() {
-      return this.updater?.update?.status === 'preparing'
+      return this.updater?.status.message === 'preparing'
     },
 
     isDownloading() {
-      return this.updater?.update?.status === 'downloading'
+      return this.updater?.status.message === 'downloading'
     },
 
     isInstalling() {
-      return this.updater?.update?.status === 'installing'
+      return this.updater?.status.message === 'installing'
     },
   },
 

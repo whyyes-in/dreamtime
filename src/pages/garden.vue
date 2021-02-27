@@ -45,6 +45,10 @@
       </div>
 
       <div class="box__content">
+        <nuxt-link to="/wizard/updater?forced=true" class="button">
+          Updater
+        </nuxt-link>
+
         <nuxt-link to="/wizard/dreamtime?forced=true" class="button">
           DreamTime
         </nuxt-link>

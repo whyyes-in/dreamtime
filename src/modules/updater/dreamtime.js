@@ -10,7 +10,7 @@
 import { BaseUpdater } from './base'
 import dream from '../dream'
 
-const { activeWindow } = $provider.util
+const { activeWindow, platform } = $provider.util
 const { shell, app, Notification } = $provider.api
 
 class DreamTimeUpdater extends BaseUpdater {
@@ -24,23 +24,34 @@ class DreamTimeUpdater extends BaseUpdater {
   /**
    * @type {string}
    */
-  get currentVersion() {
+  get repo() {
+    return super.repo || 'dreamnettech/dreamtime'
+  }
+
+  get arch() {
+    return dream.isPortable ? 'portable' : undefined
+  }
+
+  get filenameSearch() {
+    return `${this.platform}-${process.env.BUILD_ARCH}`
+  }
+
+  get serverBaseURI() {
+    const uri = super.serverBaseURI
+
+    uri.addQuery({
+      format: process.env.BUILD_FORMAT,
+    })
+
+    return uri
+  }
+
+  async getVersion() {
     return `v${process.env.npm_package_version}`
   }
 
-  /**
-   * @type {string}
-   */
-  get platform() {
-    let platform = super.platform
-
-    if (dream.isPortable) {
-      platform = `${platform}-portable`
-    } else {
-      platform = `${platform}-installer`
-    }
-
-    return platform
+  async getFilename() {
+    return (await super.getFilename()) || `DreamTime-${this.latestVersion}-${this.platform}-${process.env.BUILD_ARCH}.${process.env.BUILD_FORMAT}`
   }
 
   /**

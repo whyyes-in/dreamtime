@@ -1,10 +1,12 @@
 <template>
-  <span v-tooltip="tooltip" class="tip">
+  <div v-tooltip="theTooltip" class="tip">
     <font-awesome-icon :icon="icon" />
-  </span>
+  </div>
 </template>
 
 <script>
+import { isString, merge } from 'lodash'
+
 export default {
   props: {
     icon: {
@@ -16,12 +18,22 @@ export default {
       required: true,
     },
   },
+
+  computed: {
+    theTooltip() {
+      if (isString(this.tooltip)) {
+        return { appendTo: 'parent', content: this.tooltip }
+      }
+
+      return merge(this.tooltip, { appendTo: 'parent' })
+    },
+  },
 }
 </script>
 
 <style lang="scss" scoped>
 .tip {
-  @apply text-sm;
+  @apply inline-block text-sm;
   cursor: help;
 }
 </style>

@@ -30,68 +30,19 @@ class WaifuUpdater extends BaseUpdater {
   /**
    * @type {string}
    */
-  get githubRepo() {
-    return super.githubRepo || 'dreamnettech/waifu2x-chainer'
+  get repo() {
+    return super.repo || 'dreamnettech/waifu2x-chainer'
   }
 
-  /**
-   * @type {string}
-   */
-  get platform() {
-    let platform = super.platform
-
-    if (platform === 'macos' || settings.preferences.advanced.device === 'CPU') {
-      platform = `${platform}-cpuonly`
-    } else {
-      platform = `${platform}-any`
-    }
-
-    return platform
+  get arch() {
+    return this.platform === 'macos' || settings.preferences.advanced.device === 'CPU' ? 'cpuonly' : 'any'
   }
 
   /**
    * @return {string}
    */
-  async _getCurrentVersion() {
+  async getVersion() {
     return requirements.waifu.version
-  }
-
-  /**
-   *
-   * @param {*} releases
-   */
-  _getLatestCompatible(releases) {
-    const currentVersion = `v${process.env.npm_package_version}`
-
-    const minimum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'waifu', 'minimum'], 'v0.1.0')
-    const maximum = dreamtrack.get(['projects', 'dreamtime', 'releases', currentVersion, 'waifu', 'maximum'])
-
-    if (!minimum) {
-      return null
-    }
-
-    for (const release of releases) {
-      if (compareVersions.compare(release.tag_name, minimum, '<')) {
-        continue
-      }
-
-      if (!isNil(maximum) && compareVersions.compare(release.tag_name, maximum, '>')) {
-        continue
-      }
-
-      return release
-    }
-
-    return null
-  }
-
-  /**
-   *
-   */
-  async setup(required = false) {
-    this._currentVersion = await this._getCurrentVersion()
-
-    await super.setup(required)
   }
 
   /**

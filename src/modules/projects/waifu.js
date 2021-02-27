@@ -11,8 +11,8 @@ class Waifu {
       github: 'dreamnettech/waifu2x-chainer',
     },
     about: {
-      title: 'Waifu2X',
-      description: 'Image upscaling & denoise algorithm.',
+      title: 'Waifu2X Chainer',
+      description: 'Image upscale & denoise algorithm. Increase the resolution and quality of your fake nudes automatically.',
       logo: 'https://link.dreamnet.tech/ipfs/QmR1gB7FUmheEEYQM2NpBHSYULQU3JtgpXBwiUfkcfZsy5?filename=waifu2x-logo.png',
       navigation: [
         {
@@ -39,7 +39,7 @@ class Waifu {
   }
 
   get version() {
-    return this.updater.currentVersion
+    return this.updater.version
   }
 
   get isInstalled() {

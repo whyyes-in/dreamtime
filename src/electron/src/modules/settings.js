@@ -136,7 +136,7 @@ class Settings {
     const hasGPU = process.platform === 'darwin' ? false : system.graphics.length > 0
 
     this.payload = {
-      version: 16,
+      version: 17,
       user: uuid(),
 
       wizard: {
@@ -146,6 +146,11 @@ class Settings {
         telemetry: false,
         waifu: false,
         settings: false,
+      },
+
+      updater: {
+        protocol: 'any',
+        showPasswordProtected: false,
       },
 
       achievements: {
@@ -670,6 +675,17 @@ class Settings {
         version: 16,
         app: {
           resultsColumns: 'auto',
+        },
+      })
+    }
+
+    // 16 -> 17
+    if (this.payload?.version === 16 && this._default.version >= 17) {
+      this.payload = merge(this.payload, {
+        version: 17,
+        updater: {
+          protocol: 'any',
+          showPasswordProtected: false,
         },
       })
     }
