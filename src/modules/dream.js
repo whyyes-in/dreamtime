@@ -19,22 +19,30 @@ export default {
    * App Name.
    * @type {string}
    */
-  name: process.env.npm_package_displayName,
+  get name() {
+    return process.env.npm_package_displayName
+  },
 
   /**
    * @type {string}
    */
-  description: process.env.npm_package_description,
+  get description() {
+    return process.env.npm_package_description
+  },
 
   /**
    * @type {string}
    */
-  version: `v${process.env.npm_package_version}`,
+  get version() {
+    return `v${process.env.npm_package_version}`
+  },
 
   /**
    * @type {boolean}
    */
-  isPortable: process.env.BUILD_ARCH === 'portable',
+  get isPortable() {
+    return process.env.BUILD_ARCH === 'portable'
+  },
 
   /**
    *

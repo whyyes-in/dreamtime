@@ -27,27 +27,23 @@ jobs:
         os: [windows-2019, ubuntu-18.04, macos-10.15]
 
     steps:
-      - uses: actions/checkout@v1
-
       - name: Install Node.js 14
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
 
+      - uses: actions/checkout@v1
+
       - uses: actions/cache@v2
         env:
-          cache-name: setup
+          cache-name: setup-modules
         with:
-          path: src
+          path: src/node_modules
           key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('src/yarn.lock') }}
 
       - name: Install Dependencies
         working-directory: src
         run: yarn install --network-timeout 1000000
-
-      - name: Optimize
-        working-directory: src
-        run: yarn run optimize
 
   # Build frontend
   build-frontend:
@@ -56,18 +52,18 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-      - uses: actions/checkout@v1
-
       - name: Install Node.js 14
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
 
+      - uses: actions/checkout@v1
+
       - uses: actions/cache@v2
         env:
-          cache-name: setup
+          cache-name: setup-modules
         with:
-          path: src
+          path: src/node_modules
           key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('src/yarn.lock') }}
 
       - name: Build - Electron entry
@@ -110,18 +106,18 @@ jobs:
             type: installer
 
     steps:
-      - uses: actions/checkout@v1
-
       - name: Install Node.js 14
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
 
+      - uses: actions/checkout@v1
+
       - uses: actions/cache@v2
         env:
-          cache-name: setup
+          cache-name: setup-modules
         with:
-          path: src
+          path: src/node_modules
           key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('src/yarn.lock') }}
       
       - uses: actions/download-artifact@v2

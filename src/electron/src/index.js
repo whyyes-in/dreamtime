@@ -21,17 +21,17 @@ import { settings } from './modules'
 import config from '~/nuxt.config'
 import tailwind from '~/tailwind.config'
 
-require('dotenv').config()
-
 const logger = Logger.create('electron')
 
 // NuxtJS root directory
 config.rootDir = dirname(dirname(__dirname))
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV !== 'development') {
   // make sure that the working directory is where the executable is
   process.chdir(getPath('exe', '..'))
 }
+
+require('dotenv').config()
 
 if (process.env.BUILD_PORTABLE) {
   // Save Chromium/Electron data in the portable folder.
@@ -63,6 +63,7 @@ class DreamApp {
     logger.debug(`Portable: ${process.env.BUILD_PORTABLE ? 'Yes' : 'No'}`)
     logger.debug(`App Path: ${app.getAppPath()}`)
     logger.debug(`Exe Path: ${app.getPath('exe')}`)
+    logger.debug(`ENV Path: ${resolve(process.cwd(), '.env')}`)
 
     // catch errors
     process.on('uncaughtException', (err) => {
@@ -78,6 +79,10 @@ class DreamApp {
 
       return true
     })
+
+    if (!process.env.BUILD_TARGET || !process.env.npm_package_displayName) {
+      throw new Error('This installation is corrupt, please contact the developers.')
+    }
 
     // https://electronjs.org/docs/tutorial/notifications#windows
     app.setAppUserModelId(process.execPath)
