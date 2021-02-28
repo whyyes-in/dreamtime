@@ -189,6 +189,7 @@ module.exports = {
         'faTwitter',
         'faGitAlt',
         'faBitcoin',
+        'faYoutube',
       ],
     },
   },

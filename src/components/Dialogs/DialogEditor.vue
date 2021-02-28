@@ -4,12 +4,12 @@
       <div ref="editor" class="editor" />
 
       <template #footer>
-        <div class="box__footer box__footer--buttons">
-          <button class="button flex-1 button--success" @click="apply">
+        <div class="box__footer buttons">
+          <button class="button button--success" @click="apply">
             <span>Apply</span>
           </button>
 
-          <button class="button flex-1 button--danger" @click="close">
+          <button class="button button--danger" @click="close">
             Dismiss
           </button>
         </div>

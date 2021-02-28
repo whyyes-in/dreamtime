@@ -83,7 +83,7 @@ export const Nudify = {
 
     watch(this, 'photos', () => {
       events.emit('nudify.update')
-    }, 1)
+    }, 2)
   },
 
   /**
@@ -191,13 +191,13 @@ export const Nudify = {
 
     Swal.fire({
       title: 'Downloading...',
-      text: 'One moment, please.',
       showConfirmButton: false,
       allowOutsideClick: false,
       allowEscapeKey: false,
+      didOpen() {
+        Swal.showLoading()
+      },
     })
-
-    await delay(500)
 
     try {
       const file = await File.fromUrl(url)
@@ -255,8 +255,6 @@ export const Nudify = {
 
     // eslint-disable-next-line lodash/prefer-immutable-method
     remove(this.photos, { id: photo.id })
-
-    events.emit('nudify.update')
 
     consola.debug(`Forgotten: ${photo.file.fullname}`)
   },

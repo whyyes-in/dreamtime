@@ -24,40 +24,26 @@
       </template>
     </PageHeader>
 
-    <section class="box">
-      <div class="box__content">
-        <SettingsField field-id="app.hardwareAcceleration" />
+    <AppBox title="General">
+      <SettingsField field-id="app.hardwareAcceleration" />
+      <SettingsField field-id="app.showStats" />
+    </AppBox>
 
-        <SettingsField field-id="app.uploadMode" />
+    <AppBox title="Visual">
+      <SettingsField field-id="app.resultsColumns" />
+      <SettingsField field-id="app.trypophobiaMode" />
+    </AppBox>
 
-        <SettingsField field-id="app.duplicates" />
+    <AppBox title="Queue">
+      <SettingsField field-id="app.queuePosition" />
+      <SettingsField field-id="app.uploadMode" />
+      <SettingsField field-id="app.duplicates" />
+    </AppBox>
 
-        <SettingsField field-id="app.showStats" />
-
-        <SettingsField field-id="app.trypophobiaMode" />
-
-        <SettingsField field-id="app.resultsColumns" />
-      </div>
-    </section>
-
-    <section class="box">
-      <div class="box__header">
-        <h2 class="title">
-          Menus
-        </h2>
-        <h3 class="subtitle">
-          Settings that affect the left and right menus.
-        </h3>
-      </div>
-
-      <div class="box__content">
-        <SettingsField field-id="app.queuePosition" />
-
-        <SettingsField field-id="app.showAds" @change="onChangeAds" />
-
-        <SettingsField field-id="app.showTips" @change="onChangeAds" />
-      </div>
-    </section>
+    <AppBox title="Menus" subtitle="Settings that affect the left and right menus.">
+      <SettingsField field-id="app.showAds" @change="onChangeAds" />
+      <SettingsField field-id="app.showTips" @change="onChangeAds" />
+    </AppBox>
   </div>
 </template>
 

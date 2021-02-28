@@ -1,6 +1,6 @@
 <template>
   <div class="stats">
-    <div v-if="system"
+    <div v-if="system && system.utilizationMemory"
          v-tooltip="'RAM Usage.'"
          class="device"
          :class="{ 'device--danger': system.utilizationMemory > 80 }">
@@ -8,7 +8,7 @@
       {{ system.utilizationMemory }}%
     </div>
 
-    <div v-if="system"
+    <div v-if="system && system.utilizationCpu"
          v-tooltip="'CPU Usage.'"
          class="device">
       <FontAwesomeIcon icon="microchip" />

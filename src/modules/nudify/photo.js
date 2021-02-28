@@ -128,7 +128,6 @@ export class Photo extends EventEmitter {
 
   set status(value) {
     this._status = value
-    this.emit('nudify.update')
   }
 
   /**

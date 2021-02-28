@@ -3,28 +3,42 @@
     <!-- Menu -->
     <portal to="menu">
       <section id="uploader-methods" class="menu__items">
-        <menu-item
+        <MenuItem
           label="Instagram"
           :icon="['fab', 'instagram']"
           :is-link="true"
           :class="{'item--active': selectionId === 1}"
           @click="selectionId = 1" />
 
-        <menu-item
+        <MenuItem
+          label="YouTube"
+          :icon="['fab', 'youtube']"
+          :is-link="true"
+          :class="{'item--active': selectionId === 4}"
+          @click="selectionId = 4" />
+
+        <MenuItem
+          label="Giphy"
+          icon="https://unpkg.com/simple-icons@v4/icons/giphy.svg"
+          :is-link="true"
+          :class="{'item--active': selectionId === 5}"
+          @click="selectionId = 5" />
+
+        <MenuItem
           label="Web"
           icon="globe"
           :is-link="true"
           :class="{'item--active': selectionId === 0}"
           @click="selectionId = 0" />
 
-        <menu-item
+        <MenuItem
           label="File"
           icon="file"
           :is-link="true"
           :class="{'item--active': selectionId === 2}"
           @click="selectionId = 2" />
 
-        <menu-item
+        <MenuItem
           label="Folder"
           icon="folder-open"
           :is-link="true"
@@ -92,6 +106,7 @@
           </button>
 
           <span class="method__note">PNG, JPG, GIF, MP4 and WEBM direct urls only.</span>
+          <span class="method__note">Remember that you can drag & drop the files from your web browser.</span>
         </div>
       </div>
 
@@ -112,7 +127,7 @@
           <input v-model="instagramPhoto"
                  type="url"
                  class="input mb-2"
-                 placeholder="https://www.instagram.com/p/dU4fHDw-Ho/"
+                 placeholder="https://www.instagram.com/p/..."
                  data-private="lipsum">
 
           <button class="button"
@@ -120,7 +135,7 @@
             <span>OPEN</span>
           </button>
 
-          <span class="method__note">Make sure the profile is public and you are not using a VPN/Proxy. <AppTip class="ml-2" tooltip="It is only possible to download photos from public profiles. Instagram usually blocks access to public photos if you are using a VPN/Proxy." /></span>
+          <span class="method__note">Make sure the profile is public and you are not using a VPN/Proxy. <AppTip class="ml-2" tooltip="Instagram usually blocks access to public photos if you are using a VPN/Proxy." /></span>
         </div>
       </div>
 
@@ -152,6 +167,7 @@
           </button>
 
           <span class="method__note">PNG, JPG, GIF, MP4 and WEBM files only.</span>
+          <span class="method__note">Remember that you can drag & drop the files.</span>
         </div>
       </div>
 
@@ -173,6 +189,63 @@
                   @click.prevent="openFolder">
             <span>OPEN FOLDER</span>
           </button>
+
+          <span class="method__note">Remember that you can drag & drop the folder.</span>
+        </div>
+      </div>
+
+      <!-- YouTube -->
+      <div v-show="selectionId === 4" class="methods__content">
+        <PageHeader>
+          <h2 class="title">
+            <span class="icon"><font-awesome-icon :icon="['fab', 'youtube']" /></span>
+            <span>YouTube</span>
+          </h2>
+
+          <h3 class="subtitle">
+            Open videos from any public YouTube url.
+          </h3>
+        </PageHeader>
+
+        <div class="method__body text-center">
+          <input v-model="youtubeURL"
+                 type="url"
+                 class="input mb-2"
+                 placeholder="https://www.youtube.com/watch?v=..."
+                 data-private="lipsum">
+
+          <button class="button"
+                  @click="openYoutube">
+            <span>OPEN</span>
+          </button>
+
+          <span class="method__note">Make sure the video is public and you are not using a VPN/Proxy. <AppTip class="ml-2" tooltip="YouTube usually blocks access to public videos if you are using a VPN/Proxy." /></span>
+        </div>
+      </div>
+
+      <!-- Giphy -->
+      <div v-show="selectionId === 5" class="methods__content">
+        <PageHeader>
+          <h2 class="title">
+            <span class="icon"><font-awesome-icon :icon="['fab', 'youtube']" /></span>
+            <span>Giphy</span>
+          </h2>
+
+          <h3 class="subtitle">
+            Open GIFs from any public Giphy url.
+          </h3>
+        </PageHeader>
+
+        <div class="method__body text-center">
+          <input v-model="giphyURL"
+                 type="url"
+                 class="input mb-2"
+                 placeholder="https://giphy.com/gifs/..."
+                 data-private="lipsum">
+
+          <button class="button" @click="openGiphy">
+            <span>OPEN</span>
+          </button>
         </div>
       </div>
     </div>
@@ -183,13 +256,19 @@
 import {
   isEmpty, map, toNumber, startsWith,
 } from 'lodash'
+import fs from 'fs-extra'
+import ytdl from 'ytdl-core'
+import { GiphyFetch } from '@giphy/js-fetch-api'
+import Swal from 'sweetalert2/src/sweetalert2'
 import { dreamtrack } from '~/modules/services'
 import { dreamtime, dreampower, checkpoints } from '~/modules/updater'
 import { Nudify } from '~/modules/nudify'
-import { tutorial } from '~/modules'
+import { tutorial, File } from '~/modules'
 import { UploadMixin } from '~/mixins'
 
 const { instagram } = $provider
+const { getPath } = $provider.paths
+const gf = new GiphyFetch('dc6zaTOxFJmzC')
 
 export default {
   mixins: [UploadMixin],
@@ -198,6 +277,8 @@ export default {
     selectionId: 1,
     webAddress: '',
     instagramPhoto: '',
+    youtubeURL: '',
+    giphyURL: '',
 
     dreamtime,
     dreampower,
@@ -285,6 +366,64 @@ export default {
       consola.track('UPLOAD_INSTAGRAM')
 
       this.instagramPhoto = ''
+    },
+
+    async openYoutube() {
+      if (isEmpty(this.youtubeURL) || !ytdl.validateURL(this.youtubeURL)) {
+        throw new Warning('Upload failed.', 'Please enter a valid YouTube URL.')
+      }
+
+      const videoID = ytdl.getURLVideoID(this.youtubeURL)
+      const file = await File.fromPath(getPath('downloads', `${videoID}.mp4`))
+
+      if (!file.exists) {
+        await new Promise((resolve) => {
+          const video = ytdl(this.youtubeURL)
+            .pipe(fs.createWriteStream(file.path))
+            .on('finish', resolve)
+
+          // eslint-disable-next-line promise/catch-or-return
+          Swal.fire({
+            title: 'Downloading...',
+            showCancelButton: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen() {
+              Swal.showLoading()
+            },
+          }).then((result) => {
+            // eslint-disable-next-line promise/always-return
+            if (result.isDismissed && result.dismiss === 'cancel') {
+              video.destroy()
+              file.unlink()
+              resolve()
+            }
+          })
+        })
+      }
+
+      if (file.exists) {
+        Swal.close()
+        Nudify.add(file)
+
+        consola.track('UPLOAD_YOUTUBE')
+        this.youtubeURL = ''
+      }
+    },
+
+    async openGiphy() {
+      if (isEmpty(this.giphyURL)) {
+        throw new Warning('Upload failed.', 'Please enter a valid Giphy URL.')
+      }
+
+      const giphyID = this.giphyURL.split('/').reverse()[0].split('-').reverse()[0]
+
+      const { data } = await gf.gif(giphyID)
+
+      Nudify.addUrl(data.images.original.mp4)
+
+      consola.track('UPLOAD_GIPHY')
+      this.giphyURL = ''
     },
   },
 }

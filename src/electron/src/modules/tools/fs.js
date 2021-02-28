@@ -1,7 +1,7 @@
 import {
   attempt, startsWith, merge, endsWith, toNumber,
 } from 'lodash'
-import { basename, join } from 'path'
+import { join } from 'path'
 import fs from 'fs-extra'
 import { app, dialog } from 'electron'
 import axios from 'axios'
@@ -13,6 +13,7 @@ import IpfsCtl from 'ipfsd-ctl'
 import toStream from 'it-to-stream'
 import all from 'it-all'
 import prettyBytes from 'pretty-bytes'
+import URI from 'urijs'
 import { EventEmitter } from 'events'
 import { getAppResourcesPath, getPath } from './paths'
 
@@ -20,6 +21,16 @@ const logger = require('@dreamnet/logplease').create('electron:modules:tools:fs'
 
 // eslint-disable-next-line node/no-deprecated-api
 export * from 'fs-extra'
+
+function getFilename(url) {
+  const uri = new URI(url)
+
+  if (uri.hasQuery('filename')) {
+    return uri.query(true).filename
+  }
+
+  return uri.filename()
+}
 
 /**
  * @typedef DownloadOptions
@@ -392,7 +403,7 @@ export function download(url, options = {}) {
   options = merge({
     showSaveAs: false,
     directory: app.getPath('downloads'),
-    filename: basename(url).split('?')[0].split('#')[0],
+    filename: getFilename(url),
   }, options)
 
   if (!options.filepath) {

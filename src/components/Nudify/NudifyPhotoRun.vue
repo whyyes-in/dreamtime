@@ -11,7 +11,7 @@
              data-private
              @click="openPreview" />
 
-      <div v-else-if="isVideo && run.framePath"
+      <div v-else-if="run.photo.file.isAnimated && run.framePath"
            class="run__photo__preview"
            :style="{ backgroundImage: `url('${run.framePath}')` }"
            data-private />
@@ -22,13 +22,13 @@
            data-private
            @click="openPreview" />
 
-      <div v-if="run.algorithmStatus !== ALGORITHM.NONE" class="run__photo__status">
-        <span v-if="run.algorithmStatus === ALGORITHM.DREAMPOWER" key="dreampower" v-tooltip="'The photo is being nudified by the algorithm.'">
-          Nudifying
-        </span>
-        <span v-if="run.algorithmStatus === ALGORITHM.WAIFU2X" key="waifu2x" v-tooltip="'The photo is being upscaled by Waifu2X.'">Upscaling</span>
-        <span v-if="run.algorithmStatus === ALGORITHM.DREAMTIME" key="dreamtime" v-tooltip="'The photo is being prepared by DreamTime.'">Other</span>
-        <span v-if="run.frameCount" v-tooltip="'Video frame.'"> ({{ run.frameCount }})</span>
+      <div v-if="run.running" class="run__photo__status">
+        <p>
+          <span :key="`algo-active-${run.algorithmActive}`" v-tooltip="run.algorithmActiveTooltip" class="algorithm">{{ run.algorithmActiveLabel }}</span>
+          <span :key="`algo-status-${run.algorithmStatus}`" v-tooltip="run.algorithmStatusTooltip" class="status">{{ run.algorithmStatusLabel }}</span>
+        </p>
+
+        <span v-if="run.frameCurrent" v-tooltip="'Video frame.'">{{ run.frameCurrent }}/{{ run.frameTotal }}</span>
       </div>
     </div>
 
@@ -142,7 +142,7 @@
 
     <!-- Terminal Dialog -->
     <dialog ref="terminalDialog">
-      <div class="dialog__content">
+      <AppBox title="Terminal" subtitle="Take a closer look at what the algorithm is doing.">
         <div class="terminal">
           <li
             v-for="(item, index) in run.cli.lines"
@@ -152,12 +152,14 @@
           </li>
         </div>
 
-        <div class="dialog__buttons">
-          <button class="button button--danger" @click="$refs.terminalDialog.close()">
-            Close
-          </button>
-        </div>
-      </div>
+        <template #footer>
+          <div class="box__footer buttons">
+            <button class="button button--danger" @click="$refs.terminalDialog.close()">
+              Close
+            </button>
+          </div>
+        </template>
+      </AppBox>
     </dialog>
 
     <!-- X-Ray tool -->
@@ -290,10 +292,22 @@ export default {
 
 .run__photo__status {
   @apply absolute z-20;
-  @apply bg-primary py-2 px-6 rounded-br rounded-tr text-black font-semibold;
+  @apply py-2 pr-6 pl-3 rounded-br rounded-tr;
+  @apply flex gap-6 items-center;
+  background-color: rgba(0, 0, 0, .8);
+  backdrop-filter: blur(6px);
   left: 0;
-  bottom: 20px;
+  bottom: 40px;
+  min-width: 160px;
   cursor: help;
+
+  .algorithm {
+    @apply block font-bold text-primary;
+  }
+
+  .status {
+    @apply block text-sm;
+  }
 }
 
 .run__video__preview {
@@ -336,11 +350,7 @@ export default {
   height: 400px;
 
   li {
-    @apply font-mono text-xs text-common-light mb-3 block;
-
-    &.text-danger {
-      @apply text-danger-500;
-    }
+    @apply font-mono text-white mb-3 block;
   }
 }
 </style>

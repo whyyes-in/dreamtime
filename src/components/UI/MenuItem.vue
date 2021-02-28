@@ -86,9 +86,14 @@ export default {
       return startsWith(this.icon, 'http') || startsWith(this.icon, '/')
     },
 
+    isBlackImageIcon() {
+      return this.isImageIcon && this.icon.includes('simple-icons')
+    },
+
     cssClass() {
       return {
         'item--link': !isNil(this.href) || this.isLink,
+        'item--black-icon': this.isBlackImageIcon,
       }
     },
 
@@ -145,6 +150,12 @@ export default {
   &.item--link {
     @apply rounded cursor-pointer;
     @include transition('background-color, color');
+  }
+}
+
+.item--black-icon {
+  .item__icon img {
+    filter: invert(100%) sepia(11%) saturate(0%) hue-rotate(146deg) brightness(111%) contrast(101%);
   }
 }
 

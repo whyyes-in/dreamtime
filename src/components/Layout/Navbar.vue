@@ -60,7 +60,6 @@
 import Avatars from '@dicebear/avatars'
 import sprites from '@dicebear/avatars-jdenticon-sprites'
 import { requirements, settings } from '~/modules/system'
-import { dreamtrack } from '~/modules/services'
 import { events } from '~/modules'
 
 export default {
@@ -76,14 +75,6 @@ export default {
 
     canNudify() {
       return requirements.canNudify
-    },
-
-    donateUrl() {
-      return dreamtrack.get('urls.support.patreon', 'https://www.patreon.com/dreamnet')
-    },
-
-    manualURL() {
-      return dreamtrack.get('urls.docs.manual', 'https://time.dreamnet.tech/docs/guide/upload')
     },
 
     isDev() {

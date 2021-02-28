@@ -11,13 +11,13 @@
       </MenuItem>
 
       <template #footer>
-        <div class="box__footer box__footer--buttons">
-          <button class="button flex-1 button--success" @click="save">
+        <div class="box__footer buttons">
+          <button class="button button--success" @click="save">
             <span class="icon"><font-awesome-icon icon="save" /></span>
             <span>Save</span>
           </button>
 
-          <button class="button flex-1 button--danger" @click="close">
+          <button class="button button--danger" @click="close">
             Close
           </button>
         </div>

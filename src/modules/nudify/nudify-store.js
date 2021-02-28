@@ -7,7 +7,7 @@
 //
 // Written by Ivan Bravo Bravo <ivan@dreamnet.tech>, 2019.
 
-import { debounce } from 'lodash'
+import { throttle } from 'lodash'
 import { Nudify } from './nudify'
 import { events } from '../events'
 
@@ -28,12 +28,12 @@ const store = {
     events.on('nudify.update', this.update)
   },
 
-  update: debounce(() => {
+  update: throttle(() => {
     store.photos = Nudify.photos
     store.waiting = Nudify.waiting
     store.pending = Nudify.pending
     store.finished = Nudify.finished
-  }, 300, { leading: true }),
+  }, 600, { leading: true }),
 }
 
 export const NudifyStore = new Proxy(store, {

@@ -248,7 +248,7 @@ class System {
         const mem = await si.mem()
 
         current.utilizationMemory = Math.round((mem.used / mem.total) * 100)
-        current.utilizationCpu = Math.round(data.currentload)
+        current.utilizationCpu = Math.round(data.currentLoad)
       }
 
       if (JSON.stringify(previous) !== JSON.stringify(current)) {

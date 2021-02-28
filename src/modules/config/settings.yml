@@ -10,17 +10,17 @@
   input: checkbox
 
 - id: app.uploadMode
-  label: Upload mode.
-  description: The uploaded photos will be added to the selected section.
+  label: Open mode.
+  description: How open files will behave.
   tooltip: |-
-    - **Pending:** The photos will keep waiting to be configured and nudified.
-    - **Pending -> Preferences:** When uploading a photo it will be placed in `Pending` and then you will be transferred to the preferences of the photo, in case of uploading multiple photos you will be transferred to the preferences of the last photo.
-    - **Queue:** The uploaded photos will be placed in the queue where they will be nudified as soon as possible.
+    - **Pending:** Stay on the current page and wait to start the nudification manually.
+    - **Preferences:** Move to photo preferences automatically. In case of uploading multiple files, it will move to the preferences of the last photo.
+    - **Queue:** Begin nudification as soon as the file is opened. (The default preferences are used which may return poor quality results.)
   input: select
   options:
     - label: Pending
       value: none
-    - label: Pending -> Preferences
+    - label: Preferences
       value: go-preferences
     - label: Queue
       value: add-queue
@@ -41,11 +41,11 @@
 
 - id: app.showStats
   label: Show system stats.
-  description: Show system usage statistics at the top.
+  description: Show system usage statistics.
   tooltip: |-
-    Allows you to check `RAM Usage` or `VRAM Usage`, problems with the algorithm usually occur when one of these is too high.
+    Allows you to check `RAM Usage` or `VRAM Usage`. Problems with the algorithm usually occur when one of these is too high.
 
-    Enabling this option can consume more system resources, especially in Windows.
+    > Enabling this option can consume more system resources, especially in Windows.
   input: checkbox
 
 - id: app.trypophobiaMode
@@ -115,8 +115,8 @@
   description: Graphics card to use.
 
 - id: processing.cores
-  label: CPU Cores.
-  description: "More cores increases the nudification speed only for <b>GIFs and videos</b> but can decrease system stability.<br>Recommended: 1"
+  label: Video workers.
+  description: "More workers increases the nudification speed for <b>Videos and GIFs</b> but can decrease system stability.<br>Recommended: 1"
   input: input
 
 - id: preferences.mode
@@ -232,13 +232,13 @@
   input: checkbox
 
 - id: preferences.advanced.useClothTransparencyEffect
-  label: X-Ray Effect.
-  description: Tool that allows you to create an X-Ray effect with the fake nude.
+  label: X-Ray Tool.
+  description: Create an X-Ray effect with the fake nude.
   tooltip: |
-    Enable the `X-Ray Tool` on the nude, allows you to add the photo with clothes on top of the fake nude and modify the transparency to achieve the effect.
+    Enable the `X-Ray Tool` allowing you to add the photo with clothes on top of the fake nude and modify the transparency to achieve the effect.
 
-    - The photo exported from this tool may have lower quality than the nude.
-    - The photo will be exported in the size indicated by the `Image size` option. (Size by Waifu2X are ignored.)
+    - The photo exported from this tool may have lower quality than the fake nude.
+    - The photo will be exported in the size indicated by the `Image size` option. (Increased size by Waifu2X are ignored.)
   input: checkbox
 
 - id: preferences.advanced.imageSize

@@ -10,7 +10,7 @@
 
 import {
   isNil, isEmpty, forIn, cloneDeep, random, toString,
-  trim, kebabCase, truncate, deburr, merge,
+  trim, kebabCase, truncate, deburr, merge, throttle, toNumber,
 } from 'lodash'
 import Swal from 'sweetalert2/dist/sweetalert2'
 import emojiStrip from 'emoji-strip'
@@ -32,6 +32,14 @@ export const ALGORITHM = {
   DREAMPOWER: 0,
   WAIFU2X: 1,
   DREAMTIME: 2,
+}
+
+export const ALGORITHM_STATUS = {
+  NONE: -1,
+  PREPARING: 1,
+  WORKING: 2,
+  LOADING_GAN: 3,
+  EXTRACTING_FRAMES: 4,
 }
 
 export class PhotoRun {
@@ -77,12 +85,22 @@ export class PhotoRun {
   /**
    * @type {ALGORITHM}
    */
-  algorithmStatus = ALGORITHM.NONE
+  algorithmActive = ALGORITHM.NONE
 
   /**
-   * @type {string}
+   * @type {ALGORITHM_STATUS}
    */
-  frameCount
+  algorithmStatus = ALGORITHM_STATUS.NONE
+
+  /**
+   * @type {number}
+   */
+  frameCurrent
+
+  /**
+   * @type {number}
+   */
+  frameTotal
 
   /**
    * @type {string}
@@ -105,7 +123,7 @@ export class PhotoRun {
   timer = new Timer()
 
   /**
-   * @type {Object}
+   *
    */
   cli = {
     lines: [],
@@ -153,6 +171,80 @@ export class PhotoRun {
     }
 
     return `${name}-RUN${this.id}-${now}-dreamtime.${ext}`
+  }
+
+  get algorithmActiveLabel() {
+    switch (this.algorithmActive) {
+      case ALGORITHM.NONE:
+      default:
+        return 'Loading'
+
+      case ALGORITHM.DREAMPOWER:
+        return 'Nudifying'
+
+      case ALGORITHM.WAIFU2X:
+        return 'Upscaling'
+
+      case ALGORITHM.DREAMTIME:
+        return 'Other'
+    }
+  }
+
+  get algorithmActiveTooltip() {
+    switch (this.algorithmActive) {
+      case ALGORITHM.NONE:
+      default:
+        return ''
+
+      case ALGORITHM.DREAMPOWER:
+        return 'The file is being nudified by the algorithm.'
+
+      case ALGORITHM.WAIFU2X:
+        return 'The nude is being upscaled and improved.'
+
+      case ALGORITHM.DREAMTIME:
+        return 'Performing additional tasks on the nude.'
+    }
+  }
+
+  get algorithmStatusLabel() {
+    switch (this.algorithmStatus) {
+      case ALGORITHM_STATUS.NONE:
+      default:
+        return ''
+
+      case ALGORITHM_STATUS.PREPARING:
+        return 'Preparing'
+
+      case ALGORITHM_STATUS.WORKING:
+        return 'Working'
+
+      case ALGORITHM_STATUS.LOADING_GAN:
+        return 'Loading GAN'
+
+      case ALGORITHM_STATUS.EXTRACTING_FRAMES:
+        return 'Extracting frames'
+    }
+  }
+
+  get algorithmStatusTooltip() {
+    switch (this.algorithmStatus) {
+      case ALGORITHM_STATUS.NONE:
+      default:
+        return undefined
+
+      case ALGORITHM_STATUS.PREPARING:
+        return 'The algorithm is getting ready to work, this shouldn\'t take long.'
+
+      case ALGORITHM_STATUS.WORKING:
+        return undefined
+
+      case ALGORITHM_STATUS.LOADING_GAN:
+        return 'The algorithm is loading the model into memory, this may take a few minutes.'
+
+      case ALGORITHM_STATUS.EXTRACTING_FRAMES:
+        return 'The algorithm is extracting all the frames from the video, this may take several minutes depending on the length of the video.'
+    }
   }
 
   /**
@@ -300,8 +392,17 @@ export class PhotoRun {
     }
   }
 
+  addCliLine(payload) {
+    if (this.cli.lines.length > 100) {
+      this.cli.lines.pop()
+    }
+
+    this.cli.lines.unshift(payload)
+  }
+
   runNudification() {
-    this.algorithmStatus = ALGORITHM.DREAMPOWER
+    this.algorithmActive = ALGORITHM.DREAMPOWER
+    this.algorithmStatus = ALGORITHM_STATUS.PREPARING
 
     return new Promise((resolve, reject) => {
       const onSpawnError = (error) => {
@@ -324,30 +425,55 @@ export class PhotoRun {
         onSpawnError(error)
       })
 
+      const setFramePath = throttle((filepath) => {
+        this.framePath = filepath
+      }, 1500)
+
       this.process.on('stdout', (output) => {
         // DreamPower output.
         output.forEach((text) => {
           text = trim(toString(text))
 
-          // Frame count detection
-          if (this.photo.file.isAnimated && text.includes('Multiple Image Processing')) {
-            const payload = text.match(/^(.*) : ([0-9]*)\/([0-9]*)$/)
+          if (this.photo.file.isAnimated) {
+            // Frame count detection
+            if (text.includes('Multiple Image Processing')) {
+              const payload = text.match(/^(.*) : ([0-9]*)\/([0-9]*)$/)
 
-            if (payload && payload[2] && payload[3]) {
-              this.frameCount = `${payload[2]}/${payload[3]}`
+              if (payload && payload[2] && payload[3]) {
+                if (!this.frameCurrent || this.frameCurrent < toNumber(payload[2])) {
+                  this.frameCurrent = toNumber(payload[2])
+                  this.frameTotal = toNumber(payload[3])
+                }
+              }
+            }
+
+            // Frame preview detection
+            if (text.includes('Created')) {
+              const payload = text.match(/^(.*) (.*) Created$/)
+
+              if (payload && payload[2]) {
+                setFramePath(`media://${encodeURI(payload[2])}`)
+              }
             }
           }
 
-          // Frame path detection
-          if (this.photo.file.isAnimated && text.includes('Created')) {
-            const payload = text.match(/^(.*) (.*) Created$/)
-
-            if (payload && payload[2]) {
-              this.framePath = `media://${encodeURI(payload[2])}`
-            }
+          if (text.includes('Loading GAN Model')) {
+            this.algorithmStatus = ALGORITHM_STATUS.LOADING_GAN
           }
 
-          this.cli.lines.unshift({
+          if (text.includes('Processing on') || text.includes('Model load done')) {
+            this.algorithmStatus = ALGORITHM_STATUS.WORKING
+          }
+
+          if (text.includes('Temporay dir is')) {
+            this.algorithmStatus = ALGORITHM_STATUS.EXTRACTING_FRAMES
+          }
+
+          if (text.includes('frames to process')) {
+            this.algorithmStatus = ALGORITHM_STATUS.PREPARING
+          }
+
+          this.addCliLine({
             text,
             css: {},
           })
@@ -358,7 +484,7 @@ export class PhotoRun {
         const text = toString(output)
 
         // DreamPower errors.
-        this.cli.lines.unshift({
+        this.addCliLine({
           text,
           css: {
             'text-danger': true,
@@ -402,7 +528,8 @@ export class PhotoRun {
   }
 
   runUpscale() {
-    this.algorithmStatus = ALGORITHM.WAIFU2X
+    this.algorithmActive = ALGORITHM.WAIFU2X
+    this.algorithmStatus = ALGORITHM_STATUS.WORKING
 
     return new Promise((resolve, reject) => {
       const onSpawnError = (error) => {
@@ -441,7 +568,7 @@ export class PhotoRun {
         outputMessage.forEach((text) => {
           text = toString(text)
 
-          this.cli.lines.unshift({
+          this.addCliLine({
             text,
             css: {},
           })
@@ -452,7 +579,7 @@ export class PhotoRun {
         const text = toString(outputMessage)
 
         // Errors.
-        this.cli.lines.unshift({
+        this.addCliLine({
           text,
           css: {
             'text-danger': true,
@@ -494,7 +621,8 @@ export class PhotoRun {
       output = this.outputFile
     }
 
-    this.algorithmStatus = ALGORITHM.DREAMTIME
+    this.algorithmActive = ALGORITHM.DREAMTIME
+    this.algorithmStatus = ALGORITHM_STATUS.WORKING
 
     const { cropData } = this.photo.crop
     const { imageSize } = this.photo
@@ -559,8 +687,9 @@ export class PhotoRun {
     this.sendNotification()
     achievements.probability()
 
-    this.algorithmStatus = ALGORITHM.NONE
-    this.frameCount = undefined
+    this.algorithmActive = ALGORITHM.NONE
+    this.algorithmStatus = ALGORITHM_STATUS.NONE
+    this.frameCurrent = undefined
     this.framePath = undefined
   }
 
@@ -574,8 +703,9 @@ export class PhotoRun {
 
     this.status = 'finished'
 
-    this.algorithmStatus = ALGORITHM.NONE
-    this.frameCount = undefined
+    this.algorithmActive = ALGORITHM.NONE
+    this.algorithmStatus = ALGORITHM_STATUS.NONE
+    this.frameCurrent = undefined
     this.framePath = undefined
   }
 

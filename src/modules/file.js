@@ -127,7 +127,7 @@ export class File extends EventEmitter {
    */
   static fromPath(filepath, options = {}) {
     const file = new this(filepath, options)
-    return file.load()
+    return file.load(null, true)
   }
 
   /**
@@ -142,10 +142,7 @@ export class File extends EventEmitter {
       directory: getPath('temp'),
     })
 
-    const file = new this(filepath, options)
-    await file.load()
-
-    return file
+    return this.fromPath(filepath, options)
   }
 
   /**
@@ -159,6 +156,10 @@ export class File extends EventEmitter {
     file.setup()
 
     return file
+  }
+
+  static fromTemp(filename, options = {}) {
+    return new this(getPath('temp', filename), options)
   }
 
   /**

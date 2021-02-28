@@ -1,20 +1,18 @@
 <template>
   <div class="preferences">
     <!-- Basics -->
-    <section id="preferences-basics" class="box">
-      <div class="box__content">
-        <SettingsField v-model="value$" field-id="preferences.mode" :options-field="optionsField" />
+    <AppBox title="General">
+      <SettingsField v-model="value$" field-id="preferences.mode" :options-field="optionsField" />
 
-        <SettingsField v-if="value$.mode > 0"
-                       v-model="value$"
-                       field-id="preferences.advanced.scaleMode"
-                       :options-field="optionsField" />
+      <SettingsField v-if="value$.mode > 0"
+                     v-model="value$"
+                     field-id="preferences.advanced.scaleMode"
+                     :options-field="optionsField" />
 
-        <SettingsField v-if="value$.mode >= 1 && value$.advanced.scaleMode === 'padding'" v-model="value$" field-id="preferences.advanced.useColorPaddingStrip" />
+      <SettingsField v-if="value$.mode >= 1 && value$.advanced.scaleMode === 'padding'" v-model="value$" field-id="preferences.advanced.useColorPaddingStrip" />
 
-        <SettingsField v-if="value$.mode >= 1 && !animated" v-model="value$" field-id="preferences.advanced.useClothTransparencyEffect" />
-      </div>
-    </section>
+      <SettingsField v-if="value$.mode >= 1 && !animated" v-model="value$" field-id="preferences.advanced.useClothTransparencyEffect" />
+    </AppBox>
 
     <!-- Runs -->
     <section v-if="value$.mode === 2" id="preferences-runs" class="box">
