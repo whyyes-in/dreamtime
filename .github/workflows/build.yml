@@ -39,7 +39,7 @@ jobs:
           cache-name: setup
         with:
           path: src
-          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('src/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ env.cache-name }}-
 
@@ -70,7 +70,7 @@ jobs:
           cache-name: setup
         with:
           path: src
-          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('src/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ env.cache-name }}-
 
@@ -126,7 +126,7 @@ jobs:
           cache-name: setup
         with:
           path: src
-          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('src/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ env.cache-name }}-
       
