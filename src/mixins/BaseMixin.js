@@ -20,6 +20,10 @@ export default {
      */
     tooltip: {
       inserted(el, binding) {
+        if (!binding.value) {
+          return
+        }
+
         let options = {}
 
         if (isString(binding.value)) {
@@ -34,6 +38,10 @@ export default {
 
     tippy: {
       inserted(el, binding) {
+        if (!binding.value) {
+          return
+        }
+
         let options = {}
 
         if (isString(binding.value)) {

@@ -86,6 +86,11 @@ class DreamApp {
     app.commandLine.appendSwitch('disable-renderer-backgrounding')
     app.commandLine.appendSwitch('enable-features', 'ImpulseScrollAnimations,SmoothScrolling')
 
+    // https://github.com/electron/electron/issues/17972
+    if (process.platform === 'linux') {
+      app.commandLine.appendSwitch('no-sandbox')
+    }
+
     if (process.env.BUILD_PORTABLE) {
       this.bootPortable()
     }

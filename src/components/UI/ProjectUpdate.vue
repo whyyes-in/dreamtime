@@ -109,7 +109,7 @@
 
     <!-- Mirrors Dialog -->
     <dialog ref="mirrorsDialog">
-      <div class="dialog__content">
+      <AppBox>
         <ul class="mirrors">
           <li v-for="(url, index) in updater.downloadAllUrls" :key="index">
             <a v-if="isTorrent(url)" :href="url" target="_blank">Torrent ({{ url | domain }})</a>
@@ -118,12 +118,14 @@
           </li>
         </ul>
 
-        <div class="dialog__buttons">
-          <button class="button button--danger" @click.prevent="$refs.mirrorsDialog.close()">
-            Close
-          </button>
-        </div>
-      </div>
+        <template #footer>
+          <div class="box__footer">
+            <button class="button button--danger" @click.prevent="$refs.mirrorsDialog.close()">
+              Close
+            </button>
+          </div>
+        </template>
+      </AppBox>
     </dialog>
   </div>
 </template>
