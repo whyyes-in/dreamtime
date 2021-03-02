@@ -1,97 +1,154 @@
-name: Build Release
+name: Build
 
 on:
   push:
     tags:
       - v*
-      
+  workflow_dispatch:
+
 jobs:
-  build:
-    name: ${{ matrix.platform }} (${{ matrix.type }})
+  # Setup
+  setup:
+    name: Setup
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2019, ubuntu-18.04, macos-10.15]
+
+    steps:
+      - name: Install Node.js 14
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      - uses: actions/checkout@v1
+
+      - uses: actions/cache@v2
+        env:
+          cache-name: setup-modules-01
+        with:
+          path: src/node_modules
+          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('src/yarn.lock') }}
+
+      - name: Install Dependencies
+        working-directory: src
+        run: yarn install --network-timeout 1000000
+
+  # Build frontend
+  build-frontend:
+    name: Frontend
+    needs: setup
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: Install Node.js 14
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      - uses: actions/checkout@v1
+
+      - uses: actions/cache@v2
+        env:
+          cache-name: setup-modules-01
+        with:
+          path: src/node_modules
+          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('src/yarn.lock') }}
+
+      - name: Build - Electron entry
+        working-directory: src
+        run: yarn run build:babel
+
+      - name: Build - NuxtJS
+        working-directory: src
+        run: yarn run build:nuxt
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: dreamtime-dist
+          path: |
+            src/dist
+            src/electron/dist
+  
+  # Build Electron
+  build-electron:
+    name: "Electron: ${{ matrix.type }} - ${{ matrix.target }} (${{ matrix.os }})"
+    needs: build-frontend
     runs-on: ${{ matrix.os }}
 
     # Strategy
     # (variables for multiple platforms)
     # https://help.github.com/en/articles/workflow-syntax-for-github-actions#jobsjob_idstrategy
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        os:
-          - windows-2019
-          - ubuntu-18.04
-          - macos-10.15
-        type:
-          - installer
-          - portable
+        os: [windows-2019, ubuntu-18.04, macos-10.15]
+        type: [installer, portable]
+        target: [default]
 
         include:
-          - os: ubuntu-18.04 # Ubuntu
-            platform: ubuntu
-            extension: snap
-          - os: windows-2019 # Windows
-            platform: windows
-            extension: exe
-          - os: macos-10.15 # macOS
-            platform: macos
-            extension: dmg
+          - target: AppImage # Linux: AppImage
+            os: ubuntu-18.04
+            type: installer
+          - target: rpm # Red Hat, Suse and Fedora Linux
+            os: ubuntu-18.04
+            type: installer
 
     steps:
-      - uses: actions/checkout@v1
-
-      - name: Install Snapcraft
-        uses: samuelmeuli/action-snapcraft@v1
-        with:
-          snapcraft_token: ${{ secrets.SNAPCRAFT_TOKEN }}
-
       - name: Install Node.js 14
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
 
-      - name: Install Dependencies
-        working-directory: src/
-        run: yarn install --network-timeout 1000000
+      - uses: actions/checkout@v1
 
-      - name: Build Installer
-        working-directory: src/
-        if: matrix.type == 'installer'
+      - uses: actions/cache@v2
+        env:
+          cache-name: setup-modules-01
+        with:
+          path: src/node_modules
+          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('src/yarn.lock') }}
+      
+      - uses: actions/download-artifact@v2
+        with:
+          name: dreamtime-dist
+          path: src
+
+      - name: Build ENV
+        working-directory: src
         env:
           GITHUB_SHA: ${{ github.sha }}
-        run: yarn run build
+          BUILD_PORTABLE: ${{ matrix.type == 'portable' }}
+          BUILD_TARGET: ${{ matrix.target }}
+        run: yarn run build:env
 
-      - name: Build Portable
-        working-directory: src/
-        if: matrix.type == 'portable'
-        env:
-          GITHUB_SHA: ${{ github.sha }}
-          BUILD_PORTABLE: true
-        run: yarn run build
+      - name: Build Electron
+        working-directory: src
+        run: yarn run build:electron
 
       - uses: actions/upload-artifact@v2
         with:
-          name: dreamtime-${{ matrix.platform }}-${{ matrix.type }}
+          name: dreamtime-${{ matrix.os }}-${{ matrix.type }}-${{ matrix.target }}
           path: |
-            dist/*.zip
+            dist/*.7z
             dist/*.exe
             dist/*.snap
+            dist/*.AppImage
+            dist/*.rpm
+            dist/*.pacman
             dist/*.dmg
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: dreamtime-${{ matrix.platform }}-${{ matrix.type }}-static
-          path: src/dist
-
       - name: Deploy to Storage
-        working-directory: src/
+        working-directory: src
         continue-on-error: true
         timeout-minutes: 20
         env:
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_REF: ${{ github.ref }}
-          BUILD_PLATFORM: ${{ matrix.platform }}
-          BUILD_EXTENSION: ${{ matrix.extension }}
-          DREAMTRACK_HOST: https://track.dreamnet.tech
-          DREAMTRACK_KEY: ${{ secrets.DREAMTRACK_KEY }}
+          DEPLOY_DREAMTRACK_HOST: https://track.dreamnet.tech
+          DEPLOY_DREAMTRACK_KEY: ${{ secrets.DREAMTRACK_KEY }}
           DEPLOY_ENCRYPT_KEY: ${{ secrets.DEPLOY_ENCRYPT_KEY }}
           DEPLOY_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEPLOY_GITHUB_OWNER: dreamnettech
@@ -110,7 +167,12 @@ jobs:
           DEPLOY_DREAMLINKCLUSTER_PASSWORD: ${{ secrets.DEPLOY_DREAMLINKCLUSTER_PASSWORD }}
         run: yarn run deploy
 
+      - name: Install Snapcraft
+        uses: samuelmeuli/action-snapcraft@v1
+        with:
+          snapcraft_token: ${{ secrets.SNAPCRAFT_TOKEN }}
+
       - name: Deploy to Snapcraft
-        if: matrix.type == 'installer' && matrix.platform == 'ubuntu'
-        working-directory: dist/
-        run: snapcraft upload --release=candidate *.snap
+        if: matrix.os == 'ubuntu-18.04' && matrix.type == 'installer' && matrix.target == 'default'
+        working-directory: dist
+        run: snapcraft upload *.snap

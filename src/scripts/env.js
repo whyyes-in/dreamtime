@@ -78,6 +78,18 @@ const payload = pickBy({
   npm_package_description: process.env.npm_package_description,
 }, identity)
 
+// Deploy script testing.
+if (process.env.NODE_ENV === 'development') {
+  payload.DEPLOY_DREAMTRACK_HOST = 'http://127.0.0.1:30200'
+  payload.DEPLOY_DREAMTRACK_KEY = 'changeme'
+  payload.GITHUB_REF = `refs/tags/v${process.env.npm_package_version}-early`
+  payload.DEPLOY_MINIO_ADDRESS = '/ip4/127.0.0.1/tcp/19000/http'
+  payload.DEPLOY_MINIO_BUCKET = 'dreamtime'
+  payload.DEPLOY_MINIO_KEY = 'root'
+  payload.DEPLOY_MINIO_SECRET = 'secret123'
+  payload.DEPLOY_PINATA_TOKEN = 'changeme'
+}
+
 // eslint-disable-next-line no-console
 console.log(payload)
 

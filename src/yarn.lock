@@ -1410,10 +1410,10 @@
     parent-package-json "^2.0.1"
     platform-folders "^0.5.1"
 
-"@dreamnet/deploy@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@dreamnet/deploy/-/deploy-1.0.4.tgz#fee6fed206af2b684d69d1ca9783671ab5dcdef6"
-  integrity sha512-sOJUKdfvPuTUI5p7y8lc0uj5FG8RmaW6d0KPNP+4n2gr/97Ak7gw0SYqf7NvOwfVd9yi/DLReQy1W0P3wfoDDg==
+"@dreamnet/deploy@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@dreamnet/deploy/-/deploy-1.0.5.tgz#8d0e2f571fbc07eb334390919578aa01fd6fb35f"
+  integrity sha512-Zpo4+9Ewmigs8u4DhFM5+flQIctPi/O2GjL9cieTzoI8XPoJmMrg/IKXCWKUXSGeTvL10j64YLbIreL8bnkKoA==
   dependencies:
     "@dreamnet/app" "^1.1.1"
     "@octokit/rest" "^18.1.0"

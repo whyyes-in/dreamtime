@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable camelcase, no-console */
 // DreamTime.
 // Copyright (C) DreamNet. All rights reserved.
@@ -14,55 +15,53 @@ const axios = require('axios')
 const sha256File = require('sha256-file')
 const uuid = require('uuid')
 const { Release } = require('@dreamnet/deploy')
-const pkg = require('../package.json')
+const { choice } = require('@dreamnet/app')
 
-/*
-process.env.BUILD_PLATFORM = 'windows'
-process.env.BUILD_EXTENSION = 'exe'
-process.env.DREAMTRACK_HOST = 'http://localhost:30200'
-process.env.DREAMTRACK_KEY = ''
-process.env.GITHUB_REF = 'refs/tags/v0.0.0-early'
-process.env.DEPLOY_MINIO_ADDRESS = '/ip4/127.0.0.1/tcp/19000/http'
-process.env.DEPLOY_MINIO_BUCKET = 'dreamtime-early'
-process.env.DEPLOY_MINIO_KEY = 'root'
-process.env.DEPLOY_MINIO_SECRET = 'secret123'
-*/
+require('dotenv').config()
 
-//
+// Release urls
 const output = []
 
-//
-let isRelease = false
+// Release detection
+let IS_RELEASE = false
 
 if (process.env.GITHUB_REF) {
-  isRelease = process.env.GITHUB_REF.substring(0, 9) === 'refs/tags'
-  // eslint-disable-next-line prefer-destructuring
+  IS_RELEASE = process.env.GITHUB_REF.substring(0, 9) === 'refs/tags'
   process.env.DEPLOY_GIT_TAG = process.env.GITHUB_REF.split('/')[2]
 } else {
   process.env.DEPLOY_GIT_TAG = process.env.GITHUB_SHA.substring(0, 7)
 }
 
+// Early-access detection
+const IS_EARLY = process.env.DEPLOY_GIT_TAG.includes('-early') || process.env.DEPLOY_GIT_TAG.includes('-rc')
+
 // Defaults
 process.env.DEPLOY_GIT_REPO = 'dreamtime'
 process.env.DEPLOY_MINIO_FOLDER = `/releases/${process.env.DEPLOY_GIT_TAG}`
 
-const isEarly = process.env.DEPLOY_GIT_TAG.includes('-early') || process.env.DEPLOY_GIT_TAG.includes('-rc')
-let isPortable = false
+if (IS_EARLY) {
+  process.env.DEPLOY_MINIO_BUCKET = 'dreamtime-early'
+  delete process.env.DEPLOY_MINIO_GATEWAY
+}
 
-//
-const VERSION = `v${pkg.version}`
-const FILENAME = `DreamTime-${VERSION}-${process.env.BUILD_PLATFORM}`
-const DISTPATH = path.resolve(__dirname, '../../dist')
+// Release version
+const VERSION = `v${process.env.npm_package_version}`
+
+// Distribution path
+const DISTPATH = path.resolve(__dirname, '..', '..', 'dist')
+
+// Release upload providers
 const PROVIDERS = []
 
-if (isRelease) {
-  PROVIDERS.push('Minio', 'DreamLinkCluster', 'Pinata', 'MEGA')
-
-  if (isEarly) {
-    process.env.DEPLOY_MINIO_BUCKET = 'dreamtime-early'
-    process.env.DEPLOY_MINIO_GATEWAY = undefined
+if (IS_RELEASE) {
+  if (process.env.NODE_ENV === 'development') {
+    PROVIDERS.push('Minio')
   } else {
-    PROVIDERS.push('Github', 'Teknik')
+    PROVIDERS.push('Minio', 'DreamLinkCluster', 'Pinata', 'MEGA')
+
+    if (!IS_EARLY) {
+      PROVIDERS.push('Github', 'Teknik')
+    }
   }
 }
 
@@ -100,7 +99,7 @@ async function run(release) {
 
   const response = await release.deploy()
 
-  if (isEarly && release.cryptr) {
+  if (IS_EARLY && release.cryptr) {
     output.push(release.cryptr.encrypt(JSON.stringify(response)))
   } else {
     output.push(response)
@@ -114,52 +113,54 @@ async function run(release) {
  *
  * @param {Release} release
  */
-async function deploy(release, response, checksum) {
-  const payload = []
+async function deploy({ cid }, response, checksum) {
+  const records = []
+  const arch = process.env.BUILD_PORTABLE ? 'portable' : undefined
+  const platform = choice({ windows: 'windows', linux: 'linux', macos: 'macos' })
 
-  const { cid } = release
-
-  const arch = isPortable ? 'portable' : undefined
-  const archText = isPortable ? 'portable' : 'installer'
-  const ext = isPortable ? 'zip' : process.env.BUILD_EXTENSION
-  const platform = process.env.BUILD_PLATFORM === 'ubuntu' ? 'linux' : process.env.BUILD_PLATFORM
+  const defs = {
+    filename: process.env.BUILD_FILENAME,
+    format: process.env.BUILD_FORMAT,
+    type: 'http',
+  }
 
   // IPFS Gateways
   if (cid) {
-    payload.push({
-      platform,
-      url: `https://link.dreamnet.tech/ipfs/${cid}?filename=${FILENAME}-${archText}.${ext}`,
-      arch,
-      checksum,
+    records.push({
+      ...defs,
+      url: cid,
+      type: 'ipfs',
+    })
+
+    records.push({
+      ...defs,
+      url: `https://link.dreamnet.tech/ipfs/${cid}?filename=${process.env.BUILD_FILENAME}`,
       priority: 25,
     })
 
-    payload.push({
-      platform,
-      url: `https://gateway.ipfs.io/ipfs/${cid}?filename=${FILENAME}-${archText}.${ext}`,
-      arch,
-      checksum,
+    records.push({
+      ...defs,
+      url: `https://gateway.ipfs.io/ipfs/${cid}?filename=${process.env.BUILD_FILENAME}`,
       priority: 20,
     })
 
-    payload.push({
-      platform,
-      url: `https://gateway.pinata.cloud/ipfs/${cid}?filename=${FILENAME}-${archText}.${ext}`,
-      arch,
-      checksum,
+    records.push({
+      ...defs,
+      url: `https://gateway.pinata.cloud/ipfs/${cid}?filename=${process.env.BUILD_FILENAME}`,
       priority: 10,
     })
   }
 
   response.forEach((data) => {
     if (data.cid) {
+      // Already handled.
       return
     }
 
     let priority = 1
     let is_direct = true
 
-    if (data.url.includes('s3.dreamnet.tech')) {
+    if (data.url.includes('s3.dreamnet.tech') || data.url.includes('X-Amz-Algorithm')) {
       priority = 30
     } else if (data.url.includes('git.teknik.io')) {
       priority = 15
@@ -168,11 +169,9 @@ async function deploy(release, response, checksum) {
       is_direct = false
     }
 
-    payload.push({
-      platform,
+    records.push({
+      ...defs,
       url: data.url,
-      arch,
-      checksum,
       priority,
       is_direct,
     })
@@ -181,17 +180,31 @@ async function deploy(release, response, checksum) {
   try {
     console.log('Deploying to DreamTrack...')
 
+    const payload = {
+      password: IS_EARLY ? uuid.v4() : undefined,
+      platforms: [
+        {
+          platform,
+          arch,
+          checksum,
+          records,
+        },
+      ],
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('response', response)
+      console.log('payload', payload)
+    }
+
     await axios({
       method: 'POST',
-      baseURL: process.env.DREAMTRACK_HOST,
-      url: `/downloads/dreamtime/${VERSION}`,
+      baseURL: process.env.DEPLOY_DREAMTRACK_HOST,
+      url: `/downloads/v2/dreamtime/${VERSION}`,
       headers: {
-        Authorization: `Basic ${process.env.DREAMTRACK_KEY}`,
+        Authorization: `Basic ${process.env.DEPLOY_DREAMTRACK_KEY}`,
       },
-      data: {
-        payload,
-        password: uuid.v4(),
-      },
+      data: payload,
     })
 
     console.log('✔️ Done!')
@@ -199,7 +212,8 @@ async function deploy(release, response, checksum) {
     console.warn(error)
 
     if (error.response && error.response.data) {
-      console.warn(error.response.data.message)
+      console.warn('message', error.response.data.message)
+      console.warn('error', error.response.data.error)
     }
   }
 }
@@ -209,31 +223,28 @@ async function deploy(release, response, checksum) {
  *
  */
 async function start() {
-  const portablePath = path.resolve(DISTPATH, `${FILENAME}-portable.zip`)
-  const installerPath = path.resolve(DISTPATH, `${FILENAME}-installer.${process.env.BUILD_EXTENSION}`)
+  const filepath = path.resolve(DISTPATH, process.env.BUILD_FILENAME)
 
-  if (fs.existsSync(portablePath)) {
-    isPortable = true
+  if (!fs.existsSync(filepath)) {
+    throw new Error(`The file does not exist: ${filepath}`)
   }
 
-  const releasePath = isPortable ? portablePath : installerPath
+  if (fs.existsSync(filepath)) {
+    const checksum = sha256File(filepath)
 
-  if (fs.existsSync(releasePath)) {
-    const checksum = sha256File(releasePath)
-
-    console.log(`Deploying: ${releasePath} (${checksum})`)
+    console.log(`Deploying: ${filepath} (${checksum})`)
 
     if (PROVIDERS.length > 0) {
-      const release = new Release(releasePath)
+      const release = new Release(filepath)
 
       const response = await run(release)
       await deploy(release, response, checksum)
 
       // Print results
       console.log(JSON.stringify(output, null, 2))
+    } else {
+      throw new Error('No providers!')
     }
-  } else {
-    console.warn(`The file does not exist: ${releasePath}`)
   }
 }
 

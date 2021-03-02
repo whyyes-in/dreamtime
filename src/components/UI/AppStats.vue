@@ -9,7 +9,7 @@
     </div>
 
     <div v-tippy
-         data-tippy-content="Number of unique users who have used the application in the last 3 months."
+         data-tippy-content="Unique users in the last 3 months."
          data-tippy-placement="bottom"
          class="box">
       <span class="stats__value">{{ stats | stat('users.total') }}</span>
@@ -17,7 +17,7 @@
     </div>
 
     <div v-tippy
-         data-tippy-content="Number of times the application has been opened in the last month."
+         data-tippy-content="Number of times the application has been opened in the last 3 months."
          data-tippy-placement="bottom"
          class="box">
       <span class="stats__value">{{ stats | stat('sessions.total') }}</span>
@@ -25,7 +25,7 @@
     </div>
 
     <div v-tippy
-         data-tippy-content="Number of photos that have been nudified."
+         data-tippy-content="Number of photos and videos nudified in the last 3 months."
          data-tippy-placement="bottom"
          class="box">
       <span class="stats__value">{{ stats | stat('events.total.DREAM_COMPLETED') }}</span>
