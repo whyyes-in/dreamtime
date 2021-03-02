@@ -75,10 +75,8 @@ export default {
   mounted() {
     this.$router.afterEach((to) => {
       if (to.path === '/games/badtime') {
-        this.$dream.name = 'BadDreamTime'
         this.isBadTime = true
       } else {
-        this.$dream.name = process.env.npm_package_displayName
         this.isBadTime = false
       }
     })
